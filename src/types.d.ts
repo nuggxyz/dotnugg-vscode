@@ -26,6 +26,7 @@ declare namespace NL.DotNugg {
 
     type Collection = {
         features: RangeOf<CollectionFeatures>;
+        width: RangeOf<number>;
     };
 
     type CollectionFeatures = Dictionary<RangeOf<CollectionFeature>>;

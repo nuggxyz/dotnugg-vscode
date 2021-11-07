@@ -125,6 +125,7 @@
                             "offset": 2
                         },
                         "b": {
+                            "direction": "+",
                             "offset": 3
                         },
                         "feature": "EYES",
@@ -208,7 +209,8 @@
                     "d": 0
                 }
             }
-        }
+        },
+        "width": 33
     },
     "items": [
         {

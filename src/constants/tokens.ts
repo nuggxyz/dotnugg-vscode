@@ -29,6 +29,7 @@ const item = '.item';
 const dotnugg = 'dotnugg';
 const defaultOrItem = '.defaultOrItem';
 const receiver = '.receiver';
+const width = '.width';
 
 const l = '.l';
 const r = '.r';
@@ -88,6 +89,7 @@ const ItemVersionDataClose = ItemVersionData + close;
 
 const CollectionOpen = Collection + open;
 const CollectionClose = Collection + close;
+const CollectionOpenWidth = CollectionOpen + width;
 
 const CollectionColors = Collection + colors;
 const CollectionColor = Collection + color;
@@ -287,4 +289,5 @@ export default {
     CollectionFeatureLongExpandableAtDetailsOpen,
     CollectionFeatureLongExpandableAtDetailsClose,
     CollectionFeatureLongName,
+    CollectionOpenWidth,
 };

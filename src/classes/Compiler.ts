@@ -159,6 +159,8 @@ export class Compiler {
 
             const token = this.current;
             let endToken = undefined;
+            let width: number = undefined;
+            let widthToken: NL.DotNugg.ParsedToken = undefined;
 
             for (; this.has(tokens.Collection) && this.hasNext; this.next) {
                 const collectionFeatures = this.compileCollectionFeatures();
@@ -166,13 +168,18 @@ export class Compiler {
                     features = collectionFeatures;
                 }
 
+                if (this.has(tokens.CollectionOpenWidth)) {
+                    width = +this.currentValue;
+                    widthToken = this.current;
+                }
+
                 if (this.has(tokens.CollectionClose)) {
                     endToken = this.current;
                 }
             }
-            const validator = new Validator({ token, endToken, features });
+            const validator = new Validator({ token, endToken, features, width, widthToken });
             if (validator.complete) {
-                this.results.collection = { value: { features }, token, endToken };
+                this.results.collection = { value: { features, width: { value: width, token: widthToken } }, token, endToken };
             } else {
                 Logger.out('ERROR', 'blank value returned from: compileCollection', validator.undefinedVarNames);
                 throw new Error('blank value returned from: compileCollection');

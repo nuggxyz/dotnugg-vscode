@@ -37,7 +37,7 @@
         BASE := {
             zindex := +0
             expandableAt := { r: 0, l: 0, u: 0, d: 0 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
+            receiver := { feature: EYES, zindex: 2, yoffset: +3 }
             receiver := { feature: EARS, zindex: 2, yoffset: 3 }
             receiver := { feature: GLASSES, zindex: 2, yoffset: 3 }
             receiver := { feature: MOUTH, zindex: 2, yoffset: 3 }
