@@ -1,0 +1,1014 @@
+{
+    "collection": {
+        "features": {
+            "SPECIAL": {
+                "level": {
+                    "direction": "+",
+                    "offset": 5
+                },
+                "name": "SPECIAL",
+                "anchor": {
+                    "key": 0,
+                    "direction": "+",
+                    "offset": 0
+                }
+            },
+            "HAT": {
+                "level": {
+                    "direction": "+",
+                    "offset": 5
+                },
+                "name": "HAT",
+                "anchor": {
+                    "key": 9,
+                    "direction": "+",
+                    "offset": 1
+                }
+            },
+            "SAUCE": {
+                "level": {
+                    "direction": "+",
+                    "offset": 5
+                },
+                "name": "SAUCE",
+                "anchor": {
+                    "key": 17,
+                    "direction": "-",
+                    "offset": 1
+                }
+            },
+            "HAIR": {
+                "level": {
+                    "direction": "+",
+                    "offset": 5
+                },
+                "name": "HAIR",
+                "anchor": {
+                    "key": 9,
+                    "direction": "+",
+                    "offset": 1
+                }
+            },
+            "MOUTH": {
+                "level": {
+                    "direction": "+",
+                    "offset": 5
+                },
+                "name": "MOUTH",
+                "anchor": {
+                    "key": 5,
+                    "direction": "+",
+                    "offset": 0
+                }
+            },
+            "GLASSES": {
+                "level": {
+                    "direction": "+",
+                    "offset": 5
+                },
+                "name": "GLASSES",
+                "anchor": {
+                    "key": 1,
+                    "direction": "+",
+                    "offset": 2
+                }
+            },
+            "EARS": {
+                "level": {
+                    "direction": "-",
+                    "offset": 6
+                },
+                "name": "EARS",
+                "anchor": {
+                    "key": 1,
+                    "direction": "+",
+                    "offset": 2
+                }
+            },
+            "EYES": {
+                "level": {
+                    "direction": "-",
+                    "offset": 9
+                },
+                "name": "EYES",
+                "anchor": {
+                    "key": 1,
+                    "direction": "+",
+                    "offset": 2
+                }
+            }
+        },
+        "colors": {
+            "a": {
+                "level": {
+                    "direction": "+",
+                    "offset": null
+                },
+                "name": "a",
+                "rgba": "rgba(0,0,0,.6)"
+            }
+        }
+    },
+    "bases": [
+        {
+            "filters": {
+                "a": {
+                    "level": {
+                        "direction": "+",
+                        "offset": null
+                    },
+                    "name": "a",
+                    "arg": 0,
+                    "type": 35
+                }
+            },
+            "colors": {
+                "a": {
+                    "level": {
+                        "direction": "+",
+                        "offset": null
+                    },
+                    "name": "a",
+                    "rgba": "rgba(0,0,0,.6)"
+                }
+            },
+            "data": {
+                "matrix": [
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "b",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "b",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": ".",
+                            "type": "transparent"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "A",
+                            "type": "color"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ],
+                    [
+                        {
+                            "label": "a",
+                            "type": "filter"
+                        }
+                    ]
+                ]
+            }
+        }
+    ],
+    "attributes": [
+        {
+            "colors": {
+                "a": {
+                    "level": {
+                        "direction": "+",
+                        "offset": null
+                    },
+                    "name": "a",
+                    "rgba": "rgba(0,0,0,.6)"
+                }
+            },
+            "versions": {
+                "0": {
+                    "radii": {
+                        "r": 5,
+                        "l": 55,
+                        "u": 55,
+                        "d": 5
+                    },
+                    "expanders": {
+                        "r": 5,
+                        "l": 5,
+                        "u": 5,
+                        "d": 5
+                    },
+                    "data": {
+                        "matrix": [
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "b",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "b",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "A",
+                                    "type": "color"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ]
+                        ]
+                    },
+                    "anchor": {
+                        "x": 4,
+                        "y": 4
+                    },
+                    "name": "0"
+                },
+                "1": {
+                    "radii": {
+                        "r": 5,
+                        "l": 5,
+                        "u": 5,
+                        "d": 5
+                    },
+                    "expanders": {
+                        "r": 5,
+                        "l": 5,
+                        "u": 5,
+                        "d": 5
+                    },
+                    "data": {
+                        "matrix": [
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "b",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "b",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "A",
+                                    "type": "color"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": "a",
+                                    "type": "filter"
+                                }
+                            ]
+                        ]
+                    },
+                    "anchor": {
+                        "x": 5,
+                        "y": 5
+                    },
+                    "name": "1"
+                }
+            },
+            "feature": "HAT"
+        }
+    ]
+}

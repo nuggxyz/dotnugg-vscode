@@ -1,0 +1,339 @@
+// parse and format all headers
+// seperate base, attrs and collections by one enter
+// store colleciton args
+// store attribute args
+// linting:
+// make sure there is only one collections]
+// make sure bases have a config for all FEATURES
+// make sure a base has l and w same as collection
+//
+
+// BIG PROBLEMS:
+// (1) when rgba has a space in it, the whole line fails to foramt
+// (2) colors and their label are hard to see
+// (3) refreshes every keystroke
+// (4) the connection between collection_feautre and base_helper is not defined in this file - do we need helpers or should we just add a width and height to the base_features
+
+// SMALL PROBLEMS:
+//
+
+// ENHANCEMENTS:
+// (1) numbered axises for data
+// (2) remove extra \n only lines
+
+// THINGS TO LINT:
+// (1) size of base is correct as defined by collection
+// (2) base implements all features defined in collection
+
+// for any given nugg, we choose the largest (version) that has l AND r radii less than or equal to that of the nugg
+
+@config() := {
+    // amount of features
+    // height and width
+    //
+}
+
+// @config := {
+//     features := 8;
+// }
+@collection(33,33) := {
+    features := {
+        BASE := {
+            zindex := +0;
+            expandableAt :=   { r: 0, l: 0, u: 0, d: 0 };
+            receivers := {                                      // can only have default calculated children
+                EYES    := { preset: 1,  yoffset: +2 };  // this will replace the anchor in entries below
+                EARS    := { preset: 1,  yoffset: +2 };
+                GLASSES := { preset: 1,  yoffset: +2 };
+                MOUTH   := { preset: 5,  yoffset: +0 };
+                HAIR    := { preset: 9,  yoffset: +1 };
+                SAUCE   := { preset: 17, yoffset: -1 };
+                HAT     := { preset: 9,  yoffset: +1 };
+                SPECIAL := { preset: 0,  yoffset: +0 };
+            }
+        }
+        EYES    := { zindex: -9, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
+        EARS    := { zindex: -6, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
+        GLASSES := { zindex: +5, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
+        MOUTH   := { zindex: +5, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
+        HAIR    := { zindex: +5, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
+        SAUCE   := { zindex: +5, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
+        HAT     := { zindex: +5, expandableAt: { r: 1, l: 1, u: 1, d: 0 } }
+        SPECIAL := { zindex: +5, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
+    }
+}
+
+@default(MOUTH) := {
+    colors := {
+        S := { zindex: +D, rgba: rgba(0,0,0,.6) }
+        W := { zindex: +D, rgba: rgba(255,255,255,1) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 2, y : 1 }
+            data := {
+                SSS
+            }
+        }
+        1 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 3, y : 1 }
+            receiver := { x: 2, y: 3, type: EYES };
+            data := {
+                SSSSS
+            }
+        }
+    }
+}
+
+
+@default(EYES) := {
+    colors := {
+        S := { zindex: +D, rgba: rgba(0,0,0,1) }
+        W := { zindex: +D, rgba: rgba(255,255,255,1) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 4, y : 1 }
+            data := {
+                SS...SS
+                SS...SS
+            }
+        }
+        1 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 6, y : 1 }
+            data := {
+                WWW.....WWW
+                WSW.....WSW
+                WWW.....WWW
+            }
+        }
+    }
+}
+
+
+@base() := {
+    colors := {
+        y := { zindex: +0, rgba: rgba(168, 75, 30, .9) }
+        x := { zindex: +0, rgba: rgba(201, 102, 25, .9)}
+        o := { zindex: +0, rgba: rgba(249, 176, 66, .9) }
+        z := { zindex: +0, rgba: rgba(244, 159, 53, .9) }
+        f := { zindex: +0, rgba: rgba(241, 147, 37, .9) }
+        g := { zindex: +0, rgba: rgba(235, 138, 18, .9) }
+    }
+    receivers := {
+        EYES := { calc: 2, offset: 3 };
+    }
+    data := {
+        .................................
+        .................................
+        .................................
+        .................................
+        .................................
+        ..........yyyyyfyyyyyyy..........
+        ........yyozzzzooogggyyy.........
+        ........yozzzzzzoogggggy.........
+        ........yoozzzzzzooogggy.........
+        ........yoozzzzzzzooogggy........
+        .......yyoozzzzzzfooooooy........
+        .......yoooozzzzzoooooooy........
+        .......yooooozzzzzooooooy........
+        .......yooooozzzzzooooooy........
+        .......yooffozzzzzzoooooy........
+        .......yooooozzzzzzfooooy........
+        .......yoooooozzzzzffoooy........
+        .......yooooozzzzzzzooooy........
+        .......yooooozzzzzzzzzzoy........
+        .......yoooooozzzzzzzzzzy........
+        .......yoooooozzzzzzzzzzy........
+        ........yoooffzzzzzzzzzzy........
+        ........yooooofzzzzzzzzyy........
+        ........yoooooffzzgggggy.........
+        ........yxoooozfgggggggy.........
+        ........yxgooozzzggggxxy.........
+        ........yxxgoozzzggggxxy.........
+        ........yyygoozzgggxxyy..........
+        ..........yyyyyyyyyyy............
+        .................................
+        .................................
+        .................................
+        .................................
+    }
+}
+
+// for any given nugg, we choose the largest (version) that has l AND r radii less than or equal to that of the nugg
+@attribute(HAT) := {
+    colors := {
+        a := { zindex: +D, rgba: rgba(0,0,0,.6) }
+        b := { zindex: +D, rgba: rgba(0,234,225,.6) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 5 , l: 5, u: 5, d: 0 }
+            anchor := { x : 9, y : 5 }
+            expanders := { r: 12, l: 6, u: 1, d: 0 }
+            data := {
+                ......aaaaa......
+                .....aabbbaa.....
+                aa...aaabaaa...aa
+                aaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaa
+            }
+        }
+        1 := {
+            radii := { r: 5, l: 5, u: 5, d: 0 }
+            expanders := { r: 14, l: 6, u: 2, d: 0 }
+            anchor := { x : 10, y : 6 }
+            data := {
+                ......aaaaaaa......
+                .....aaaaaaaaa.....
+                .....aaabbbaaa.....
+                aa..aaaaabaaaaa..aa
+                aaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaa
+            }
+        }
+    }
+}
+
+
+@attribute(GLASSES) := {
+    colors := {
+        a := { zindex: +D, rgba: rgba(0,0,0,.6) }
+        b := { zindex: +D, rgba: rgba(225,0,225,.6) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 6, y : 2 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                .aaaa.aaaa
+                aabbaaabba
+                .abba.abba
+                .aaaa.aaaa
+            }
+        }
+        1 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 8, y : 3 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                .aaaaa...aaaaa
+                .abbba...abbba
+                aabbbaaaaabbba
+                .abbba...abbba
+                .aaaaa...aaaaa
+            }
+        }
+    }
+}
+
+
+@attribute(GLASSES) := {
+    colors := {
+        b := { zindex: +D, rgba: rgba(251,26,6,.6) }
+        a := { zindex: +D, rgba: rgba(248,92,15,.6) }
+        c := { zindex: +D, rgba: rgba(255,219,60,.6) }
+
+    }
+    versions := {
+        0 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 7, y : 3 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                ..a....a..
+                .ab...ab..
+                abcbb.bcbb
+                .ab...ab..
+            }
+        }
+        1 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 7, y : 3 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                ..a.......a....
+                .aba.....aba...
+                abcbbbb.abcbbbb
+                .aba.....aba...
+                ..a.......a....
+            }
+        }
+    }
+}
+
+
+        BASE := {
+            defaultZindex := 0;
+            expandableAt :=   { r: 0, l: 0, u: 0, d: 0 };
+            defaultChildren := { // can only have default calculated children
+                EYES    := { calc: 1, offset: 2, shouldExand: 0 }; // this will replace the anchor in entries below
+                EARS    := { calc: 1, offset: 2, shouldExand: 0 };
+                GLASSES := { calc: 1, offset: 2, shouldExand: 0 };
+                MOUTH   := { calc: 5, offset: 0, shouldExand: 0 };
+                HAIR    := { calc: 9, offset: 1, shouldExand: 0 };
+                SAUCE   := { calc: 17, offset: -1, shouldExand: 0 };
+                HAT     := { calc: 9, offset: 1, shouldExand: 0 };
+                SPECIAL := { calc: 0, offset: 0, shouldExand: 0 };
+            }
+        }
+
+@config() := {
+    // amount of features
+    // height and width
+    // default items
+    features := {
+        EYES    := { anchor: 1+2, zindex: -9, radii: { r: 0, l: 0, u: 0, d: 0 } }
+        EARS    := { anchor: 1+2, zindex: -6, radii: { r: 5, l: 5, u: 5, d: 5 } }
+        GLASSES := { anchor: 1+2, zindex: +5, radii: { r: 0, l: 0, u: 0, d: 0 } }
+        MOUTH   := { anchor: 5+0, zindex: +5, radii: { r: 0, l: 0, u: 0, d: 0 } }
+        HAIR    := { anchor: 9+1, zindex: +5, radii: { r: 5, l: 5, u: 5, d: 5 } }
+        SAUCE   := { anchor: 17-1, zindex: +5, radii: { r: 5, l: 5, u: 5, d: 5 } }
+        HAT     := { anchor: 9+1, zindex: +5, radii: { r: 1, l: 1, u: 1, d: 0 } }
+        SPECIAL := { anchor: 0+0, zindex: +5, radii: { r: 5, l: 5, u: 5, d: 5 } }
+    }
+}
+calculatedChildren := { // will be calculated on full base at time of merge
+                EYES := { calc: 2, offset: 3, shouldExpand: 0        };
+                EYES := { calc: 2, offset: 3, shouldExpand: 0    };
+}
+staticChildren := {
+EYES := { x: 2, y: 3 };
+
+}
+data := {
+SSSSS
+}
+}
+}
+}
+
+
+@default(MOUTH) := {
+    colors := {
+        S := { zindex: +D, rgba: rgba(0,0,0,.6) }
+        W := { zindex: +D, rgba: rgba(255,255,255,1) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 2, y : 1 }
+            data := {
+                SSS
+            }
+        }
+        1 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 3, y : 1 }
+

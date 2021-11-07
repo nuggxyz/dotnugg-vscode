@@ -1,0 +1,253 @@
+// parse and format all headers
+// seperate base, attrs and collections by one enter
+// store colleciton args
+// store attribute args
+// linting:
+// make sure there is only one collections]
+// make sure bases have a config for all FEATURES
+// make sure a base has l and w same as collection
+//
+
+// BIG PROBLEMS:
+// (1) when rgba has a space in it, the whole line fails to foramt
+// (2) colors and their label are hard to see
+// (3) refreshes every keystroke
+// (4) the connection between collection_feautre and base_helper is not defined in this file - do we need helpers or should we just add a width and height to the base_features
+
+// SMALL PROBLEMS:
+//
+
+// ENHANCEMENTS:
+// (1) numbered axises for data
+// (2) remove extra \n only lines
+
+// THINGS TO LINT:
+// (1) size of base is correct as defined by collection
+// (2) base implements all features defined in collection
+
+// for any given nugg, we choose the largest (version) that has l AND r radii less than or equal to that of the nugg
+
+@collection(33,33) := {
+    features := {
+        EYES    := { anchor: 1+2, level: -9, radii: { r: 0, l: 0, u: 0, d: 0 } }
+        EARS    := { anchor: 1+2, level: -6, radii: { r: 5, l: 5, u: 5, d: 5 } }
+        GLASSES := { anchor: 1+2, level: +5, radii: { r: 0, l: 0, u: 0, d: 0 } }
+        MOUTH   := { anchor: 5+0, level: +5, radii: { r: 0, l: 0, u: 0, d: 0 } }
+        HAIR    := { anchor: 9+1, level: +5, radii: { r: 5, l: 5, u: 5, d: 5 } }
+        SAUCE   := { anchor: 17-1, level: +5, radii: { r: 5, l: 5, u: 5, d: 5 } }
+        HAT     := { anchor: 9+1, level: +5, radii: { r: 1, l: 1, u: 1, d: 0 } }
+        SPECIAL := { anchor: 0+0, level: +5, radii: { r: 5, l: 5, u: 5, d: 5 } }
+    }
+    colors := {
+        a := { level: +0, rgba: rgba(0,0,0,.6) }
+        a := { level: +0, rgba: rgba(0,0,0,.6) }
+        b := { level: +0, rgba: rgba(0,0,0,.6) }
+    }
+}
+
+@default(MOUTH) := {
+    colors := {
+        S := { level: +D, rgba: rgba(0,0,0,.6) }
+        W := { level: +D, rgba: rgba(255,255,255,1) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 2, y : 1 }
+            data := {
+                SSS
+            }
+        }
+        1 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 3, y : 1 }
+            data := {
+                SSSSS
+            }
+        }
+    }
+}
+
+
+@default(EYES) := {
+    colors := {
+        S := { level: +D, rgba: rgba(0,0,0,1) }
+        W := { level: +D, rgba: rgba(255,255,255,1) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 4, y : 1 }
+            data := {
+                SS...SS
+                SS...SS
+            }
+        }
+        1 := {
+            radii := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            anchor := { x : 6, y : 1 }
+            data := {
+                WWW.....WWW
+                WSW.....WSW
+                WWW.....WWW
+            }
+        }
+    }
+}
+
+
+@base() := {
+    colors := {
+        y := { level: +0, rgba: rgba(168, 75, 30, .9) }
+        x := { level: +0, rgba: rgba(201, 102, 25, .9)}
+        o := { level: +0, rgba: rgba(249, 176, 66, .9) }
+        z := { level: +0, rgba: rgba(244, 159, 53, .9) }
+        f := { level: +0, rgba: rgba(241, 147, 37, .9) }
+        g := { level: +0, rgba: rgba(235, 138, 18, .9) }
+    }
+    filters := {
+        a := { level: +0, type: 0, arg: 35 }
+    }
+    data := {
+        .................................
+        .................................
+        .................................
+        .................................
+        .................................
+        ..........yyyyyfyyyyyyy..........
+        ........yyozzzzooogggyyy.........
+        ........yozzzzzzoogggggy.........
+        ........yoozzzzzzooogggy.........
+        ........yoozzzzzzzooogggy........
+        .......yyoozzzzzzfooooooy........
+        .......yoooozzzzzoooooooy........
+        .......yooooozzzzzooooooy........
+        .......yooooozzzzzooooooy........
+        .......yooffozzzzzzoooooy........
+        .......yooooozzzzzzfooooy........
+        .......yoooooozzzzzffoooy........
+        .......yooooozzzzzzzooooy........
+        .......yooooozzzzzzzzzzoy........
+        .......yoooooozzzzzzzzzzy........
+        .......yoooooozzzzzzzzzzy........
+        ........yoooffzzzzzzzzzzy........
+        ........yooooofzzzzzzzzyy........
+        ........yoooooffzzgggggy.........
+        ........yxoooozfgggggggy.........
+        ........yxgooozzzggggxxy.........
+        ........yxxgoozzzggggxxy.........
+        ........yyygoozzgggxxyy..........
+        ..........yyyyyyyyyyy............
+        .................................
+        .................................
+        .................................
+        .................................
+    }
+}
+
+// for any given nugg, we choose the largest (version) that has l AND r radii less than or equal to that of the nugg
+@attribute(HAT) := {
+    colors := {
+        a := { level: +D, rgba: rgba(0,0,0,.6) }
+        b := { level: +D, rgba: rgba(0,234,225,.6) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 5 , l: 5, u: 5, d: 0 }
+            anchor := { x : 9, y : 5 }
+            expanders := { r: 12, l: 6, u: 1, d: 0 }
+            data := {
+                ......aaaaa......
+                .....aabbbaa.....
+                aa...aaabaaa...aa
+                aaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaa
+            }
+        }
+        1 := {
+            radii := { r: 5, l: 5, u: 5, d: 0 }
+            expanders := { r: 14, l: 6, u: 2, d: 0 }
+            anchor := { x : 10, y : 6 }
+            data := {
+                ......aaaaaaa......
+                .....aaaaaaaaa.....
+                .....aaabbbaaa.....
+                aa..aaaaabaaaaa..aa
+                aaaaaaaaaaaaaaaaaaa
+                aaaaaaaaaaaaaaaaaaa
+            }
+        }
+    }
+}
+
+
+@attribute(GLASSES) := {
+    colors := {
+        a := { level: +D, rgba: rgba(0,0,0,.6) }
+        b := { level: +D, rgba: rgba(225,0,225,.6) }
+    }
+    versions := {
+        0 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 6, y : 2 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                .aaaa.aaaa
+                aabbaaabba
+                .abba.abba
+                .aaaa.aaaa
+            }
+        }
+        1 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 8, y : 3 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                .aaaaa...aaaaa
+                .abbba...abbba
+                aabbbaaaaabbba
+                .abbba...abbba
+                .aaaaa...aaaaa
+            }
+        }
+    }
+}
+
+
+@attribute(GLASSES) := {
+    colors := {
+        b := { level: +D, rgba: rgba(251,26,6,.6) }
+        a := { level: +D, rgba: rgba(248,92,15,.6) }
+        c := { level: +D, rgba: rgba(255,219,60,.6) }
+
+    }
+    versions := {
+        0 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 7, y : 3 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                ..a....a..
+                .ab...ab..
+                abcbb.bcbb
+                .ab...ab..
+            }
+        }
+        1 := {
+            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            anchor := { x : 7, y : 3 }
+            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            data := {
+                ..a.......a....
+                .aba.....aba...
+                abcbbbb.abcbbbb
+                .aba.....aba...
+                ..a.......a....
+            }
+        }
+    }
+}

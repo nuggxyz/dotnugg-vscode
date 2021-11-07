@@ -1,0 +1,646 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "DotNugg",
+    "patterns": [
+        {
+            "include": "#attribute"
+        },
+        {
+            "include": "#collection"
+        },
+        {
+            "include": "#base"
+        },
+        {
+            "include": "#comment"
+        }
+    ],
+    "repository": {
+        "attribute": {
+            "begin": "(?i)(@(attribute|default)\\((\\s*(\\w+)\\s*)\\))\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.attribute",
+            "contentName": "dotnugg.attribute.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.attribute.open"
+                },
+                "1": {
+                    "name": "keyword.control"
+                },
+                "2": {
+                    "name": "dotnugg.attribute.open.defaultOrAttribute"
+                },
+                "4": {
+                    "name": "constant.variable dotnugg.attribute.open.feature"
+                },
+                "5": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close  dotnugg.attribute.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#attribute.colors"
+                },
+                {
+                    "include": "#attribute.versions"
+                }
+            ]
+        },
+        "base": {
+            "begin": "(?i)(@base\\(\\))\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.base",
+            "contentName": "dotnugg.base.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.base.open"
+                },
+                "1": {
+                    "name": "keyword.control"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.base.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#base.colors"
+                },
+                {
+                    "include": "#base.filters"
+                },
+                {
+                    "include": "#base.data"
+                }
+            ]
+        },
+        "collection": {
+            "begin": "(?i)(@COLLECTION\\((\\s*(\\d+)\\s*,\\s*(\\d+)\\s*)\\))\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.collection",
+            "contentName": "dotnugg.collection.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.collection.open"
+                },
+                "1": {
+                    "name": "keyword.control"
+                },
+                "3": {
+                    "name": "variable.parameter dotnugg.collection.open.width"
+                },
+                "4": {
+                    "name": "variable.parameter dotnugg.collection.open.height"
+                },
+                "5": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.collection.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#collection.features"
+                },
+                {
+                    "include": "#collection.colors"
+                }
+            ]
+        },
+        "attribute.colors": {
+            "name": "dotnugg.attribute.colors",
+            "patterns": [
+                {
+                    "include": "#general.colors"
+                }
+            ]
+        },
+        "attribute.version.radii": {
+            "match": "\\s*(radii)\\s*:=\\s*(({)\\s*(r)\\s*:\\s*(\\d+)\\s*,\\s*(l)\\s*:\\s*(\\d+)\\s*,\\s*(u)\\s*:\\s*(\\d+)\\s*,\\s*(d)\\s*:\\s*(\\d+)\\s*(})\\s*)\\s*",
+            "name": "dotnugg.attribute.version.radii",
+            "captures": {
+                "1": {
+                    "name": "constant dotnugg.attribute.version.radii.name"
+                },
+                "2": {
+                    "name": "dotnugg.attribute.version.radii.details"
+                },
+                "3": {
+                    "name": "punctuation.bracket.open dotnugg.attribute.version.radii.details.open"
+                },
+                "4": {
+                    "name": ""
+                },
+                "5": {
+                    "name": "variable dotnugg.attribute.version.radii.details.r"
+                },
+                "6": {
+                    "name": ""
+                },
+                "7": {
+                    "name": "variable dotnugg.attribute.version.radii.details.l"
+                },
+                "8": {
+                    "name": ""
+                },
+                "9": {
+                    "name": "variable dotnugg.attribute.version.radii.details.u"
+                },
+                "10": {
+                    "name": ""
+                },
+                "11": {
+                    "name": "variable dotnugg.attribute.version.radii.details.d"
+                },
+                "12": {
+                    "name": "punctuation.bracket.close dotnugg.attribute.version.radii.details.close"
+                }
+            }
+        },
+        "attribute.version.expanders": {
+            "match": "\\s*(expanders)\\s*:=\\s*(({)\\s*(r)\\s*:\\s*(\\d+)\\s*,\\s*(l)\\s*:\\s*(\\d+)\\s*,\\s*(u)\\s*:\\s*(\\d+)\\s*,\\s*(d)\\s*:\\s*(\\d+)\\s*(})\\s*)\\s*",
+            "name": "dotnugg.attribute.version.expanders",
+            "captures": {
+                "1": {
+                    "name": "constant dotnugg.attribute.version.expanders.name"
+                },
+                "2": {
+                    "name": "dotnugg.attribute.version.expanders.details"
+                },
+                "3": {
+                    "name": "punctuation.bracket.open dotnugg.attribute.version.expanders.details.open"
+                },
+                "4": {
+                    "name": ""
+                },
+                "5": {
+                    "name": "variable dotnugg.attribute.version.expanders.details.r"
+                },
+                "6": {
+                    "name": ""
+                },
+                "7": {
+                    "name": "variable dotnugg.attribute.version.expanders.details.l"
+                },
+                "8": {
+                    "name": ""
+                },
+                "9": {
+                    "name": "variable dotnugg.attribute.version.expanders.details.u"
+                },
+                "10": {
+                    "name": ""
+                },
+                "11": {
+                    "name": "variable dotnugg.attribute.version.expanders.details.d"
+                },
+                "12": {
+                    "name": "punctuation.bracket.close dotnugg.attribute.version.expanders.details.close"
+                }
+            }
+        },
+        "attribute.version.anchor": {
+            "match": "\\s*(anchor)\\s*:=\\s*(({)\\s*(x)\\s*:\\s*(\\d+)\\s*,\\s*(y)\\s*:\\s*(\\d+)\\s*(})\\s*)\\s*",
+            "name": "dotnugg.attribute.version.anchor",
+            "captures": {
+                "1": {
+                    "name": "constant dotnugg.attribute.version.anchor.name"
+                },
+                "2": {
+                    "name": "dotnugg.attribute.version.anchor.details"
+                },
+                "3": {
+                    "name": "punctuation.bracket.open dotnugg.attribute.version.anchor.details.open"
+                },
+                "4": {
+                    "name": ""
+                },
+                "5": {
+                    "name": "variable dotnugg.attribute.version.anchor.details.x"
+                },
+                "6": {
+                    "name": ""
+                },
+                "7": {
+                    "name": "variable dotnugg.attribute.version.anchor.details.y"
+                },
+                "8": {
+                    "name": "punctuation.bracket.close dotnugg.attribute.version.anchor.details.close"
+                }
+            }
+        },
+        "attribute.version.data": {
+            "name": "dotnugg.base.data",
+            "patterns": [
+                {
+                    "include": "#general.data"
+                }
+            ]
+        },
+        "collection.colors": {
+            "name": "dotnugg.collection.colors",
+            "patterns": [
+                {
+                    "include": "#general.colors"
+                }
+            ]
+        },
+        "collection.features": {
+            "begin": "(?i)(features)\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "contentName": "dotnugg.collection.features",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.collection.features.open "
+                },
+                "1": {
+                    "name": "entity.keyword.operator"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.collection.features.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#collection.feature"
+                }
+            ]
+        },
+        "collection.feature": {
+            "match": "\\s*(\\w+)\\s*:=\\s*(({)\\s*anchor\\s*:\\s*((\\d+)(\\+|-)(\\d+))\\s*,\\s*level\\s*:\\s*((\\+|-)(\\d))\\s*,\\s*radii\\s*:\\s*(({)\\s*(r)\\s*:\\s*(\\d+)\\s*,\\s*(l)\\s*:\\s*(\\d+)\\s*,\\s*(u)\\s*:\\s*(\\d+)\\s*,\\s*(d)\\s*:\\s*(\\d+)\\s*(})\\s*)(})\\s*)\\s*",
+            "name": "dotnugg.collection.feature",
+            "captures": {
+                "1": {
+                    "name": "constant dotnugg.collection.feature.name"
+                },
+                "2": {
+                    "name": "dotnugg.collection.feature.details"
+                },
+                "3": {
+                    "name": "punctuation.bracket.open dotnugg.collection.feature.details.open"
+                },
+                "4": {
+                    "name": "variable dotnugg.collection.feature.details.anchor"
+                },
+                "5": {
+                    "name": "variable dotnugg.collection.feature.details.anchor.key"
+                },
+                "6": {
+                    "name": "storage.modifier dotnugg.collection.feature.details.anchor.direction"
+                },
+                "7": {
+                    "name": "variable dotnugg.collection.feature.details.anchor.offset"
+                },
+                "8": {
+                    "name": "variable dotnugg.collection.feature.details.level"
+                },
+                "9": {
+                    "name": " storage.modifier dotnugg.collection.feature.details.level.direction"
+                },
+                "10": {
+                    "name": "variable dotnugg.collection.feature.details.level.offset"
+                },
+                "11": {
+                    "name": "dotnugg.collection.feature.details.radii.details"
+                },
+                "12": {
+                    "name": "punctuation.bracket.open dotnugg.collection.feature.details.radii.details.open"
+                },
+                "13": {
+                    "name": ""
+                },
+                "14": {
+                    "name": "variable dotnugg.collection.feature.details.radii.details.r"
+                },
+                "15": {
+                    "name": ""
+                },
+                "16": {
+                    "name": "variable dotnugg.collection.feature.details.radii.details.l"
+                },
+                "17": {
+                    "name": ""
+                },
+                "18": {
+                    "name": "variable dotnugg.collection.feature.details.radii.details.u"
+                },
+                "19": {
+                    "name": ""
+                },
+                "20": {
+                    "name": "variable dotnugg.collection.feature.details.radii.details.d"
+                },
+                "21": {
+                    "name": "punctuation.bracket.close dotnugg.collection.feature.details.radii.details.close"
+                },
+                "22": {
+                    "name": "punctuation.bracket.close dotnugg.collection.feature.details.close"
+                }
+            }
+        },
+        "attribute.versions": {
+            "begin": "(?i)(versions)\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.attribute.versions",
+            "contentName": "dotnugg.attribute.versions.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.attribute.versions.open"
+                },
+                "1": {
+                    "name": "entity.keyword.operator"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.attribute.versions.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#attribute.version"
+                }
+            ]
+        },
+        "attribute.version": {
+            "begin": "(?i)(\\d+)\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.attribute.version",
+            "contentName": "dotnugg.attribute.version.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.attribute.version.open"
+                },
+                "1": {
+                    "name": "constant dotnugg.attribute.version.name"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.attribute.version.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#attribute.version.radii"
+                },
+                {
+                    "include": "#attribute.version.expanders"
+                },
+                {
+                    "include": "#attribute.version.anchor"
+                },
+                {
+                    "include": "#attribute.version.data"
+                }
+            ]
+        },
+        "base.colors": {
+            "name": "dotnugg.base.colors",
+            "patterns": [
+                {
+                    "include": "#general.colors"
+                }
+            ]
+        },
+        "base.filters": {
+            "name": "dotnugg.base.filters",
+            "patterns": [
+                {
+                    "include": "#general.filters"
+                }
+            ]
+        },
+        "base.data": {
+            "name": "dotnugg.base.data",
+            "patterns": [
+                {
+                    "include": "#general.data"
+                }
+            ]
+        },
+        "general.filters": {
+            "begin": "(?i)(filters)\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.general.filters",
+            "contentName": "dotnugg.general.filters.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.general.filters.open"
+                },
+                "1": {
+                    "name": "entity.keyword.operator"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.general.filters.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#general.filter"
+                }
+            ]
+        },
+        "general.filter": {
+            "match": "\\s*(\\w)\\s*:=\\s*(({)\\s*(level)\\s*:\\s*((\\+|-)(\\d|D))\\s*,\\s*(type)\\s*:\\s*(\\d+)\\s*,\\s*(arg)\\s*:\\s*(\\d+)\\s*(})\\s*)\\s*",
+            "name": "dotnugg.general.filter",
+            "captures": {
+                "1": {
+                    "name": "constant dotnugg.general.filter.name"
+                },
+                "2": {
+                    "name": "dotnugg.general.filter.details"
+                },
+                "3": {
+                    "name": "punctuation.bracket.open dotnugg.general.filter.details.open"
+                },
+                "4": {
+                    "name": ""
+                },
+                "5": {
+                    "name": " dotnugg.general.filter.details.level"
+                },
+                "6": {
+                    "name": "storage.modifier dotnugg.general.filter.details.level.direction"
+                },
+                "7": {
+                    "name": "variable dotnugg.general.filter.details.level.offset"
+                },
+                "8": {
+                    "name": ""
+                },
+                "9": {
+                    "name": "variable dotnugg.general.filter.details.type"
+                },
+                "10": {
+                    "name": ""
+                },
+                "11": {
+                    "name": "variable dotnugg.general.filter.details.arg"
+                },
+                "12": {
+                    "name": "punctuation.bracket.close dotnugg.general.filter.details.close"
+                }
+            }
+        },
+        "general.colors": {
+            "begin": "(?i)(colors)\\s*:=\\s*(\\{)",
+            "end": "\\s*(})\\s*",
+            "name": "dotnugg.general.colors",
+            "contentName": "dotnugg.general.colors.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.general.colors.open"
+                },
+                "1": {
+                    "name": "entity.keyword.operator"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.general.colors.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#general.color"
+                }
+            ]
+        },
+        "general.color": {
+            "match": "\\s*(\\w)\\s*:=\\s*(\\s*({)\\s*level\\s*:\\s*((\\+|-)(\\d|D))\\s*,\\s*rgba\\s*:\\s*(rgba?(\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+)(?:\\s*,.+?)?\\))\\s*(})\\s*)\\s*",
+            "name": "dotnugg.general.color",
+            "captures": {
+                "1": {
+                    "name": "constant dotnugg.general.color.name"
+                },
+                "2": {
+                    "name": "dotnugg.general.color.details"
+                },
+                "3": {
+                    "name": "punctuation.bracket.open dotnugg.general.color.details.open"
+                },
+                "4": {
+                    "name": "variable dotnugg.general.color.details.level"
+                },
+                "5": {
+                    "name": "storage.modifier dotnugg.general.color.details.level.direction"
+                },
+                "6": {
+                    "name": "variable dotnugg.general.color.details.level.offset"
+                },
+                "7": {
+                    "name": "variable dotnugg.general.color.details.rgba"
+                },
+                "9": {
+                    "name": "punctuation.bracket.close dotnugg.general.color.details.close"
+                }
+            }
+        },
+        "general.data": {
+            "begin": "(?i)(data)\\s*:=\\s*(\\{)",
+            "end": "\\s*}\\s*",
+            "name": "dotnugg.general.data",
+            "contentName": "dotnugg.general.data.content",
+            "beginCaptures": {
+                "0": {
+                    "name": "dotnugg.general.data.open"
+                },
+                "1": {
+                    "name": "entity.keyword.operator"
+                },
+                "2": {
+                    "name": "punctuation.bracket.open"
+                }
+            },
+            "endCaptures": {
+                "0": {
+                    "name": "punctuation.bracket.close dotnugg.general.data.close"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#general.data.row"
+                }
+            ]
+        },
+        "general.data.row": {
+            "begin": "^",
+            "end": "$",
+            "name": "dotnugg.general.data.row",
+            "contentName": "dotnugg.general.data.row.content",
+            "patterns": [
+                {
+                    "include": "#general.data.row.pixel"
+                }
+            ]
+        },
+        "general.data.row.pixel": {
+            "match": "(\\.)|([a-z])|([A-Z])",
+            "name": "dotnugg.general.pixel",
+            "captures": {
+                "0": {
+                    "name": "dotnugg.general.data.row.pixel"
+                },
+                "1": {
+                    "name": "comment dotnugg.general.data.row.pixel.transparent"
+                },
+                "2": {
+                    "name": "dotnugg.general.data.row.pixel.filter"
+                },
+                "3": {
+                    "name": "variable dotnugg.general.data.row.pixel.color"
+                }
+            }
+        },
+        "strings": {
+            "name": "string.quoted.double.dotnugg",
+            "begin": "\"",
+            "end": "\"",
+            "patterns": [
+                {
+                    "name": "constant.escape.dotnugg",
+                    "match": "\\\\."
+                }
+            ]
+        },
+        "comment": {
+            "name": "comment",
+            "match": "//.*"
+        }
+    },
+    "scopeName": "source.dotnugg"
+}
