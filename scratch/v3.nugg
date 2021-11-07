@@ -38,13 +38,13 @@
             zindex := +0
             expandableAt := { r: 0, l: 0, u: 0, d: 0 }
             receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
+            receiver := { feature: EARS, zindex: 2, yoffset: 3 }
+            receiver := { feature: GLASSES, zindex: 2, yoffset: 3 }
+            receiver := { feature: MOUTH, zindex: 2, yoffset: 3 }
+            receiver := { feature: HAIR, zindex: 2, yoffset: 3 }
+            receiver := { feature: SAUCE, zindex: 2, yoffset: 3 }
+            receiver := { feature: HAT, zindex: 2, yoffset: 3 }
+            receiver := { feature: SPECIAL, zindex: 2, yoffset: 3 }
         }
         EYES    := { zindex: -9, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
         EARS    := { zindex: -6, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
