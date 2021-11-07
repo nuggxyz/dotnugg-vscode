@@ -38,7 +38,7 @@ export class Compiler {
         return JSON.stringify(
             this.results,
             function (key, value) {
-                if (this[key].value !== undefined) {
+                if (this[key] !== undefined && this[key].value !== undefined) {
                     return this[key].value;
                 } else {
                     return value;
