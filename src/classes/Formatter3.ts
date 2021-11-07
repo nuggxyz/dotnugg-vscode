@@ -4,7 +4,6 @@ import { REGEX } from '../constants/regex';
 import tokens from '../constants/tokens';
 
 import { Compiler } from './Compiler';
-import Logger from './Logger';
 
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
@@ -22,16 +21,17 @@ export class Formatter3 {
         hold._instance = vscode.languages.registerDocumentFormattingEditProvider('dotnugg', {
             provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
                 const comp = Compiler.init(document);
-
-                return [...hold.format(comp)];
+                const res = hold.format(comp);
+                return [...res];
             },
         });
         return hold;
     }
 
     private format(comp: Compiler): vscode.TextEdit[] {
+        const res: vscode.TextEdit[] = [];
+
         try {
-            const res: vscode.TextEdit[] = [];
             let groupWorker: (RegExpData & { line: vscode.TextLine })[] = [];
 
             for (let i = 0; i < comp.document.lineCount; i++) {
@@ -58,78 +58,89 @@ export class Formatter3 {
 
             return res;
         } catch (err) {
-            Logger.log('error', JSON.stringify(err));
+            return res;
         }
     }
 
     public static regexFor(lineScope: string[]): RegExpData {
+        //   if (Compiler.tokenSelect(lineScope, [tokens.ItemOpen, tokens.CollectionOpen])) {
+        //       Logger.out(lineScope);
+        //   }
         switch (true) {
             // zero tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeOpen, tokens.BaseOpen, tokens.CollectionOpen]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemOpen, tokens.CollectionOpen]):
                 return { regex: REGEX.HEADER, tablen: 0, groupMember: false };
             // zero tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeClose, tokens.BaseClose, tokens.CollectionClose]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemClose, tokens.CollectionClose]):
                 return { regex: REGEX.FOOTER, tablen: 0, groupMember: false };
             // one tab headers
-            case (Compiler.tokenSelect(lineScope, [tokens.GeneralColorsOpen, tokens.GeneralFiltersOpen, tokens.GeneralDataOpen]) &&
-                Compiler.tokenSelect(lineScope, [tokens.Collection, tokens.Base])) ||
-                Compiler.tokenSelect(lineScope, [tokens.AttributeVersionsOpen, tokens.CollectionFeaturesOpen]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionsOpen, tokens.CollectionFeaturesOpen, tokens.GeneralColorsOpen]):
                 return { regex: REGEX.HEADER, tablen: 1, groupMember: false };
             // one tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralColorsOpen]) && Compiler.tokenSelect(lineScope, [tokens.Attribute]):
-                return { regex: REGEX.HEADER, tablen: 1, groupMember: false };
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralColorsClose]) && Compiler.tokenSelect(lineScope, [tokens.Attribute]):
-                return { regex: REGEX.FOOTER, tablen: 1, groupMember: false };
             // one tab footers
-            case (Compiler.tokenSelect(lineScope, [tokens.GeneralColorsClose, tokens.GeneralFiltersClose, tokens.GeneralDataClose]) &&
-                Compiler.tokenSelect(lineScope, [tokens.Collection, tokens.Base])) ||
-                Compiler.tokenSelect(lineScope, [tokens.AttributeVersionsClose, tokens.CollectionFeaturesClose]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionsClose, tokens.CollectionFeaturesClose, tokens.GeneralColorsClose]):
                 return { regex: REGEX.FOOTER, tablen: 1, groupMember: false };
             // two tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeVersionOpen]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionOpen, tokens.CollectionFeatureLongOpen]):
                 return { regex: REGEX.HEADER, tablen: 2, groupMember: false };
             // two tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeVersionClose]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionClose, tokens.CollectionFeatureLongClose]):
                 return { regex: REGEX.FOOTER, tablen: 2, groupMember: false };
             // two tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataOpen]) && Compiler.tokenSelect(lineScope, [tokens.Attribute]):
+            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataOpen]) && Compiler.tokenSelect(lineScope, [tokens.Item]):
                 return { regex: REGEX.HEADER, tablen: 3, groupMember: false };
             // two tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataClose]) && Compiler.tokenSelect(lineScope, [tokens.Attribute]):
+            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataClose]) && Compiler.tokenSelect(lineScope, [tokens.Item]):
                 return { regex: REGEX.FOOTER, tablen: 3, groupMember: false };
             // three tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeVersionDataOpen]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionDataOpen]):
                 return { regex: REGEX.HEADER, tablen: 3, groupMember: false };
             // three tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeVersionDataClose]):
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionDataClose]):
                 return { regex: REGEX.FOOTER, tablen: 3, groupMember: false };
             // two tab two arg
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralColor, tokens.GeneralFilter]):
+            case Compiler.tokenSelect(lineScope, [tokens.GeneralColor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // two tab three arg
             case Compiler.tokenSelect(lineScope, [tokens.CollectionFeature]):
-                return { regex: REGEX.ONE_ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
+                return { regex: REGEX.ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
+            // case Compiler.tokenSelect(lineScope, [tokens.CollectionFeatureLong]):
+            //     return { regex: REGEX.ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // two tab three arg
-            case Compiler.tokenSelect(lineScope, [tokens.BaseFilter]):
-                return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
+            // case Compiler.tokenSelect(lineScope, [tokens.BaseFilter]):
+            //     return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // three tab two arg
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeVersionAnchor]):
+            case Compiler.tokenSelect(lineScope, [tokens.CollectionFeatureLongZIndex]):
+                return { regex: REGEX.ONE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionAnchor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
-            // three tab four arg
-            case Compiler.tokenSelect(lineScope, [tokens.AttributeVersionRadii, tokens.AttributeVersionExpanders]):
+            // three tab 3 arg
+            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionRadii, tokens.GeneralReceiver]):
+                return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
+            case Compiler.tokenSelect(lineScope, [
+                tokens.ItemVersionRadii,
+                tokens.ItemVersionExpanders,
+                tokens.CollectionFeatureLongExpandableAt,
+            ]):
                 return { regex: REGEX.FOUR_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             // three tab data content
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataRow]) && Compiler.tokenSelect(lineScope, [tokens.Base]):
-                return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 2, groupMember: false };
+            // case Compiler.tokenSelect(lineScope, [tokens.GeneralDataRow]) && Compiler.tokenSelect(lineScope, [tokens.Base]):
+            //     return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 2, groupMember: false };
             // four tab data content
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataRow]) && Compiler.tokenSelect(lineScope, [tokens.Attribute]):
+            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataRow]) && Compiler.tokenSelect(lineScope, [tokens.Item]):
                 return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 4, groupMember: false };
             default:
+                //  if (Compiler.tokenSelect(lineScope, [tokens.ItemOpen, tokens.CollectionOpen])) {
+                //  }
+
+                //  Logger.out(lineScope);
+
                 return { regex: REGEX.NIL, tablen: 0, groupMember: false };
         }
     }
 
     public static update(r: RegExp, line: vscode.TextLine, options?: { spaceNum?: number; tablength?: number }): vscode.TextEdit[] {
+        //   try {
         const update = [];
         const regex = new RegExp(r);
 
@@ -143,7 +154,6 @@ export class Formatter3 {
                           length?: number;
                       })
                     : undefined;
-
                 if (indices) {
                     Object.keys(reg.groups).forEach((x) => {
                         if (x.startsWith('s')) {
@@ -200,6 +210,8 @@ export class Formatter3 {
                                         : Formatter3.defaults.s,
                                 ),
                             );
+                        } else {
+                            //  Logger.out({ x });
                         }
                     });
                 }
@@ -209,6 +221,9 @@ export class Formatter3 {
         } while (reg);
 
         return [];
+        //   } catch (error) {
+        //       Logger.log('error', error.message);
+        //   }
     }
 
     public static getAssignmentSpacer(lines: vscode.TextLine[]) {

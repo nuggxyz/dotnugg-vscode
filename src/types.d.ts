@@ -14,44 +14,38 @@ declare namespace NL.DotNugg {
         range: import('vscode').Range;
     };
 
-    type Decoration = {
-        range: import('vscode').Range;
-        hoverMessage: string;
-        type: DecorationType;
-    };
+    //  type Decoration = {
+    //      range: import('vscode').Range;
+    //      hoverMessage: string;
+    //      type: DecorationType;
+    //  };
 
-    type BaseHelpers = 'topWidth' | 'topHeight' | 'eyeWidth' | 'mouthWidth' | 'midWidth' | 'midHeight' | 'botWidth' | 'botHeight';
+    //  type BaseHelpers = 'topWidth' | 'topHeight' | 'eyeWidth' | 'mouthWidth' | 'midWidth' | 'midHeight' | 'botWidth' | 'botHeight';
 
-    type DecorationType = 'expander' | 'vertical_expander';
+    //  type DecorationType = 'expander' | 'vertical_expander';
 
     type Collection = {
         features: RangeOf<CollectionFeatures>;
-        colors: RangeOf<Colors>;
     };
 
     type CollectionFeatures = Dictionary<RangeOf<CollectionFeature>>;
+
     type CollectionFeature = {
         name: RangeOf<string>;
-        level: RangeOf<Level>;
-        anchor: RangeOf<Anchor>;
-        validRadii: RangeOf<RLUD<number>>;
+        zindex: RangeOf<ZIndex>;
+        receivers: RangeOf<Receiver>[];
+        expandableAt: RangeOf<RLUD<number>>;
     };
 
     type Document = {
         collection: RangeOf<Collection>;
-        bases: RangeOf<Base>[];
-        attributes: RangeOf<Attribute>[];
+        //   bases: RangeOf<Base>[];
+        items: RangeOf<Item>[];
     };
 
-    type Base = {
-        colors: RangeOf<Colors>;
-        filters: RangeOf<Filters>;
-        data: RangeOf<Data>;
-    };
     type Colors = Dictionary<RangeOf<Color>>;
-    type Filters = Dictionary<RangeOf<Filter>>;
 
-    type Attribute = {
+    type Item = {
         isDefault: boolean;
         feature: RangeOf<string>;
         colors: RangeOf<Colors>;
@@ -63,11 +57,19 @@ declare namespace NL.DotNugg {
         radii: RangeOf<RLUD<number>>;
         expanders: RangeOf<RLUD<number>>;
         anchor: RangeOf<Coordinate>;
+        receivers: RangeOf<Receiver>[];
         data: RangeOf<Data>;
     };
     type Coordinate = {
         x: RangeOf<number>;
         y: RangeOf<number>;
+    };
+
+    type Receiver = {
+        a: RangeOf<Offset>;
+        b: RangeOf<Offset>;
+        feature: RangeOf<string>;
+        type: 'calculated' | 'static';
     };
 
     type RLUD<T> = {
@@ -79,28 +81,20 @@ declare namespace NL.DotNugg {
 
     type Color = {
         name: RangeOf<string>;
-        level: RangeOf<Level>;
+        zindex: RangeOf<ZIndex>;
         rgba: RangeOf<RGBA>;
-    };
-
-    type Filter = {
-        name: RangeOf<string>;
-        level: RangeOf<Level>;
-        type: RangeOf<number>;
-        arg: RangeOf<number>;
     };
 
     type RGBA = `rgba(${_}${number}${_},${_}${number}${_},${_}${number}${_},${_}${number}${_})`;
 
     type _ = '';
 
-    type Level = {
+    type ZIndex = {
         direction: Operator;
         offset: number;
     };
 
-    type Anchor = {
-        key: number;
+    type Offset = {
         direction: Operator;
         offset: number;
     };

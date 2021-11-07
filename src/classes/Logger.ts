@@ -29,6 +29,9 @@ class Logger {
     static out(...o: any) {
         Logger.log('other', JSON.stringify(o, null, 4));
     }
+    static out2(o: any) {
+        Logger.log('error', JSON.stringify(o, null, 4));
+    }
     static log(cat: 'info' | 'warn' | 'error' | 'other', ...o: any) {
         function mapObject(obj: any) {
             switch (typeof obj) {

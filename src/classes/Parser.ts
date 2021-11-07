@@ -60,10 +60,6 @@ export class Parser {
      * Utility to read a file as a promise
      */
 
-    public static collection: NL.DotNugg.Collection;
-    public static bases: NL.DotNugg.Base[] = [];
-    public static attrs: NL.DotNugg.Attribute[] = [];
-
     static _grammer: vsctm.IGrammar;
     static _registry: vsctm.Registry;
 

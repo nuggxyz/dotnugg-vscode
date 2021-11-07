@@ -100,16 +100,16 @@ const BlueBoldForeground = vscode.window.createTextEditorDecorationType({
     */
 });
 
-const types: { [key in NL.DotNugg.DecorationType]: vscode.TextEditorDecorationType } = {
-    expander,
-    vertical_expander,
-    // LightOrange,
-    // LightBlue,
-    // RedLine,
-    // BlueBoldForeground,
-    // BookmarkGreen: undefined,
-    // BookmarkRed: undefined,
-    // ExternalCall: undefined,
-};
+// const types: { [key in NL.DotNugg.DecorationType]: vscode.TextEditorDecorationType } = {
+//     expander,
+//     vertical_expander,
+//     // LightOrange,
+//     // LightBlue,
+//     // RedLine,
+//     // BlueBoldForeground,
+//     // BookmarkGreen: undefined,
+//     // BookmarkRed: undefined,
+//     // ExternalCall: undefined,
+// };
 
-export default { types };
+// export default { types };

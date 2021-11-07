@@ -8,24 +8,6 @@ import Logger from './Logger';
 import { Parser } from './Parser';
 import { Validator } from './Validator';
 
-function iterate(obj) {
-    for (let key in obj) {
-        // may have to do some checking to ignore any keys you don't care about
-        // // if value is an object, will use this same function to push to whitelist array
-        // if (typeof obj[key] === 'object') {
-        //     if (key === 'token') {
-        //         return {};
-        //     } else if (key === 'value') {
-        //         return iterate(obj[key]);
-        //     } else {
-        //         return { ...obj, ...iterate(obj[key]) };
-        //     }
-        // } else {
-        //     return obj[key];
-        // }
-    }
-}
-
 export class Compiler {
     public tokens: NL.DotNugg.ParsedToken[] = [];
 
@@ -37,8 +19,7 @@ export class Compiler {
 
     public results: NL.DotNugg.Document = {
         collection: undefined,
-        bases: [],
-        attributes: [],
+        items: [],
     };
 
     private get next() {
@@ -160,8 +141,8 @@ export class Compiler {
         try {
             for (; this.hasNext; this.next) {
                 this.compileCollection();
-                this.compileBase();
-                this.compileAttribute();
+                //  this.compileBase();
+                this.compileItem();
 
                 // this.compileColorGroup();
                 // this.compileExpanderGroup();
@@ -175,7 +156,6 @@ export class Compiler {
     compileCollection() {
         if (this.has(tokens.Collection)) {
             let features: NL.DotNugg.RangeOf<NL.DotNugg.CollectionFeatures> = undefined;
-            let colors: NL.DotNugg.RangeOf<NL.DotNugg.Colors> = undefined;
 
             const token = this.current;
             let endToken = undefined;
@@ -185,18 +165,14 @@ export class Compiler {
                 if (collectionFeatures) {
                     features = collectionFeatures;
                 }
-                // Logger.out(this.current.token.scopes);
-                const generalColors = this.compileGeneralColors();
-                if (generalColors) {
-                    colors = generalColors;
-                }
+
                 if (this.has(tokens.CollectionClose)) {
                     endToken = this.current;
                 }
             }
-            const validator = new Validator({ token, endToken, features, colors });
+            const validator = new Validator({ token, endToken, features });
             if (validator.complete) {
-                this.results.collection = { value: { features, colors }, token, endToken };
+                this.results.collection = { value: { features }, token, endToken };
             } else {
                 Logger.out('ERROR', 'blank value returned from: compileCollection', validator.undefinedVarNames);
                 throw new Error('blank value returned from: compileCollection');
@@ -216,9 +192,12 @@ export class Compiler {
                 if (collectionfeature) {
                     collectionFeatures.push(collectionfeature);
                 }
+                const collectionfeatureLong = this.compileCollectionFeatureLong();
+                if (collectionfeatureLong) {
+                    collectionFeatures.push(collectionfeatureLong);
+                }
                 if (this.has(tokens.CollectionFeaturesClose)) {
                     endToken = this.current;
-                    break;
                 }
             }
 
@@ -257,13 +236,12 @@ export class Compiler {
             let dToken: NL.DotNugg.ParsedToken = undefined;
             let radiiToken: NL.DotNugg.ParsedToken = undefined;
 
-            let anchorKey: number = undefined;
-            let anchorDirection: NL.DotNugg.Operator = undefined;
-            let anchorOffset: number = undefined;
-            let anchorToken: NL.DotNugg.ParsedToken = undefined;
-            let levelDirection: NL.DotNugg.Operator = undefined;
-            let levelOffset: number = undefined;
-            let levelToken: NL.DotNugg.ParsedToken = undefined;
+            // let anchorDirection: NL.DotNugg.Operator = undefined;
+            // let anchorOffset: number = undefined;
+            // let anchorToken: NL.DotNugg.ParsedToken = undefined;
+            let zindexDirection: NL.DotNugg.Operator = undefined;
+            let zindexOffset: number = undefined;
+            let zindexToken: NL.DotNugg.ParsedToken = undefined;
             let name: string = undefined;
             let nameToken: NL.DotNugg.ParsedToken = undefined;
 
@@ -272,13 +250,12 @@ export class Compiler {
                 this.has(tokens.CollectionFeature) &&
                 Validator.anyUndefined({
                     token,
-                    anchorKey,
-                    anchorDirection,
-                    anchorOffset,
-                    anchorToken,
-                    levelDirection,
-                    levelOffset,
-                    levelToken,
+                    //   anchorDirection,
+                    //   anchorOffset,
+                    //   anchorToken,
+                    zindexDirection,
+                    zindexOffset,
+                    zindexToken,
                     name,
                     nameToken,
                     endToken,
@@ -296,47 +273,47 @@ export class Compiler {
                 if (this.currentValue === '') {
                     continue;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsLevelOffset)) {
-                    levelOffset = this.currentValue.toLowerCase() === 'd' ? 100 : +this.currentValue;
+                if (this.has(tokens.CollectionFeatureDetailsZIndexOffset)) {
+                    zindexOffset = +this.currentValue;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsLevelDirection)) {
-                    levelDirection = this.currentValue as NL.DotNugg.Operator;
+                if (this.has(tokens.CollectionFeatureDetailsZIndexDirection)) {
+                    zindexDirection = this.currentValue as NL.DotNugg.Operator;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsLevel)) {
-                    levelToken = this.current;
+                if (this.has(tokens.CollectionFeatureDetailsZIndex)) {
+                    zindexToken = this.current;
                 }
                 if (this.has(tokens.CollectionFeatureName)) {
                     name = this.currentValue;
                     nameToken = this.current;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsAnchor)) {
-                    anchorToken = this.current;
-                }
-                if (this.has(tokens.CollectionFeatureDetailsAnchorKey)) {
-                    anchorKey = +this.currentValue;
-                }
-                if (this.has(tokens.CollectionFeatureDetailsAnchorDirection)) {
-                    anchorDirection = this.currentValue as NL.DotNugg.Operator;
-                }
-                if (this.has(tokens.CollectionFeatureDetailsAnchorOffset)) {
-                    anchorOffset = this.currentValue.toLowerCase() === 'd' ? 100 : +this.currentValue;
-                }
-                if (this.has(tokens.CollectionFeatureDetailsRadiiDetails)) {
+                //  if (this.has(tokens.CollectionFeatureDetailsZIndex)) {
+                //      anchorToken = this.current;
+                //  }
+                //  //  if (this.has(tokens.CollectionFeatureDetailsZIndexKey)) {
+                //  //      anchorKey = +this.currentValue;
+                //  //  }
+                //  if (this.has(tokens.CollectionFeatureDetailsZIndexDirection)) {
+                //      anchorDirection = this.currentValue as NL.DotNugg.Operator;
+                //  }
+                //  if (this.has(tokens.CollectionFeatureDetailsZIndexOffset)) {
+                //      anchorOffset = +this.currentValue;
+                //  }
+                if (this.has(tokens.CollectionFeatureDetailsExpandableAtDetails)) {
                     radiiToken = this.current;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsRadiiDetailsR)) {
+                if (this.has(tokens.CollectionFeatureDetailsExpandableAtDetailsR)) {
                     r = +this.currentValue;
                     rToken = this.current;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsRadiiDetailsL)) {
+                if (this.has(tokens.CollectionFeatureDetailsExpandableAtDetailsL)) {
                     l = +this.currentValue;
                     lToken = this.current;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsRadiiDetailsU)) {
+                if (this.has(tokens.CollectionFeatureDetailsExpandableAtDetailsU)) {
                     u = +this.currentValue;
                     uToken = this.current;
                 }
-                if (this.has(tokens.CollectionFeatureDetailsRadiiDetailsD)) {
+                if (this.has(tokens.CollectionFeatureDetailsExpandableAtDetailsD)) {
                     d = +this.currentValue;
                     dToken = this.current;
                 }
@@ -347,13 +324,13 @@ export class Compiler {
 
             let validator = new Validator({
                 token,
-                anchorKey,
-                anchorDirection,
-                anchorOffset,
-                anchorToken,
-                levelDirection,
-                levelOffset,
-                levelToken,
+                //  anchorKey,
+                //  anchorDirection,
+                //  anchorOffset,
+                //  anchorToken,
+                zindexDirection,
+                zindexOffset,
+                zindexToken,
                 name,
                 nameToken,
                 endToken,
@@ -370,26 +347,20 @@ export class Compiler {
 
             if (validator.complete) {
                 const value: NL.DotNugg.CollectionFeature = {
-                    level: {
-                        token: levelToken,
+                    zindex: {
+                        token: zindexToken,
                         value: {
-                            direction: levelDirection,
-                            offset: levelOffset,
+                            direction: zindexDirection,
+                            offset: zindexOffset,
                         },
                     },
                     name: {
                         token: nameToken,
                         value: name,
                     },
-                    anchor: {
-                        token: anchorToken,
-                        value: {
-                            key: anchorKey,
-                            direction: anchorDirection,
-                            offset: anchorOffset,
-                        },
-                    },
-                    validRadii: {
+
+                    receivers: [], // empty bc these only exist in long version
+                    expandableAt: {
                         token: radiiToken,
                         value: {
                             r: {
@@ -420,6 +391,200 @@ export class Compiler {
             } else {
                 Logger.out('ERROR', 'blank value returned from: compileCollectionFeature', validator.undefinedVarNames);
                 throw new Error('blank value returned from: compileCollectionFeature');
+            }
+        }
+        return undefined;
+    }
+
+    compileCollectionFeatureLong() {
+        if (this.has(tokens.CollectionFeatureLong)) {
+            const token = this.current;
+            let endToken = undefined;
+            let name: string = undefined;
+            let nameToken: NL.DotNugg.ParsedToken = undefined;
+            let zindex: NL.DotNugg.RangeOf<NL.DotNugg.ZIndex> = undefined;
+            let expandableAt: NL.DotNugg.RangeOf<NL.DotNugg.RLUD<number>> = undefined;
+            let receivers: NL.DotNugg.RangeOf<NL.DotNugg.Receiver>[] = [];
+
+            for (
+                ;
+                this.has(tokens.CollectionFeatureLong) &&
+                Validator.anyUndefined({ token, endToken, name, nameToken, zindex, expandableAt, receivers });
+                this.next
+            ) {
+                if (this.has(tokens.CollectionFeatureLongName)) {
+                    name = this.currentValue;
+                    nameToken = this.current;
+                }
+                const expandableAt_ = this.compileCollectionFeatureLongExpandableAt();
+                if (expandableAt_) {
+                    expandableAt = expandableAt_;
+                }
+
+                const zindex_ = this.compileCollectionFeatureLongZIndex();
+                if (zindex_) {
+                    zindex = zindex_;
+                }
+
+                const receiver_ = this.compileGeneralReceiver('calculated');
+                if (receiver_) {
+                    receivers.push(receiver_);
+                }
+                if (this.has(tokens.CollectionFeatureLongClose)) {
+                    endToken = this.current;
+                    break;
+                }
+            }
+
+            const validator = new Validator({ token, endToken, name, nameToken, zindex, expandableAt, receivers });
+
+            if (validator.complete) {
+                if (validator.complete) {
+                    const value: NL.DotNugg.CollectionFeature = {
+                        zindex,
+                        name: {
+                            value: name,
+                            token: nameToken,
+                        },
+                        receivers, // empty bc these only exist in long version
+                        expandableAt,
+                    };
+
+                    return {
+                        token,
+                        value,
+                        endToken,
+                    };
+                } else {
+                    Logger.out('ERROR', 'blank value returned from: compileCollectionFeatureLong', validator.undefinedVarNames);
+                    throw new Error('blank value returned from: compileCollectionFeatureLong');
+                }
+            }
+            return undefined;
+        }
+    }
+
+    compileCollectionFeatureLongExpandableAt() {
+        if (this.has(tokens.CollectionFeatureLongExpandableAt)) {
+            const token = this.current;
+            let endToken = undefined;
+
+            let r: number = undefined;
+            let rToken: NL.DotNugg.ParsedToken = undefined;
+            let l: number = undefined;
+            let lToken: NL.DotNugg.ParsedToken = undefined;
+            let u: number = undefined;
+            let uToken: NL.DotNugg.ParsedToken = undefined;
+            let d: number = undefined;
+            let dToken: NL.DotNugg.ParsedToken = undefined;
+
+            for (
+                ;
+                this.has(tokens.CollectionFeatureLongExpandableAt) &&
+                Validator.anyUndefined({ token, r, rToken, l, lToken, d, dToken, u, uToken, endToken });
+                this.next
+            ) {
+                if (this.currentValue === '') {
+                    continue;
+                }
+                if (this.has(tokens.CollectionFeatureLongExpandableAtDetailsR)) {
+                    r = +this.currentValue;
+                    rToken = this.current;
+                }
+                if (this.has(tokens.CollectionFeatureLongExpandableAtDetailsL)) {
+                    l = +this.currentValue;
+                    lToken = this.current;
+                }
+                if (this.has(tokens.CollectionFeatureLongExpandableAtDetailsU)) {
+                    u = +this.currentValue;
+                    uToken = this.current;
+                }
+                if (this.has(tokens.CollectionFeatureLongExpandableAtDetailsD)) {
+                    d = +this.currentValue;
+                    dToken = this.current;
+                }
+                if (this.has(tokens.CollectionFeatureLongExpandableAtDetailsClose)) {
+                    endToken = this.current;
+                }
+            }
+
+            let validator = new Validator({ token, r, rToken, l, lToken, d, dToken, u, uToken, endToken });
+
+            if (validator.complete) {
+                const value: NL.DotNugg.RLUD<number> = {
+                    r: {
+                        value: r,
+                        token: rToken,
+                    },
+                    l: {
+                        value: l,
+                        token: lToken,
+                    },
+                    u: {
+                        value: u,
+                        token: uToken,
+                    },
+                    d: {
+                        value: d,
+                        token: dToken,
+                    },
+                };
+                return {
+                    value,
+                    token,
+                    endToken,
+                };
+            } else {
+                Logger.out('ERROR', 'blank value returned from: compileCollectionFeatureLongExpandableAt', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileCollectionFeatureLongExpandableAt');
+            }
+        }
+        return undefined;
+    }
+
+    compileCollectionFeatureLongZIndex() {
+        if (this.has(tokens.CollectionFeatureLongZIndex)) {
+            let token = undefined;
+            let endToken = undefined;
+
+            let direction: NL.DotNugg.Operator = undefined;
+            let offset: number = undefined;
+
+            for (
+                ;
+                this.has(tokens.CollectionFeatureLongZIndex) && Validator.anyUndefined({ token, direction, offset, endToken });
+                this.next
+            ) {
+                if (this.currentValue === '') {
+                    continue;
+                }
+                if (this.has(tokens.CollectionFeatureLongZIndexDirection)) {
+                    offset = +this.currentValue;
+                }
+                if (this.has(tokens.CollectionFeatureLongZIndexOffset)) {
+                    direction = this.currentValue as NL.DotNugg.Operator;
+                }
+                if (this.has(tokens.CollectionFeatureLongZIndex)) {
+                    token = this.current;
+                    endToken = this.current;
+                }
+            }
+
+            let validator = new Validator({ token, direction, offset, endToken });
+
+            if (validator.complete) {
+                const value: NL.DotNugg.ZIndex = {
+                    direction,
+                    offset,
+                };
+                return {
+                    value,
+                    token,
+                    endToken,
+                };
+            } else {
+                Logger.out('ERROR', 'blank value returned from: compileItemVersionAnchor', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileItemVersionAnchor');
             }
         }
         return undefined;
@@ -468,29 +633,29 @@ export class Compiler {
 
             let rgba: NL.DotNugg.RGBA = undefined;
             let rgbaToken: NL.DotNugg.ParsedToken = undefined;
-            let levelDirection: NL.DotNugg.Operator = undefined;
-            let levelOffset: number = undefined;
-            let levelToken: NL.DotNugg.ParsedToken = undefined;
+            let zindexDirection: NL.DotNugg.Operator = undefined;
+            let zindexOffset: number = undefined;
+            let zindexToken: NL.DotNugg.ParsedToken = undefined;
             let name: string = undefined;
             let nameToken: NL.DotNugg.ParsedToken = undefined;
 
             for (
                 ;
                 this.has(tokens.GeneralColor) &&
-                Validator.anyUndefined({ token, rgba, rgbaToken, levelDirection, levelOffset, levelToken, name, nameToken, endToken });
+                Validator.anyUndefined({ token, rgba, rgbaToken, zindexDirection, zindexOffset, zindexToken, name, nameToken, endToken });
                 this.next
             ) {
                 if (this.currentValue === '') {
                     continue;
                 }
-                if (this.has(tokens.GeneralColorDetailsLevelOffset)) {
-                    levelOffset = this.currentValue.toLowerCase() === 'd' ? 100 : +this.currentValue;
+                if (this.has(tokens.GeneralColorDetailsZIndexOffset)) {
+                    zindexOffset = this.currentValue.toLowerCase() === 'd' ? 100 : +this.currentValue;
                 }
-                if (this.has(tokens.GeneralColorDetailsLevelDirection)) {
-                    levelDirection = this.currentValue as NL.DotNugg.Operator;
+                if (this.has(tokens.GeneralColorDetailsZIndexDirection)) {
+                    zindexDirection = this.currentValue as NL.DotNugg.Operator;
                 }
-                if (this.has(tokens.GeneralColorDetailsLevel)) {
-                    levelToken = this.current;
+                if (this.has(tokens.GeneralColorDetailsZIndex)) {
+                    zindexToken = this.current;
                 }
                 if (this.has(tokens.GeneralColorName)) {
                     name = this.currentValue;
@@ -505,15 +670,25 @@ export class Compiler {
                 }
             }
 
-            let validator = new Validator({ token, rgba, rgbaToken, levelDirection, levelOffset, levelToken, name, nameToken, endToken });
+            let validator = new Validator({
+                token,
+                rgba,
+                rgbaToken,
+                zindexDirection,
+                zindexOffset,
+                zindexToken,
+                name,
+                nameToken,
+                endToken,
+            });
 
             if (validator.complete) {
                 const value: NL.DotNugg.Color = {
-                    level: {
-                        token: levelToken,
+                    zindex: {
+                        token: zindexToken,
                         value: {
-                            direction: levelDirection,
-                            offset: levelOffset,
+                            direction: zindexDirection,
+                            offset: zindexOffset,
                         },
                     },
                     name: {
@@ -533,192 +708,6 @@ export class Compiler {
             } else {
                 Logger.out('ERROR', 'blank value returned from: compileGeneralColor', validator.undefinedVarNames);
                 throw new Error('blank value returned from: compileGeneralColor');
-            }
-        }
-        return undefined;
-    }
-
-    compileGeneralFilters() {
-        if (this.has(tokens.GeneralFilters)) {
-            const token = this.current;
-            let endToken = undefined;
-
-            const filters: NL.DotNugg.RangeOf<NL.DotNugg.Filter>[] = [];
-
-            for (; this.has(tokens.GeneralFilters) && Validator.anyUndefined({ token, endToken, filters }); this.next) {
-                const filter = this.compileGeneralFilter();
-                if (filter) {
-                    filters.push(filter);
-                }
-                if (this.has(tokens.GeneralFiltersClose)) {
-                    endToken = this.current;
-                }
-            }
-
-            let validator = new Validator({ token, endToken, filters });
-
-            if (validator.complete) {
-                const value: NL.DotNugg.Filters = filters.reduce((prev, curr) => {
-                    return { [curr.value.name.value]: curr, ...prev };
-                }, {});
-                return {
-                    token,
-                    value,
-                    endToken,
-                };
-            } else {
-                Logger.out('ERROR', 'blank value returned from compileGeneralFilters:', validator.undefinedVarNames);
-                throw new Error('blank value returned from: compileGeneralFilters');
-            }
-        }
-        return undefined;
-    }
-
-    compileGeneralFilter() {
-        if (this.has(tokens.GeneralFilter)) {
-            const token = this.current;
-            let endToken = undefined;
-
-            let arg: number = undefined;
-            let argToken: NL.DotNugg.ParsedToken = undefined;
-            let type: number = undefined;
-            let typeToken: NL.DotNugg.ParsedToken = undefined;
-            let levelDirection: NL.DotNugg.Operator = undefined;
-            let levelOffset: number = undefined;
-            let levelToken: NL.DotNugg.ParsedToken = undefined;
-            let name: string = undefined;
-            let nameToken: NL.DotNugg.ParsedToken = undefined;
-
-            for (
-                ;
-                this.has(tokens.GeneralFilter) &&
-                Validator.anyUndefined({
-                    token,
-                    arg,
-                    argToken,
-                    type,
-                    typeToken,
-                    levelDirection,
-                    levelOffset,
-                    levelToken,
-                    name,
-                    nameToken,
-                    endToken,
-                });
-                this.next
-            ) {
-                if (this.currentValue === '') {
-                    continue;
-                }
-                if (this.has(tokens.GeneralFilterDetailsLevelOffset)) {
-                    levelOffset = this.currentValue.toLowerCase() === 'd' ? 100 : +this.currentValue;
-                }
-                if (this.has(tokens.GeneralFilterDetailsLevelDirection)) {
-                    levelDirection = this.currentValue as NL.DotNugg.Operator;
-                }
-                if (this.has(tokens.GeneralFilterDetailsLevel)) {
-                    levelToken = this.current;
-                }
-                if (this.has(tokens.GeneralFilterName)) {
-                    name = this.currentValue;
-                    nameToken = this.current;
-                }
-                if (this.has(tokens.GeneralFilterDetailsType)) {
-                    arg = +this.currentValue;
-                    argToken = this.current;
-                }
-                if (this.has(tokens.GeneralFilterDetailsArg)) {
-                    type = +this.currentValue;
-                    typeToken = this.current;
-                }
-                if (this.has(tokens.GeneralFilterDetailsClose)) {
-                    endToken = this.current;
-                }
-            }
-
-            let validator = new Validator({
-                token,
-                arg,
-                argToken,
-                type,
-                typeToken,
-                levelDirection,
-                levelOffset,
-                levelToken,
-                name,
-                nameToken,
-                endToken,
-            });
-
-            if (validator.complete) {
-                const value: NL.DotNugg.Filter = {
-                    level: {
-                        token: levelToken,
-                        value: {
-                            direction: levelDirection,
-                            offset: levelOffset,
-                        },
-                    },
-                    name: {
-                        token: nameToken,
-                        value: name,
-                    },
-                    arg: {
-                        value: arg,
-                        token: argToken,
-                    },
-                    type: {
-                        value: type,
-                        token: typeToken,
-                    },
-                };
-                return {
-                    value,
-                    token,
-                    endToken,
-                };
-            } else {
-                Logger.out('ERROR', 'blank value returned from: compileGeneralFilter', validator.undefinedVarNames);
-                throw new Error('blank value returned from: compileGeneralFilter');
-            }
-        }
-        return undefined;
-    }
-
-    compileBase() {
-        if (this.has(tokens.Base)) {
-            let filters: NL.DotNugg.RangeOf<NL.DotNugg.Filters> = undefined;
-            let colors: NL.DotNugg.RangeOf<NL.DotNugg.Colors> = undefined;
-            let data: NL.DotNugg.RangeOf<NL.DotNugg.Data> = undefined;
-
-            const token = this.current;
-            let endToken = undefined;
-
-            for (; this.has(tokens.Base) && this.hasNext && Validator.anyUndefined({ token, endToken, filters, colors, data }); this.next) {
-                const generalFilters = this.compileGeneralFilters();
-                if (generalFilters) {
-                    filters = generalFilters;
-                }
-                // Logger.out(this.current.token.scopes);
-                const generalColors = this.compileGeneralColors();
-                if (generalColors) {
-                    colors = generalColors;
-                }
-                const generalData = this.compileGeneralData();
-                if (generalData) {
-                    data = generalData;
-                }
-                if (this.has(tokens.BaseClose)) {
-                    endToken = this.current;
-                }
-            }
-            const validator = new Validator({ token, endToken, filters, colors, data });
-            if (validator.complete) {
-                this.results.bases.push({ value: { filters, colors, data }, token, endToken });
-            } else {
-                Logger.out('ERROR', 'blank value returned from: compileBase', validator.undefinedVarNames);
-
-                throw new Error('blank value returned from: compileBase');
             }
         }
         return undefined;
@@ -860,8 +849,103 @@ export class Compiler {
         return undefined;
     }
 
-    compileAttribute() {
-        if (this.has(tokens.Attribute)) {
+    compileGeneralReceiver(type: 'calculated' | 'static') {
+        if (this.has(tokens.GeneralReceiver)) {
+            const token = this.current;
+            let endToken = undefined;
+
+            let aDirection: NL.DotNugg.Operator = undefined;
+            let aOffset: number = undefined;
+            let bDirection: NL.DotNugg.Operator = undefined;
+            let bOffset: number = undefined;
+
+            let aToken: NL.DotNugg.ParsedToken = undefined;
+            let bToken: NL.DotNugg.ParsedToken = undefined;
+
+            let feature: string = undefined;
+            let featureToken: NL.DotNugg.ParsedToken = undefined;
+
+            for (; this.has(tokens.GeneralReceiver) && Validator.anyUndefined({ token, endToken }); this.next) {
+                if (this.currentValue === '') {
+                    continue;
+                }
+
+                if (this.has(tokens.GeneralReceiverDetailsFeature)) {
+                    feature = this.currentValue;
+                    featureToken = this.current;
+                }
+                if (this.has(tokens.GeneralReceiverDetailsA)) {
+                    aToken = this.current;
+                }
+                if (this.has(tokens.GeneralReceiverDetailsADirection)) {
+                    aDirection = this.currentValue as NL.DotNugg.Operator;
+                }
+                if (this.has(tokens.GeneralReceiverDetailsAOffset)) {
+                    aOffset = +this.currentValue;
+                }
+                if (this.has(tokens.GeneralReceiverDetailsB)) {
+                    bToken = this.current;
+                }
+                if (this.has(tokens.GeneralReceiverDetailsBDirection)) {
+                    bDirection = this.currentValue as NL.DotNugg.Operator;
+                }
+                if (this.has(tokens.GeneralReceiverDetailsBOffset)) {
+                    bOffset = +this.currentValue;
+                }
+
+                if (this.has(tokens.GeneralReceiverDetailsClose)) {
+                    endToken = this.current;
+                }
+            }
+
+            let validator = new Validator({
+                token,
+                aOffset,
+                bOffset,
+                aToken,
+                bToken,
+                feature,
+                featureToken,
+                endToken,
+            });
+
+            if (validator.complete) {
+                const value: NL.DotNugg.Receiver = {
+                    a: {
+                        token: aToken,
+                        value: {
+                            direction: aDirection,
+                            offset: aOffset,
+                        },
+                    },
+                    b: {
+                        token: bToken,
+                        value: {
+                            direction: bDirection,
+                            offset: bOffset,
+                        },
+                    },
+                    feature: {
+                        token: featureToken,
+                        value: feature,
+                    },
+                    type,
+                };
+                return {
+                    value,
+                    token,
+                    endToken,
+                };
+            } else {
+                Logger.out('ERROR', 'blank value returned from: compileGeneralColor', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileGeneralColor');
+            }
+        }
+        return undefined;
+    }
+
+    compileItem() {
+        if (this.has(tokens.Item)) {
             const token = this.current;
             let endToken = undefined;
             let feature: string = undefined;
@@ -873,34 +957,34 @@ export class Compiler {
 
             for (
                 ;
-                this.has(tokens.Attribute) &&
+                this.has(tokens.Item) &&
                 this.hasNext &&
                 Validator.anyUndefined({ token, endToken, feature, featureToken, colors, versions });
                 this.next
             ) {
-                if (this.has(tokens.AttributeOpenFeature)) {
+                if (this.has(tokens.ItemOpenFeature)) {
                     feature = this.currentValue;
                     featureToken = this.current;
                 }
-                if (this.has(tokens.AttributeOpenDefaultOrAttribute)) {
+                if (this.has(tokens.ItemOpenDefaultOrItem)) {
                     isDefault = this.currentValue === 'default';
                 }
                 const colors_ = this.compileGeneralColors();
                 if (colors_) {
                     colors = colors_;
                 }
-                const versions_ = this.compileAttributeVersions();
+                const versions_ = this.compileItemVersions();
                 if (versions_) {
                     versions = versions_;
                 }
-                if (this.has(tokens.AttributeClose)) {
+                if (this.has(tokens.ItemClose)) {
                     endToken = this.current;
                 }
             }
-            // this.results.attributes.push({ value, token, endToken });
+            // this.results.items.push({ value, token, endToken });
             const validator = new Validator({ token, endToken, feature, featureToken, colors, versions, isDefault });
             if (validator.complete) {
-                this.results.attributes.push({
+                this.results.items.push({
                     value: {
                         isDefault,
                         colors,
@@ -914,26 +998,26 @@ export class Compiler {
                     endToken,
                 });
             } else {
-                Logger.out('ERROR', 'blank value returned from: compileAttribute', validator.undefinedVarNames);
-                throw new Error('blank value returned from: compileAttribute');
+                Logger.out('ERROR', 'blank value returned from: compileItem', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileItem');
             }
         }
         return undefined;
     }
 
-    compileAttributeVersions() {
-        if (this.has(tokens.AttributeVersions)) {
+    compileItemVersions() {
+        if (this.has(tokens.ItemVersions)) {
             const token = this.current;
             let endToken = undefined;
 
             const versions: NL.DotNugg.RangeOf<NL.DotNugg.Version>[] = [];
 
-            for (; this.has(tokens.AttributeVersions) && Validator.anyUndefined({ token, endToken, versions }); this.next) {
-                const version = this.compileAttributeVersion();
+            for (; this.has(tokens.ItemVersions) && Validator.anyUndefined({ token, endToken, versions }); this.next) {
+                const version = this.compileItemVersion();
                 if (version) {
                     versions.push(version);
                 }
-                if (this.has(tokens.AttributeVersionsClose)) {
+                if (this.has(tokens.ItemVersionsClose)) {
                     endToken = this.current;
                 }
             }
@@ -957,12 +1041,14 @@ export class Compiler {
         return undefined;
     }
 
-    compileAttributeVersion() {
-        if (this.has(tokens.AttributeVersion)) {
+    compileItemVersion() {
+        if (this.has(tokens.ItemVersion)) {
             let data: NL.DotNugg.RangeOf<NL.DotNugg.Data> = undefined;
             let radii: NL.DotNugg.RangeOf<NL.DotNugg.RLUD<number>> = undefined;
             let expanders: NL.DotNugg.RangeOf<NL.DotNugg.RLUD<number>> = undefined;
             let anchor: NL.DotNugg.RangeOf<NL.DotNugg.Coordinate> = undefined;
+            let receivers: NL.DotNugg.RangeOf<NL.DotNugg.Receiver>[] = [];
+
             let name: string = undefined;
             let nameToken: NL.DotNugg.ParsedToken = undefined;
             const token = this.current;
@@ -970,25 +1056,25 @@ export class Compiler {
 
             for (
                 ;
-                this.has(tokens.AttributeVersion) &&
+                this.has(tokens.ItemVersion) &&
                 Validator.anyUndefined({ token, endToken, radii, expanders, data, anchor, name, nameToken });
                 this.next
             ) {
-                if (this.has(tokens.AttributeVersionName)) {
+                if (this.has(tokens.ItemVersionName)) {
                     name = this.currentValue;
                     nameToken = this.current;
                 }
-                const radii_ = this.compileAttributeVersionRadii();
+                const radii_ = this.compileItemVersionRadii();
                 if (radii_) {
                     radii = radii_;
                 }
                 // Logger.out(this.current.token.scopes);
-                const expanders_ = this.compileAttributeVersionExpanders();
+                const expanders_ = this.compileItemVersionExpanders();
                 if (expanders_) {
                     expanders = expanders_;
                 }
 
-                const anchor_ = this.compileAttributeVersionAnchor();
+                const anchor_ = this.compileItemVersionAnchor();
                 if (anchor_) {
                     anchor = anchor_;
                 }
@@ -996,23 +1082,32 @@ export class Compiler {
                 if (generalData) {
                     data = generalData;
                 }
-                if (this.has(tokens.AttributeVersionClose)) {
+
+                const receiver_ = this.compileGeneralReceiver('static');
+                if (receiver_) {
+                    receivers.push(receiver_);
+                }
+                if (this.has(tokens.ItemVersionClose)) {
                     endToken = this.current;
                 }
             }
             const validator = new Validator({ token, endToken, radii, expanders, data, anchor, name, nameToken });
             if (validator.complete) {
-                return { value: { radii, expanders, data, anchor, name: { value: name, token: nameToken } }, token, endToken };
+                return {
+                    value: { radii, expanders, data, anchor, receivers: [], name: { value: name, token: nameToken } },
+                    token,
+                    endToken,
+                };
             } else {
-                Logger.out('ERROR', 'blank value returned from: compileAttributeVersion', validator.undefinedVarNames);
+                Logger.out('ERROR', 'blank value returned from: compileItemVersion', validator.undefinedVarNames);
 
-                throw new Error('blank value returned from: compileAttributeVersion');
+                throw new Error('blank value returned from: compileItemVersion');
             }
         }
     }
 
-    compileAttributeVersionRadii() {
-        if (this.has(tokens.AttributeVersionRadii)) {
+    compileItemVersionRadii() {
+        if (this.has(tokens.ItemVersionRadii)) {
             const token = this.current;
             let endToken = undefined;
 
@@ -1027,30 +1122,30 @@ export class Compiler {
 
             for (
                 ;
-                this.has(tokens.AttributeVersionRadii) &&
+                this.has(tokens.ItemVersionRadii) &&
                 Validator.anyUndefined({ token, r, rToken, l, lToken, d, dToken, u, uToken, endToken });
                 this.next
             ) {
                 if (this.currentValue === '') {
                     continue;
                 }
-                if (this.has(tokens.AttributeVersionRadiiDetailsR)) {
+                if (this.has(tokens.ItemVersionRadiiDetailsR)) {
                     r = +this.currentValue;
                     rToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionRadiiDetailsL)) {
+                if (this.has(tokens.ItemVersionRadiiDetailsL)) {
                     l = +this.currentValue;
                     lToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionRadiiDetailsU)) {
+                if (this.has(tokens.ItemVersionRadiiDetailsU)) {
                     u = +this.currentValue;
                     uToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionRadiiDetailsD)) {
+                if (this.has(tokens.ItemVersionRadiiDetailsD)) {
                     d = +this.currentValue;
                     dToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionRadiiDetailsClose)) {
+                if (this.has(tokens.ItemVersionRadiiDetailsClose)) {
                     endToken = this.current;
                 }
             }
@@ -1082,15 +1177,15 @@ export class Compiler {
                     endToken,
                 };
             } else {
-                Logger.out('ERROR', 'blank value returned from: compileAttributeVersionRadii', validator.undefinedVarNames);
-                throw new Error('blank value returned from: compileAttributeVersionRadii');
+                Logger.out('ERROR', 'blank value returned from: compileItemVersionRadii', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileItemVersionRadii');
             }
         }
         return undefined;
     }
 
-    compileAttributeVersionExpanders() {
-        if (this.has(tokens.AttributeVersionExpanders)) {
+    compileItemVersionExpanders() {
+        if (this.has(tokens.ItemVersionExpanders)) {
             const token = this.current;
             let endToken = undefined;
 
@@ -1105,30 +1200,30 @@ export class Compiler {
 
             for (
                 ;
-                this.has(tokens.AttributeVersionExpanders) &&
+                this.has(tokens.ItemVersionExpanders) &&
                 Validator.anyUndefined({ token, r, rToken, l, lToken, d, dToken, u, uToken, endToken });
                 this.next
             ) {
                 if (this.currentValue === '') {
                     continue;
                 }
-                if (this.has(tokens.AttributeVersionExpandersDetailsR)) {
+                if (this.has(tokens.ItemVersionExpandersDetailsR)) {
                     r = +this.currentValue;
                     rToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionExpandersDetailsL)) {
+                if (this.has(tokens.ItemVersionExpandersDetailsL)) {
                     l = +this.currentValue;
                     lToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionExpandersDetailsU)) {
+                if (this.has(tokens.ItemVersionExpandersDetailsU)) {
                     u = +this.currentValue;
                     uToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionExpandersDetailsD)) {
+                if (this.has(tokens.ItemVersionExpandersDetailsD)) {
                     d = +this.currentValue;
                     dToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionExpandersDetailsClose)) {
+                if (this.has(tokens.ItemVersionExpandersDetailsClose)) {
                     endToken = this.current;
                 }
             }
@@ -1160,14 +1255,14 @@ export class Compiler {
                     endToken,
                 };
             } else {
-                Logger.out('ERROR', 'blank value returned from: compileAttributeVersionExpanders', validator.undefinedVarNames);
-                throw new Error('blank value returned from: compileAttributeVersionExpanders');
+                Logger.out('ERROR', 'blank value returned from: compileItemVersionExpanders', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileItemVersionExpanders');
             }
         }
         return undefined;
     }
-    compileAttributeVersionAnchor() {
-        if (this.has(tokens.AttributeVersionAnchor)) {
+    compileItemVersionAnchor() {
+        if (this.has(tokens.ItemVersionAnchor)) {
             const token = this.current;
             let endToken = undefined;
 
@@ -1176,23 +1271,19 @@ export class Compiler {
             let y: number = undefined;
             let yToken: NL.DotNugg.ParsedToken = undefined;
 
-            for (
-                ;
-                this.has(tokens.AttributeVersionAnchor) && Validator.anyUndefined({ token, x, xToken, y, yToken, endToken });
-                this.next
-            ) {
+            for (; this.has(tokens.ItemVersionAnchor) && Validator.anyUndefined({ token, x, xToken, y, yToken, endToken }); this.next) {
                 if (this.currentValue === '') {
                     continue;
                 }
-                if (this.has(tokens.AttributeVersionAnchorDetailsX)) {
+                if (this.has(tokens.ItemVersionAnchorDetailsX)) {
                     x = +this.currentValue;
                     xToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionAnchorDetailsY)) {
+                if (this.has(tokens.ItemVersionAnchorDetailsY)) {
                     y = +this.currentValue;
                     yToken = this.current;
                 }
-                if (this.has(tokens.AttributeVersionAnchorDetailsClose)) {
+                if (this.has(tokens.ItemVersionAnchorDetailsClose)) {
                     endToken = this.current;
                 }
             }
@@ -1216,8 +1307,8 @@ export class Compiler {
                     endToken,
                 };
             } else {
-                Logger.out('ERROR', 'blank value returned from: compileAttributeVersionAnchor', validator.undefinedVarNames);
-                throw new Error('blank value returned from: compileAttributeVersionAnchor');
+                Logger.out('ERROR', 'blank value returned from: compileItemVersionAnchor', validator.undefinedVarNames);
+                throw new Error('blank value returned from: compileItemVersionAnchor');
             }
         }
         return undefined;
