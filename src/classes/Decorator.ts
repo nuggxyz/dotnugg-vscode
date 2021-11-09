@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { Compiler } from './Compiler';
 import Helper from './Helper';
 import Logger from './Logger';
+
 let decD = vscode.window.createTextEditorDecorationType({
     // isWholeLine: true,
 
@@ -291,49 +292,49 @@ class Decorator {
                                 //     fadedRanges.push(x.expanders.token.range);
                                 // }
 
-                                vscode.window.activeTextEditor
-                                    .edit((builder) => {
-                                        if (feature.expandableAt.value.r.value === 0 && x.radii.value.r.value !== 0) {
-                                            builder.replace(x.radii.value.r.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.l.value === 0 && x.radii.value.l.value !== 0) {
-                                            builder.replace(x.radii.value.l.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.d.value === 0 && x.radii.value.d.value !== 0) {
-                                            builder.replace(x.radii.value.d.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.u.value === 0 && x.radii.value.u.value !== 0) {
-                                            builder.replace(x.radii.value.u.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.r.value === 0 && x.expanders.value.r.value !== 0) {
-                                            builder.replace(x.expanders.value.r.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.l.value === 0 && x.expanders.value.l.value !== 0) {
-                                            builder.replace(x.expanders.value.l.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.d.value === 0 && x.expanders.value.d.value !== 0) {
-                                            builder.replace(x.expanders.value.d.token.range, '0');
-                                        }
-                                        if (feature.expandableAt.value.u.value === 0 && x.expanders.value.u.value !== 0) {
-                                            builder.replace(x.expanders.value.u.token.range, '0');
-                                        }
-                                    })
-                                    .then();
+                                //   vscode.window.activeTextEditor
+                                //       .edit((builder) => {
+                                //           if (feature.expandableAt.value.r.value === 0 && x.radii.value.r.value !== 0) {
+                                //               builder.replace(x.radii.value.r.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.l.value === 0 && x.radii.value.l.value !== 0) {
+                                //               builder.replace(x.radii.value.l.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.d.value === 0 && x.radii.value.d.value !== 0) {
+                                //               builder.replace(x.radii.value.d.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.u.value === 0 && x.radii.value.u.value !== 0) {
+                                //               builder.replace(x.radii.value.u.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.r.value === 0 && x.expanders.value.r.value !== 0) {
+                                //               builder.replace(x.expanders.value.r.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.l.value === 0 && x.expanders.value.l.value !== 0) {
+                                //               builder.replace(x.expanders.value.l.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.d.value === 0 && x.expanders.value.d.value !== 0) {
+                                //               builder.replace(x.expanders.value.d.token.range, '0');
+                                //           }
+                                //           if (feature.expandableAt.value.u.value === 0 && x.expanders.value.u.value !== 0) {
+                                //               builder.replace(x.expanders.value.u.token.range, '0');
+                                //           }
+                                //       })
+                                //       .then();
 
                                 if (feature.expandableAt.value.r.value === 0) {
-                                    fadedRanges.push(x.radii.value.r.token.range);
+                                    // fadedRanges.push(x.radii.value.r.token.range);
                                     fadedRanges.push(x.expanders.value.r.token.range);
                                 }
                                 if (feature.expandableAt.value.l.value === 0) {
-                                    fadedRanges.push(x.radii.value.l.token.range);
+                                    // fadedRanges.push(x.radii.value.l.token.range);
                                     fadedRanges.push(x.expanders.value.l.token.range);
                                 }
                                 if (feature.expandableAt.value.d.value === 0) {
-                                    fadedRanges.push(x.radii.value.d.token.range);
+                                    // fadedRanges.push(x.radii.value.d.token.range);
                                     fadedRanges.push(x.expanders.value.d.token.range);
                                 }
                                 if (feature.expandableAt.value.u.value === 0) {
-                                    fadedRanges.push(x.radii.value.u.token.range);
+                                    // fadedRanges.push(x.radii.value.u.token.range);
                                     fadedRanges.push(x.expanders.value.u.token.range);
                                 }
 

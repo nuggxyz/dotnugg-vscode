@@ -37,23 +37,23 @@
         BASE := {
             zindex := +0
             expandableAt := { r: 0, l: 0, u: 0, d: 0 }
-            receiver := { feature: EYES, zindex: 2, yoffset: +3 }
-            receiver := { feature: EARS, zindex: 2, yoffset: 3 }
-            receiver := { feature: GLASSES, zindex: 2, yoffset: 3 }
-            receiver := { feature: MOUTH, zindex: 2, yoffset: 3 }
-            receiver := { feature: HAIR, zindex: 2, yoffset: 3 }
-            receiver := { feature: SAUCE, zindex: 2, yoffset: 3 }
-            receiver := { feature: HAT, zindex: 2, yoffset: 3 }
-            receiver := { feature: SPECIAL, zindex: 2, yoffset: 3 }
+            receiver := { feature: EYES, zindex: 2, yoffset: +2 }
+            receiver := { feature: EARS, zindex: 2, yoffset: +2 }
+            receiver := { feature: GLASSES, zindex: 2, yoffset: +2 }
+            receiver := { feature: MOUTH, zindex: 3, yoffset: +0 }
+            receiver := { feature: HAIR, zindex: 1, yoffset: +1 }
+            receiver := { feature: SAUCE, zindex: 4, yoffset: +0 }
+            receiver := { feature: HAT, zindex: 1, yoffset: +1 }
+            receiver := { feature: SPECIAL, zindex: 0, yoffset: +0 }
         }
-        EYES    := { zindex: -9, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
-        EARS    := { zindex: -6, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
-        GLASSES := { zindex: +5, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
-        MOUTH   := { zindex: +5, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
-        HAIR    := { zindex: +5, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
-        SAUCE   := { zindex: +5, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
-        HAT     := { zindex: +5, expandableAt: { r: 1, l: 1, u: 1, d: 0 } }
-        SPECIAL := { zindex: +5, expandableAt: { r: 5, l: 5, u: 5, d: 5 } }
+        EYES    := { zindex: +1, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
+        EARS    := { zindex: +1, expandableAt: { r: 1, l: 1, u: 0, d: 0 } }
+        GLASSES := { zindex: +2, expandableAt: { r: 1, l: 1, u: 0, d: 0 } }
+        MOUTH   := { zindex: +1, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
+        HAIR    := { zindex: +1, expandableAt: { r: 1, l: 1, u: 1, d: 0 } }
+        SAUCE   := { zindex: +2, expandableAt: { r: 1, l: 1, u: 1, d: 1 } }
+        HAT     := { zindex: +3, expandableAt: { r: 1, l: 1, u: 1, d: 0 } }
+        SPECIAL := { zindex: -1, expandableAt: { r: 1, l: 1, u: 1, d: 1 } }
     }
 }
 
@@ -75,7 +75,6 @@
             radii := { r: 0, l: 0, u: 0, d: 0 }
             expanders := { r: 0, l: 0, u: 0, d: 0 }
             anchor := { x : 3, y : 1 }
-            receiver := { feature: EYES, x: 2, y: 3 }
             data := {
                 SSSSS
             }
@@ -125,9 +124,8 @@
     versions := {
         0 := {
             radii := { r: 0 , l: 0, u: 0, d: 0 }
-            anchor := { x : 0, y : 0 }
+            anchor := { x : 17, y : 17 }
             expanders := { r: 0, l: 0, u: 0, d: 0 }
-            receiver := { feature: EYES, zindex: 2, yoffset: 3 }
             data := {
                 .................................
                 .................................
@@ -170,13 +168,13 @@
 
 // for any given nugg, we choose the largest (version) that has l AND r radii less than or equal to that of the nugg
 @item(HAT) := {
-    colors := {
+    colors := {    
         a := { zindex: +D, rgba: rgba(0,0,0,.6) }
         b := { zindex: +D, rgba: rgba(0,234,225,.6) }
     }
     versions := {
         0 := {
-            radii := { r: 5 , l: 5, u: 5, d: 0 }
+            radii := { r: 4, l: 4, u: 4, d: 0 }
             anchor := { x : 9, y : 5 }
             expanders := { r: 12, l: 6, u: 1, d: 0 }
             data := {
@@ -211,9 +209,9 @@
     }
     versions := {
         0 := {
-            radii := { r: 0 , l: 0, u: 0, d: 0 }
+            radii := { r: 4 , l: 4, u: 0, d: 0 }
             anchor := { x : 6, y : 2 }
-            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            expanders := { r: 7, l: 5, u: 0, d: 0 }
             data := {
                 .aaaa.aaaa
                 aabbaaabba
@@ -222,9 +220,9 @@
             }
         }
         1 := {
-            radii := { r: 0 , l: 0, u: 0, d: 0 }
-            anchor := { x : 8, y : 3 }
-            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            radii := { r: 5 , l: 5, u: 0, d: 0 }
+            anchor := { x : 8, y : 2 }
+            expanders := { r: 8, l: 8, u: 0, d: 0 }
             data := {
                 .aaaaa...aaaaa
                 .abbba...abbba
@@ -245,9 +243,9 @@
     }
     versions := {
         0 := {
-            radii := { r: 0 , l: 0, u: 0, d: 0 }
-            anchor := { x : 7, y : 3 }
-            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            radii := { r: 3 , l: 3, u: 0, d: 0 }
+            anchor := { x : 5, y : 2 }
+            expanders := { r: 4, l: 6, u: 0, d: 0 }
             data := {
                 ..a....a..
                 .ab...ab..
@@ -256,9 +254,9 @@
             }
         }
         1 := {
-            radii := { r: 0 , l: 0, u: 0, d: 0 }
-            anchor := { x : 7, y : 3 }
-            expanders := { r: 0, l: 0, u: 0, d: 0 }
+            radii := { r: 5 , l: 5, u: 0, d: 0 }
+            anchor := { x : 7, y : 2 }
+            expanders := { r: 5, l: 9, u: 0, d: 0 }
             data := {
                 ..a.......a....
                 .aba.....aba...
