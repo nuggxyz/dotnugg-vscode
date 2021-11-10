@@ -107,8 +107,8 @@
                 "name": "EYES",
                 "receivers": [],
                 "expandableAt": {
-                    "r": 0,
-                    "l": 0,
+                    "r": 1,
+                    "l": 1,
                     "u": 0,
                     "d": 0
                 }
@@ -126,7 +126,7 @@
                         },
                         "b": {
                             "direction": "+",
-                            "offset": 2
+                            "offset": 0
                         },
                         "feature": "EYES",
                         "type": "calculated"
@@ -137,7 +137,7 @@
                         },
                         "b": {
                             "direction": "+",
-                            "offset": 2
+                            "offset": 0
                         },
                         "feature": "EARS",
                         "type": "calculated"
@@ -148,7 +148,7 @@
                         },
                         "b": {
                             "direction": "+",
-                            "offset": 2
+                            "offset": 0
                         },
                         "feature": "GLASSES",
                         "type": "calculated"
@@ -159,7 +159,7 @@
                         },
                         "b": {
                             "direction": "+",
-                            "offset": 0
+                            "offset": 2
                         },
                         "feature": "MOUTH",
                         "type": "calculated"
@@ -191,8 +191,8 @@
                             "offset": 1
                         },
                         "b": {
-                            "direction": "+",
-                            "offset": 1
+                            "direction": "-",
+                            "offset": 2
                         },
                         "feature": "HAT",
                         "type": "calculated"
@@ -315,12 +315,56 @@
                                     "label": "S",
                                     "type": "color"
                                 }
+                            ],
+                            [
+                                {
+                                    "label": "S",
+                                    "type": "color"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "W",
+                                    "type": "color"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "S",
+                                    "type": "color"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "S",
+                                    "type": "color"
+                                },
+                                {
+                                    "label": "S",
+                                    "type": "color"
+                                },
+                                {
+                                    "label": "S",
+                                    "type": "color"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
                             ]
                         ]
                     },
                     "anchor": {
                         "x": 3,
-                        "y": 1
+                        "y": 2
                     },
                     "receivers": [],
                     "name": "1"
@@ -435,14 +479,14 @@
                 },
                 "1": {
                     "radii": {
-                        "r": 4,
-                        "l": 4,
+                        "r": 9,
+                        "l": 9,
                         "u": 0,
-                        "d": 2
+                        "d": 0
                     },
                     "expanders": {
                         "r": 6,
-                        "l": 4,
+                        "l": 6,
                         "u": 0,
                         "d": 0
                     },
@@ -1430,140 +1474,6 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                }
-                            ],
-                            [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "g",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "g",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "g",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
                                     "label": "y",
                                     "type": "filter"
                                 },
@@ -1642,31 +1552,7 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
+                                    "label": "y",
                                     "type": "filter"
                                 },
                                 {
@@ -1674,15 +1560,35 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "o",
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "g",
+                                    "label": "o",
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "g",
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
                                     "type": "filter"
                                 },
                                 {
@@ -1702,8 +1608,12 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": ".",
-                                    "type": "transparent"
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
                                 },
                                 {
                                     "label": ".",
@@ -1780,10 +1690,6 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
                                     "label": "z",
                                     "type": "filter"
                                 },
@@ -1817,6 +1723,14 @@
                                 },
                                 {
                                     "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "g",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "g",
                                     "type": "filter"
                                 },
                                 {
@@ -1834,10 +1748,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -2036,6 +1946,140 @@
                                     "type": "transparent"
                                 },
                                 {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "g",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "g",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "g",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
                                     "label": "y",
                                     "type": "filter"
                                 },
@@ -2049,6 +2093,10 @@
                                 },
                                 {
                                     "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
                                     "type": "filter"
                                 },
                                 {
@@ -2134,10 +2182,6 @@
                                 {
                                     "label": ".",
                                     "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 }
                             ],
                             [
@@ -2210,6 +2254,10 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "o",
                                     "type": "filter"
                                 },
@@ -2240,144 +2288,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                }
-                            ],
-                            [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -2482,6 +2392,10 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "o",
                                     "type": "filter"
                                 },
@@ -2512,6 +2426,136 @@
                                 {
                                     "label": ".",
                                     "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
                                 },
                                 {
                                     "label": ".",
@@ -2620,6 +2664,10 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "o",
                                     "type": "filter"
                                 },
@@ -2642,10 +2690,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -2727,6 +2771,10 @@
                                 },
                                 {
                                     "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
                                     "type": "filter"
                                 },
                                 {
@@ -2804,10 +2852,6 @@
                                 {
                                     "label": ".",
                                     "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 }
                             ],
                             [
@@ -2865,6 +2909,10 @@
                                 },
                                 {
                                     "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
                                     "type": "filter"
                                 },
                                 {
@@ -2938,144 +2986,6 @@
                                 {
                                     "label": ".",
                                     "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                }
-                            ],
-                            [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 }
                             ],
                             [
@@ -3164,11 +3074,15 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "z",
+                                    "label": "o",
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "z",
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
                                     "type": "filter"
                                 },
                                 {
@@ -3178,10 +3092,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -3266,56 +3176,56 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
                                     "type": "filter"
                                 },
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -3444,12 +3354,146 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "y",
                                     "type": "filter"
                                 },
                                 {
                                     "label": ".",
                                     "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
                                 },
                                 {
                                     "label": ".",
@@ -3578,146 +3622,12 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                }
-                            ],
-                            [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "o",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "f",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": "z",
-                                    "type": "filter"
-                                },
-                                {
                                     "label": "z",
                                     "type": "filter"
                                 },
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": "y",
-                                    "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -3810,7 +3720,145 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                }
+                            ],
+                            [
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": ".",
+                                    "type": "transparent"
+                                },
+                                {
+                                    "label": "y",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "o",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "f",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "f",
+                                    "type": "filter"
+                                },
+                                {
+                                    "label": "z",
                                     "type": "filter"
                                 },
                                 {
@@ -3844,10 +3892,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -3976,12 +4020,12 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "y",
+                                    "label": "g",
                                     "type": "filter"
                                 },
                                 {
-                                    "label": ".",
-                                    "type": "transparent"
+                                    "label": "y",
+                                    "type": "filter"
                                 },
                                 {
                                     "label": ".",
@@ -4086,6 +4130,10 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "g",
                                     "type": "filter"
                                 },
@@ -4112,10 +4160,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -4220,6 +4264,10 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "z",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "g",
                                     "type": "filter"
                                 },
@@ -4246,10 +4294,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -4362,6 +4406,10 @@
                                     "type": "filter"
                                 },
                                 {
+                                    "label": "g",
+                                    "type": "filter"
+                                },
+                                {
                                     "label": "x",
                                     "type": "filter"
                                 },
@@ -4376,10 +4424,6 @@
                                 {
                                     "label": "y",
                                     "type": "filter"
-                                },
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
                                 },
                                 {
                                     "label": ".",
@@ -4504,8 +4548,8 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": ".",
-                                    "type": "transparent"
+                                    "label": "y",
+                                    "type": "filter"
                                 },
                                 {
                                     "label": ".",
@@ -5490,7 +5534,7 @@
                     },
                     "anchor": {
                         "x": 9,
-                        "y": 5
+                        "y": 4
                     },
                     "receivers": [],
                     "name": "0"
@@ -6013,13 +6057,13 @@
             "versions": {
                 "0": {
                     "radii": {
-                        "r": 4,
-                        "l": 4,
+                        "r": 5,
+                        "l": 5,
                         "u": 0,
                         "d": 0
                     },
                     "expanders": {
-                        "r": 7,
+                        "r": 5,
                         "l": 5,
                         "u": 0,
                         "d": 0
@@ -6028,10 +6072,6 @@
                         "matrix": [
                             [
                                 {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
                                     "label": "a",
                                     "type": "filter"
                                 },
@@ -6074,10 +6114,6 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "a",
-                                    "type": "filter"
-                                },
-                                {
                                     "label": "b",
                                     "type": "filter"
                                 },
@@ -6111,10 +6147,6 @@
                                 }
                             ],
                             [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
                                 {
                                     "label": "a",
                                     "type": "filter"
@@ -6153,10 +6185,6 @@
                                 }
                             ],
                             [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
                                 {
                                     "label": "a",
                                     "type": "filter"
@@ -6197,7 +6225,7 @@
                         ]
                     },
                     "anchor": {
-                        "x": 6,
+                        "x": 5,
                         "y": 2
                     },
                     "receivers": [],
@@ -6205,14 +6233,14 @@
                 },
                 "1": {
                     "radii": {
-                        "r": 4,
-                        "l": 4,
+                        "r": 9,
+                        "l": 9,
                         "u": 0,
                         "d": 0
                     },
                     "expanders": {
-                        "r": 8,
-                        "l": 8,
+                        "r": 7,
+                        "l": 7,
                         "u": 0,
                         "d": 0
                     },
@@ -6220,10 +6248,6 @@
                         "matrix": [
                             [
                                 {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
-                                {
                                     "label": "a",
                                     "type": "filter"
                                 },
@@ -6277,10 +6301,6 @@
                                 }
                             ],
                             [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
                                 {
                                     "label": "a",
                                     "type": "filter"
@@ -6340,10 +6360,6 @@
                                     "type": "filter"
                                 },
                                 {
-                                    "label": "a",
-                                    "type": "filter"
-                                },
-                                {
                                     "label": "b",
                                     "type": "filter"
                                 },
@@ -6393,10 +6409,6 @@
                                 }
                             ],
                             [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
                                 {
                                     "label": "a",
                                     "type": "filter"
@@ -6451,10 +6463,6 @@
                                 }
                             ],
                             [
-                                {
-                                    "label": ".",
-                                    "type": "transparent"
-                                },
                                 {
                                     "label": "a",
                                     "type": "filter"
@@ -6511,7 +6519,7 @@
                         ]
                     },
                     "anchor": {
-                        "x": 8,
+                        "x": 7,
                         "y": 2
                     },
                     "receivers": [],
@@ -6551,8 +6559,8 @@
             "versions": {
                 "0": {
                     "radii": {
-                        "r": 3,
-                        "l": 3,
+                        "r": 6,
+                        "l": 5,
                         "u": 0,
                         "d": 0
                     },
@@ -6743,8 +6751,8 @@
                 },
                 "1": {
                     "radii": {
-                        "r": 5,
-                        "l": 5,
+                        "r": 9,
+                        "l": 8,
                         "u": 0,
                         "d": 0
                     },

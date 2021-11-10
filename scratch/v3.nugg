@@ -37,16 +37,16 @@
         BASE := {
             zindex := +0
             expandableAt := { r: 0, l: 0, u: 0, d: 0 }
-            receiver := { feature: EYES, zindex: 2, yoffset: +2 }
-            receiver := { feature: EARS, zindex: 2, yoffset: +2 }
-            receiver := { feature: GLASSES, zindex: 2, yoffset: +2 }
-            receiver := { feature: MOUTH, zindex: 3, yoffset: +0 }
+            receiver := { feature: EYES, zindex: 2, yoffset: +0 }
+            receiver := { feature: EARS, zindex: 2, yoffset: +0 }
+            receiver := { feature: GLASSES, zindex: 2, yoffset: +0 }
+            receiver := { feature: MOUTH, zindex: 3, yoffset: +2 }
             receiver := { feature: HAIR, zindex: 1, yoffset: +1 }
             receiver := { feature: SAUCE, zindex: 4, yoffset: +0 }
-            receiver := { feature: HAT, zindex: 1, yoffset: +1 }
+            receiver := { feature: HAT, zindex: 1, yoffset: -2 }
             receiver := { feature: SPECIAL, zindex: 0, yoffset: +0 }
         }
-        EYES    := { zindex: +1, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
+        EYES    := { zindex: +1, expandableAt: { r: 1, l: 1, u: 0, d: 0 } }
         EARS    := { zindex: +1, expandableAt: { r: 1, l: 1, u: 0, d: 0 } }
         GLASSES := { zindex: +2, expandableAt: { r: 1, l: 1, u: 0, d: 0 } }
         MOUTH   := { zindex: +1, expandableAt: { r: 0, l: 0, u: 0, d: 0 } }
@@ -75,9 +75,11 @@
         1 := {
             radii := { r: 0, l: 0, u: 0, d: 0 }
             expanders := { r: 0, l: 0, u: 0, d: 0 }
-            anchor := { x : 3, y : 1 }
+            anchor := { x : 3, y : 2 }
             data := {
                 SSSSS
+                S.W.S
+                .SSS.
             }
         }
     }
@@ -100,8 +102,8 @@
             }
         }
         1 := {
-            radii := { r: 4, l: 4, u: 0, d: 2 }
-            expanders := { r: 6, l: 4, u: 0, d: 0 }
+            radii := { r: 9, l: 9, u: 0, d: 0 }
+            expanders := { r: 6, l: 6, u: 0, d: 0 }
             anchor := { x : 6, y : 1 }
             data := {
                 WWW.....WWW
@@ -134,30 +136,30 @@
                 .................................
                 .................................
                 .................................
-                ..........yyyyyyyyyyyyy..........
-                ........yyozzzzooogggyyy.........
-                ........yozzzzzzoogggggy.........
-                ........yoozzzzzzooogggy.........
+                ..........yyyyyyyyyyyyyy.........
+                ........yyozzzzoooogggyyy........
+                ........yozzzzzzooogggggy........
                 ........yoozzzzzzzooogggy........
-                .......yyoozzzzzzfooooooy........
-                .......yoooozzzzzoooooooy........
-                .......yooooozzzzzooooooy........
-                .......yooooozzzzzooooooy........
-                .......yooffozzzzzzoooooy........
-                .......yooooozzzzzzfooooy........
-                .......yoooooozzzzzffoooy........
-                .......yooooozzzzzzzooooy........
-                .......yooooozzzzzzzzzzoy........
-                .......yoooooozzzzzzzzzzy........
-                .......yoooooozzzzzzzzzzy........
-                ........yoooffzzzzzzzzzzy........
-                ........yooooofzzzzzzzzyy........
-                ........yoooooffzzgggggy.........
-                ........yxoooozfgggggggy.........
-                ........yxgooozzzggggxxy.........
-                ........yxxgoozzzggggxxy.........
-                ........yyygoozzgggxxyy..........
-                ..........yyyyyyyyyyy............
+                ........yoozzzzzzzzooogggy.......
+                .......yyoozzzzzzzfooooooy.......
+                .......yoooozzzzzzoooooooy.......
+                .......yooooozzzzzzooooooy.......
+                .......yooooozzzzzzooooooy.......
+                .......yooffozzzzzzzoooooy.......
+                .......yooooozzzzzzzfooooy.......
+                .......yoooooozzzzzzffoooy.......
+                .......yooooozzzzzzzzooooy.......
+                .......yooooozzzzzzzzzzzoy.......
+                .......yoooooozzzzzzzzzzzy.......
+                .......yoooooozzzzzzzzzzzy.......
+                ........yoooffzzzzzzzzzzzy.......
+                ........yooooofzzzzzzzzzyy.......
+                ........yoooooffzzzgggggy........
+                ........yxoooozfggggggggy........
+                ........yxgooozzzzggggxxy........
+                ........yxxgoozzzzggggxxy........
+                ........yyygoozzggggxxyy.........
+                ..........yyyyyyyyyyyy...........
                 .................................
                 .................................
                 .................................
@@ -170,14 +172,14 @@
 
 // for any given nugg, we choose the largest (version) that has l AND r radii less than or equal to that of the nugg
 @item(HAT) := {
-    colors := {    
+    colors := {
         a := { zindex: +D, rgba: rgba(0,0,0,.6) }
         b := { zindex: +D, rgba: rgba(0,234,225,.6) }
     }
     versions := {
         0 := {
             radii := { r: 4, l: 4, u: 4, d: 0 }
-            anchor := { x : 9, y : 5 }
+            anchor := { x : 9, y : 4 }
             expanders := { r: 12, l: 6, u: 1, d: 0 }
             receiver := { feature: GLASSES, x: 3, y: +0 }
             data := {
@@ -212,26 +214,26 @@
     }
     versions := {
         0 := {
-            radii := { r: 4 , l: 4, u: 0, d: 0 }
-            anchor := { x : 6, y : 2 }
-            expanders := { r: 7, l: 5, u: 0, d: 0 }
+            radii := { r: 5 , l: 5, u: 0, d: 0 }
+            anchor := { x : 5, y : 2 }
+            expanders := { r: 5, l: 5, u: 0, d: 0 }
             data := {
-                .aaaa.aaaa
-                aabbaaabba
-                .abba.abba
-                .aaaa.aaaa
+                aaaa.aaaa
+                abbaaabba
+                abba.abba
+                aaaa.aaaa
             }
         }
         1 := {
-            radii := { r: 4 , l: 4, u: 0, d: 0 }
-            anchor := { x : 8, y : 2 }
-            expanders := { r: 8, l: 8, u: 0, d: 0 }
+            radii := { r: 9 , l: 9, u: 0, d: 0 }
+            anchor := { x : 7, y : 2 }
+            expanders := { r: 7, l: 7, u: 0, d: 0 }
             data := {
-                .aaaaa...aaaaa
-                .abbba...abbba
-                aabbbaaaaabbba
-                .abbba...abbba
-                .aaaaa...aaaaa
+                aaaaa...aaaaa
+                abbba...abbba
+                abbbaaaaabbba
+                abbba...abbba
+                aaaaa...aaaaa
             }
         }
     }
@@ -246,7 +248,7 @@
     }
     versions := {
         0 := {
-            radii := { r: 3 , l: 3, u: 0, d: 0 }
+            radii := { r: 6 , l: 5, u: 0, d: 0 }
             anchor := { x : 5, y : 2 }
             expanders := { r: 4, l: 6, u: 0, d: 0 }
             data := {
@@ -257,7 +259,7 @@
             }
         }
         1 := {
-            radii := { r: 5 , l: 5, u: 0, d: 0 }
+            radii := { r: 9 , l: 8, u: 0, d: 0 }
             anchor := { x : 7, y : 2 }
             expanders := { r: 5, l: 9, u: 0, d: 0 }
             data := {
