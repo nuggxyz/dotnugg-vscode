@@ -1,7 +1,9 @@
 /* eslint-disable prefer-const */
 import * as vscode from 'vscode';
 
-import { Compiler } from './Compiler';
+import { Parser } from '../../../dotnugg-sdk/src/classes/Parser';
+import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
+
 import Helper from './Helper';
 import Logger from './Logger';
 
@@ -194,7 +196,8 @@ function findOffsets(
 class Decorator {
     public static colorDecorators: vscode.TextEditorDecorationType[] = [];
 
-    public static addColorsToData(file: Compiler) {
+    public static decorateActiveFile() {
+        const compiler = new DotNuggCompiler().compileData(Helper.editor.document.getText());
         try {
             Helper.editor.setDecorations(decU, []);
             Helper.editor.setDecorations(decD, []);
@@ -231,8 +234,8 @@ class Decorator {
                 feature: NL.DotNugg.RangeOf<string>;
             } & NL.DotNugg.Version)[] = [];
 
-            for (let i = 0; i < file.results.items.length; i++) {
-                const attr = file.results.items[i].value;
+            for (let i = 0; i < compiler.parser.results.items.length; i++) {
+                const attr = compiler.parser.results.items[i].value;
                 const colors = attr.colors;
                 const versionKeys = Object.keys(attr.versions.value);
 
@@ -249,37 +252,37 @@ class Decorator {
                     x.data.value.matrix.forEach((r, yindex) => {
                         r.value.forEach((c, xindex) => {
                             try {
-                                allRanges.push(c.value.label.token.range);
+                                allRanges.push(Helper.vscodeRange(c.value.label.token));
 
-                                const feature = file.results.collection.value.features.value[x.feature.value].value;
+                                const feature = Parser.globalCollection.value.features.value[x.feature.value].value;
                                 if (
                                     feature.expandableAt.value.r.value > 0 &&
                                     yindex + 1 === x.anchor.value.y.value &&
                                     xindex + 1 > x.anchor.value.x.value &&
                                     xindex + 1 < x.anchor.value.x.value + x.radii.value.r.value
                                 ) {
-                                    radiiRanges.push(c.value.label.token.range);
+                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                                 } else if (
                                     feature.expandableAt.value.l.value > 0 &&
                                     yindex + 1 === x.anchor.value.y.value &&
                                     xindex + 1 < x.anchor.value.x.value &&
                                     xindex + 1 > x.anchor.value.x.value - x.radii.value.l.value
                                 ) {
-                                    radiiRanges.push(c.value.label.token.range);
+                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                                 } else if (
                                     feature.expandableAt.value.d.value > 0 &&
                                     xindex + 1 === x.anchor.value.x.value &&
                                     yindex + 1 > x.anchor.value.y.value &&
                                     yindex + 1 < x.anchor.value.y.value + x.radii.value.d.value
                                 ) {
-                                    radiiRanges.push(c.value.label.token.range);
+                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                                 } else if (
                                     feature.expandableAt.value.u.value > 0 &&
                                     xindex + 1 === x.anchor.value.x.value &&
                                     yindex + 1 < x.anchor.value.y.value &&
                                     yindex + 1 > x.anchor.value.y.value - x.radii.value.u.value
                                 ) {
-                                    radiiRanges.push(c.value.label.token.range);
+                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                                 }
 
                                 // if (
@@ -307,7 +310,7 @@ class Decorator {
                                 //               builder.replace(x.radii.value.u.token.range, '0');
                                 //           }
                                 //           if (feature.expandableAt.value.r.value === 0 && x.expanders.value.r.value !== 0) {
-                                //               builder.replace(x.expanders.value.r.token.range, '0');
+                                //               builder.replace(Helper.vscodeRange(x.expanders.value.r.token), '0');
                                 //           }
                                 //           if (feature.expandableAt.value.l.value === 0 && x.expanders.value.l.value !== 0) {
                                 //               builder.replace(x.expanders.value.l.token.range, '0');
@@ -323,50 +326,50 @@ class Decorator {
 
                                 if (feature.expandableAt.value.r.value === 0) {
                                     // fadedRanges.push(x.radii.value.r.token.range);
-                                    fadedRanges.push(x.expanders.value.r.token.range);
+                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.r.token));
                                 }
                                 if (feature.expandableAt.value.l.value === 0) {
                                     // fadedRanges.push(x.radii.value.l.token.range);
-                                    fadedRanges.push(x.expanders.value.l.token.range);
+                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.l.token));
                                 }
                                 if (feature.expandableAt.value.d.value === 0) {
-                                    // fadedRanges.push(x.radii.value.d.token.range);
-                                    fadedRanges.push(x.expanders.value.d.token.range);
+                                    // fadedRanges.push(x.radii.value.d.token));
+                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.d.token));
                                 }
                                 if (feature.expandableAt.value.u.value === 0) {
-                                    // fadedRanges.push(x.radii.value.u.token.range);
-                                    fadedRanges.push(x.expanders.value.u.token.range);
+                                    // fadedRanges.push(x.radii.value.u.token));
+                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.u.token));
                                 }
 
                                 if (x.anchor.value.x.value === xindex + 1 && x.anchor.value.y.value === yindex + 1) {
                                     // if (cindex === r.value.length - 1) {
-                                    //     downRange = c.value.label.token.range;
+                                    //     downRange = Helper.vscodeRange(c.value.label.token);
                                     // }
-                                    anchorRanges.push(c.value.label.token.range);
+                                    anchorRanges.push(Helper.vscodeRange(c.value.label.token));
                                 }
                                 if (x.expanders.value.d.value === yindex + 1) {
                                     // if (cindex === r.value.length - 1) {
-                                    //     downRange = c.value.label.token.range;
+                                    //     downRange = Helper.vscodeRange(c.value.label.token);
                                     // }
-                                    expanderRanges.D.push(c.value.label.token.range);
+                                    expanderRanges.D.push(Helper.vscodeRange(c.value.label.token));
                                 }
                                 if (x.expanders.value.u.value === yindex + 1) {
                                     // if (cindex === r.value.length - 1) {
-                                    //     upRange = c.value.label.token.range;
+                                    //     upRange = Helper.vscodeRange(c.value.label.token);
                                     // }
-                                    expanderRanges.U.push(c.value.label.token.range);
+                                    expanderRanges.U.push(Helper.vscodeRange(c.value.label.token));
                                 }
                                 if (x.expanders.value.r.value === xindex + 1) {
                                     if (yindex === 0) {
                                         // rightRange = c.label.token.range;
                                     }
-                                    expanderRanges.R.push(c.value.label.token.range);
+                                    expanderRanges.R.push(Helper.vscodeRange(c.value.label.token));
                                 }
                                 if (x.expanders.value.l.value === xindex + 1) {
                                     if (yindex === x.data.value.matrix.length - 1) {
                                         // leftRange = c.label.token.range;
                                     }
-                                    expanderRanges.L.push(c.value.label.token.range);
+                                    expanderRanges.L.push(Helper.vscodeRange(c.value.label.token));
                                 }
 
                                 if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
@@ -374,7 +377,7 @@ class Decorator {
                                     if (!colorRanges[color]) {
                                         colorRanges[color] = [];
                                     }
-                                    colorRanges[color].push(c.value.type.token.range);
+                                    colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
                                 }
                             } catch (err) {
                                 Logger.out(err);
@@ -411,7 +414,7 @@ class Decorator {
                         },
                     });
                     Decorator.colorDecorators.push(dec);
-                    Helper.editor.setDecorations(dec, [file.document.lineAt(x.data.token.range.start.line)]);
+                    Helper.editor.setDecorations(dec, [Helper.editor.document.lineAt(Helper.vscodeRange(x.data.token).start.line)]);
 
                     // Helper.editor.setDecorations(decUarrow, [upRange]);
                     // Helper.editor.setDecorations(decDarrow, [downRange]);
@@ -425,10 +428,10 @@ class Decorator {
                     // Logger.out(x.colors.);
                     x.data.value.matrix.forEach((r, yindex) => {
                         r.value.forEach((c, xindex) => {
-                            allRanges.push(c.value.label.token.range);
+                            allRanges.push(Helper.vscodeRange(c.value.label.token));
 
                             if (xindex === offsets.centerx && yindex === offsets.centery) {
-                                anchorRanges.push(c.value.label.token.range);
+                                anchorRanges.push(Helper.vscodeRange(c.value.label.token));
                             }
 
                             if (
@@ -436,25 +439,25 @@ class Decorator {
                                 xindex + 1 > offsets.centerx &&
                                 xindex + 1 < offsets.centerx + offsets.side
                             ) {
-                                radiiRanges.push(c.value.label.token.range);
+                                radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                             } else if (
                                 yindex + 1 === offsets.centery &&
                                 xindex + 1 < offsets.centerx &&
                                 xindex + 1 > offsets.centerx - offsets.side
                             ) {
-                                radiiRanges.push(c.value.label.token.range);
+                                radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                             } else if (
                                 xindex + 1 === offsets.centerx &&
                                 yindex + 1 > offsets.centery &&
                                 yindex + 1 < offsets.centery + offsets.bot
                             ) {
-                                radiiRanges.push(c.value.label.token.range);
+                                radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                             } else if (
                                 xindex + 1 === offsets.centerx &&
                                 yindex + 1 < offsets.centery &&
                                 yindex + 1 > offsets.centery - offsets.top
                             ) {
-                                radiiRanges.push(c.value.label.token.range);
+                                radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                             }
 
                             if (
@@ -463,14 +466,14 @@ class Decorator {
                                 yindex < offsets.centery + offsets.side &&
                                 yindex > offsets.centery - offsets.side
                             ) {
-                                radiiRanges.push(c.value.label.token.range);
+                                radiiRanges.push(Helper.vscodeRange(c.value.label.token));
                             }
                             if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
                                 const color = x.colors.value[c.value.label.value].value.rgba.value;
                                 if (!colorRanges[color]) {
                                     colorRanges[color] = [];
                                 }
-                                colorRanges[color].push(c.value.type.token.range);
+                                colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
                             }
                         });
                     });
@@ -504,11 +507,11 @@ class Decorator {
                         },
                     });
                     Decorator.colorDecorators.push(dec);
-                    Helper.editor.setDecorations(dec, [file.document.lineAt(x.data.token.range.start.line)]);
+                    Helper.editor.setDecorations(dec, [Helper.editor.document.lineAt(Helper.vscodeRange(x.data.token).start.line)]);
                 }
             });
 
-            [...file.results.items].forEach((x) => {
+            [...compiler.parser.results.items].forEach((x) => {
                 // Helper.editor.setDecorations(decUarrow, [upRange]);
                 // Helper.editor.setDecorations(decDarrow, [downRange]);
             });

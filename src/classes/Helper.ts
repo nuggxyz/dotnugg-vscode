@@ -1,13 +1,14 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
 import * as vscode from 'vscode';
 
-import { the_dirname } from '../extension';
+import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
 
-import { Compiler } from './Compiler';
 import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
-import { Parser } from './Parser';
+
+// import { Config } from './Config';
 class Helper {
     private static _active_editor: vscode.TextEditor;
     private static languageId = 'dotnugg';
@@ -17,6 +18,21 @@ class Helper {
 
     public static get editor() {
         return Helper._active_editor;
+    }
+
+    public static vscodeRange(token: NL.DotNugg.ParsedToken) {
+        return new vscode.Range(
+            new vscode.Position(token.lineNumber, token.token.startIndex),
+            new vscode.Position(token.lineNumber, token.token.endIndex),
+        );
+    }
+
+    public static get compiledDirecory() {
+        return new DotNuggCompiler().compileDirectory(this.workingdir);
+    }
+
+    public static get workingdir() {
+        return vscode.workspace.asRelativePath(vscode.env.appRoot);
     }
 
     private static cancelationTokens = {
@@ -45,7 +61,7 @@ class Helper {
         if (!document) {
             console.warn('change event on non-document');
         }
-        // Parser.reinit().then((finished) => {
+        // Config.reinit().then((finished) => {
         //     console.log('✓ workspace ready (linearized, resolved deps, ..)');
         //     console.log('info', JSON.stringify(finished));
         //     // if (cancellationToken.isCancellationRequested || !finished.some((fp) => fp.value && fp.value.filePath === document.fileName)) {
@@ -56,9 +72,9 @@ class Helper {
 
     static async onDidSave() {
         console.log('info', 'SAVEs');
-        const comp = Compiler.init(Helper._active_editor.document);
-        comp.compile();
-        Decorator.addColorsToData(comp);
+        // const comp = Compiler.init(Helper._active_editor.document);
+        // comp.compile();
+        Decorator.decorateActiveFile();
         Helper.cancelationTokens.onDidSave.dispose();
         Helper.cancelationTokens.onDidSave = new vscode.CancellationTokenSource();
     }
@@ -78,8 +94,8 @@ class Helper {
             console.log('info', 'ondidchange: wrong langid');
             return;
         }
-        // // Parser.parse(undefined);
-        // const tmp = FileParser.init(Helper._active_editor.document);
+        // // Config.parse(undefined);
+        // const tmp = FileConfig.init(Helper._active_editor.document);
 
         Helper.cancelationTokens.onDidChange.dispose();
         Helper.cancelationTokens.onDidChange = new vscode.CancellationTokenSource();
@@ -102,13 +118,12 @@ class Helper {
         }
         const commandHandler = () => {
             try {
-                const comp = Compiler.init(Helper._active_editor.document);
-                comp.compile();
-                const data = comp.json;
-                // const currentFileName = Helper._active_editor.document.fileName.replace('.nugg', '.json');
-                const filePath = Helper._active_editor.document.uri.path.replace('.nugg', '.json');
+                const data = this.compiledDirecory.parser.json;
 
-                fs.writeFileSync(filePath, data);
+                const filepath = path.join(this.workingdir, 'dotnuggParsedItems.json');
+
+                fs.writeFileSync(filepath, data);
+
                 console.log('JSON data is saved.');
             } catch (error) {
                 console.error(error);
@@ -118,16 +133,18 @@ class Helper {
         context.subscriptions.push(vscode.commands.registerCommand('dotnugg.jsonificationator', commandHandler));
 
         Helper._active_editor = vscode.window.activeTextEditor;
-        await Parser.init(the_dirname);
-        // // const text = fs.readFileSync('./test/Base.nugg', 'utf-8');
-        const comp = Compiler.init(Helper._active_editor.document);
-        // const m = new Formatter2(tmp);
-        Decorator.addColorsToData(comp);
+
+        await DotNuggCompiler.init();
+
+        new DotNuggCompiler().compileDirectory(vscode.workspace.asRelativePath(vscode.env.appRoot));
 
         Formatter3.init();
 
+        // // const text = fs.readFileSync('./test/Base.nugg', 'utf-8');
+        // const m = new Formatter2(tmp);
+
         // Logger.log('error', 'onActivate');
-        // Parser.init(context.extensionPath);
+        // Config.init(context.extensionPath);
 
         registerDocType(Helper.languageId);
 

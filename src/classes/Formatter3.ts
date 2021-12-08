@@ -2,13 +2,21 @@ import * as vscode from 'vscode';
 
 import { REGEX } from '../constants/regex';
 import tokens from '../constants/tokens';
-
-import { Compiler } from './Compiler';
+import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
 
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
 export class Formatter3 {
-    public _instance: vscode.Disposable;
+    public static _instance: vscode.Disposable;
+
+    public compiler: DotNuggCompiler;
+
+    public document: vscode.TextDocument;
+
+    constructor(document: vscode.TextDocument) {
+        this.compiler = new DotNuggCompiler().compileData(document.getText());
+        this.document = document;
+    }
 
     public static defaults = {
         t: '    ',
@@ -17,25 +25,23 @@ export class Formatter3 {
     };
 
     public static init() {
-        const hold = new Formatter3();
-        hold._instance = vscode.languages.registerDocumentFormattingEditProvider('dotnugg', {
+        Formatter3._instance = vscode.languages.registerDocumentFormattingEditProvider('dotnugg', {
             provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
-                const comp = Compiler.init(document);
-                const res = hold.format(comp);
-                return [...res];
+                const formatter = new Formatter3(document);
+
+                return [...formatter.format()];
             },
         });
-        return hold;
     }
 
-    private format(comp: Compiler): vscode.TextEdit[] {
+    private format(): vscode.TextEdit[] {
         const res: vscode.TextEdit[] = [];
 
         try {
             let groupWorker: (RegExpData & { line: vscode.TextLine })[] = [];
 
-            for (let i = 0; i < comp.document.lineCount; i++) {
-                const data = Formatter3.regexFor(comp.linescopes[i]);
+            for (let i = 0; i < this.document.lineCount; i++) {
+                const data = this.regexFor(i);
 
                 if (!data.groupMember && groupWorker.length > 0) {
                     res.push(
@@ -50,9 +56,9 @@ export class Formatter3 {
                     groupWorker = [];
                 }
                 if (data.groupMember) {
-                    groupWorker.push({ ...data, line: comp.document.lineAt(i) });
+                    groupWorker.push({ ...data, line: this.document.lineAt(i) });
                 } else {
-                    res.push(...Formatter3.update(data.regex, comp.document.lineAt(i), { tablength: data.tablen }));
+                    res.push(...Formatter3.update(data.regex, this.document.lineAt(i), { tablength: data.tablen }));
                 }
             }
 
@@ -62,75 +68,86 @@ export class Formatter3 {
         }
     }
 
-    public static regexFor(lineScope: string[]): RegExpData {
+    public regexFor(line: number): RegExpData {
         //   if (Compiler.tokenSelect(lineScope, [tokens.ItemOpen, tokens.CollectionOpen])) {
         //       Logger.out(lineScope);
         //   }
         switch (true) {
             // zero tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemOpen, tokens.CollectionOpen]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemOpen, tokens.CollectionOpen]):
                 return { regex: REGEX.HEADER, tablen: 0, groupMember: false };
             // zero tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemClose, tokens.CollectionClose]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemClose, tokens.CollectionClose]):
                 return { regex: REGEX.FOOTER, tablen: 0, groupMember: false };
             // one tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionsOpen, tokens.CollectionFeaturesOpen, tokens.GeneralColorsOpen]):
+            case this.compiler.parser.checkScopesOnLine(line, [
+                tokens.ItemVersionsOpen,
+                tokens.CollectionFeaturesOpen,
+                tokens.GeneralColorsOpen,
+            ]):
                 return { regex: REGEX.HEADER, tablen: 1, groupMember: false };
             // one tab headers
             // one tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionsClose, tokens.CollectionFeaturesClose, tokens.GeneralColorsClose]):
+            case this.compiler.parser.checkScopesOnLine(line, [
+                tokens.ItemVersionsClose,
+                tokens.CollectionFeaturesClose,
+                tokens.GeneralColorsClose,
+            ]):
                 return { regex: REGEX.FOOTER, tablen: 1, groupMember: false };
             // two tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionOpen, tokens.CollectionFeatureLongOpen]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemVersionOpen, tokens.CollectionFeatureLongOpen]):
                 return { regex: REGEX.HEADER, tablen: 2, groupMember: false };
             // two tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionClose, tokens.CollectionFeatureLongClose]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemVersionClose, tokens.CollectionFeatureLongClose]):
                 return { regex: REGEX.FOOTER, tablen: 2, groupMember: false };
             // two tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataOpen]) && Compiler.tokenSelect(lineScope, [tokens.Item]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.GeneralDataOpen]) &&
+                this.compiler.parser.checkScopesOnLine(line, [tokens.Item]):
                 return { regex: REGEX.HEADER, tablen: 3, groupMember: false };
             // two tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataClose]) && Compiler.tokenSelect(lineScope, [tokens.Item]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.GeneralDataClose]) &&
+                this.compiler.parser.checkScopesOnLine(line, [tokens.Item]):
                 return { regex: REGEX.FOOTER, tablen: 3, groupMember: false };
             // three tab headers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionDataOpen]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemVersionDataOpen]):
                 return { regex: REGEX.HEADER, tablen: 3, groupMember: false };
             // three tab footers
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionDataClose]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemVersionDataClose]):
                 return { regex: REGEX.FOOTER, tablen: 3, groupMember: false };
             // two tab two arg
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralColor]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.GeneralColor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // two tab three arg
-            case Compiler.tokenSelect(lineScope, [tokens.CollectionFeature]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.CollectionFeature]):
                 return { regex: REGEX.ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
-            // case Compiler.tokenSelect(lineScope, [tokens.CollectionFeatureLong]):
+            // case this.compiler.parser.checkScopesOnLine(line, [tokens.CollectionFeatureLong]):
             //     return { regex: REGEX.ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // two tab three arg
-            // case Compiler.tokenSelect(lineScope, [tokens.BaseFilter]):
+            // case this.compiler.parser.checkScopesOnLine(line, [tokens.BaseFilter]):
             //     return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // three tab two arg
-            case Compiler.tokenSelect(lineScope, [tokens.CollectionFeatureLongZIndex]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.CollectionFeatureLongZIndex]):
                 return { regex: REGEX.ONE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionAnchor]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemVersionAnchor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             // three tab 3 arg
-            case Compiler.tokenSelect(lineScope, [tokens.ItemVersionRadii, tokens.GeneralReceiver]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.ItemVersionRadii, tokens.GeneralReceiver]):
                 return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
-            case Compiler.tokenSelect(lineScope, [
+            case this.compiler.parser.checkScopesOnLine(line, [
                 tokens.ItemVersionRadii,
                 tokens.ItemVersionExpanders,
                 tokens.CollectionFeatureLongExpandableAt,
             ]):
                 return { regex: REGEX.FOUR_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             // three tab data content
-            // case Compiler.tokenSelect(lineScope, [tokens.GeneralDataRow]) && Compiler.tokenSelect(lineScope, [tokens.Base]):
+            // case this.compiler.parser.checkScopesOnLine(line, [tokens.GeneralDataRow]) && this.compiler.parser.checkScopesOnLine(line, [tokens.Base]):
             //     return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 2, groupMember: false };
             // four tab data content
-            case Compiler.tokenSelect(lineScope, [tokens.GeneralDataRow]) && Compiler.tokenSelect(lineScope, [tokens.Item]):
+            case this.compiler.parser.checkScopesOnLine(line, [tokens.GeneralDataRow]) &&
+                this.compiler.parser.checkScopesOnLine(line, [tokens.Item]):
                 return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 4, groupMember: false };
             default:
-                //  if (Compiler.tokenSelect(lineScope, [tokens.ItemOpen, tokens.CollectionOpen])) {
+                //  if (this.compiler.parser.checkScopesOnLine(line, [tokens.ItemOpen, tokens.CollectionOpen])) {
                 //  }
 
                 //  Logger.out(lineScope);
