@@ -32,7 +32,7 @@ class Helper {
     }
 
     public static get workingdir() {
-        return vscode.workspace.asRelativePath(vscode.env.appRoot);
+        return vscode.workspace.workspaceFolders[0].uri.fsPath;
     }
 
     private static cancelationTokens = {
@@ -75,6 +75,8 @@ class Helper {
         // const comp = Compiler.init(Helper._active_editor.document);
         // comp.compile();
         Decorator.decorateActiveFile();
+        console.log({ compiler: 'yo' });
+
         Helper.cancelationTokens.onDidSave.dispose();
         Helper.cancelationTokens.onDidSave = new vscode.CancellationTokenSource();
     }
@@ -126,7 +128,7 @@ class Helper {
 
                 console.log('JSON data is saved.');
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         };
 
@@ -136,7 +138,7 @@ class Helper {
 
         await DotNuggCompiler.init();
 
-        new DotNuggCompiler().compileDirectory(vscode.workspace.asRelativePath(vscode.env.appRoot));
+        new DotNuggCompiler().compileDirectory(Helper.workingdir);
 
         Formatter3.init();
 

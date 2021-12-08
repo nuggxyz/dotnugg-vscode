@@ -22,7 +22,7 @@ class Logger {
      */
     static get info() {
         if (Logger._info === undefined) {
-            Logger._info = vscode.window.createOutputChannel('VBI-Info');
+            Logger._info = vscode.window.createOutputChannel('DotNugg');
         }
         return Logger._info;
     }
@@ -64,7 +64,7 @@ class Logger {
                 o.map((args: any) => {
                     this.info.appendLine('' + mapObject(args));
                 });
-                this.info.show();
+                // this.info.show();
                 return;
 
             case 'warn':
@@ -72,7 +72,7 @@ class Logger {
                 o.map((args: any) => {
                     this.info.appendLine('' + mapObject(args));
                 });
-                this.info.show();
+                // this.info.show();
                 return;
 
             case 'error':
@@ -84,7 +84,7 @@ class Logger {
                 });
                 this.info.appendLine(err);
                 vscode.window.showErrorMessage(err); //.replace(/(\r\n|\n|\r)/gm,"")
-                this.info.show();
+                // this.info.show();
                 return;
 
             default:
@@ -93,7 +93,7 @@ class Logger {
                 o.map((args: any) => {
                     this.info.appendLine('' + mapObject(args));
                 });
-                this.info.show();
+            // this.info.show();
         }
         // } else {
         //     switch (cat.toLowerCase()) {

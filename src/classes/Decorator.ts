@@ -1,11 +1,11 @@
 /* eslint-disable prefer-const */
 import * as vscode from 'vscode';
+// eslint-disable-next-line import/namespace
 
 import { Parser } from '../../../dotnugg-sdk/src/classes/Parser';
 import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
 
 import Helper from './Helper';
-import Logger from './Logger';
 
 let decD = vscode.window.createTextEditorDecorationType({
     // isWholeLine: true,
@@ -136,8 +136,6 @@ let decSpace = vscode.window.createTextEditorDecorationType({
     },
 });
 
-const getRadiiRanges = () => {};
-
 function findOffsets(
     centerx: number,
     centery: number,
@@ -189,7 +187,7 @@ function findOffsets(
     // } else if (top < bot) {
     //     centery--;
     // }
-    Logger.out({ top, bot, side, centerx, centery });
+    // Logger.out({ top, bot, side, centerx, centery });
     return { top, bot, side, centerx, centery };
 }
 
@@ -197,8 +195,10 @@ class Decorator {
     public static colorDecorators: vscode.TextEditorDecorationType[] = [];
 
     public static decorateActiveFile() {
-        const compiler = new DotNuggCompiler().compileData(Helper.editor.document.getText());
+        // invariant(false, '');
         try {
+            const compiler = new DotNuggCompiler().parseData(Helper.editor.document.getText());
+
             Helper.editor.setDecorations(decU, []);
             Helper.editor.setDecorations(decD, []);
             Helper.editor.setDecorations(decL, []);
@@ -254,91 +254,93 @@ class Decorator {
                             try {
                                 allRanges.push(Helper.vscodeRange(c.value.label.token));
 
-                                const feature = Parser.globalCollection.value.features.value[x.feature.value].value;
-                                if (
-                                    feature.expandableAt.value.r.value > 0 &&
-                                    yindex + 1 === x.anchor.value.y.value &&
-                                    xindex + 1 > x.anchor.value.x.value &&
-                                    xindex + 1 < x.anchor.value.x.value + x.radii.value.r.value
-                                ) {
-                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
-                                } else if (
-                                    feature.expandableAt.value.l.value > 0 &&
-                                    yindex + 1 === x.anchor.value.y.value &&
-                                    xindex + 1 < x.anchor.value.x.value &&
-                                    xindex + 1 > x.anchor.value.x.value - x.radii.value.l.value
-                                ) {
-                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
-                                } else if (
-                                    feature.expandableAt.value.d.value > 0 &&
-                                    xindex + 1 === x.anchor.value.x.value &&
-                                    yindex + 1 > x.anchor.value.y.value &&
-                                    yindex + 1 < x.anchor.value.y.value + x.radii.value.d.value
-                                ) {
-                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
-                                } else if (
-                                    feature.expandableAt.value.u.value > 0 &&
-                                    xindex + 1 === x.anchor.value.x.value &&
-                                    yindex + 1 < x.anchor.value.y.value &&
-                                    yindex + 1 > x.anchor.value.y.value - x.radii.value.u.value
-                                ) {
-                                    radiiRanges.push(Helper.vscodeRange(c.value.label.token));
-                                }
+                                if (Parser.globalCollection) {
+                                    const feature = Parser.globalCollection.value.features.value[x.feature.value].value;
+                                    if (
+                                        feature.expandableAt.value.r.value > 0 &&
+                                        yindex + 1 === x.anchor.value.y.value &&
+                                        xindex + 1 > x.anchor.value.x.value &&
+                                        xindex + 1 < x.anchor.value.x.value + x.radii.value.r.value
+                                    ) {
+                                        radiiRanges.push(Helper.vscodeRange(c.value.label.token));
+                                    } else if (
+                                        feature.expandableAt.value.l.value > 0 &&
+                                        yindex + 1 === x.anchor.value.y.value &&
+                                        xindex + 1 < x.anchor.value.x.value &&
+                                        xindex + 1 > x.anchor.value.x.value - x.radii.value.l.value
+                                    ) {
+                                        radiiRanges.push(Helper.vscodeRange(c.value.label.token));
+                                    } else if (
+                                        feature.expandableAt.value.d.value > 0 &&
+                                        xindex + 1 === x.anchor.value.x.value &&
+                                        yindex + 1 > x.anchor.value.y.value &&
+                                        yindex + 1 < x.anchor.value.y.value + x.radii.value.d.value
+                                    ) {
+                                        radiiRanges.push(Helper.vscodeRange(c.value.label.token));
+                                    } else if (
+                                        feature.expandableAt.value.u.value > 0 &&
+                                        xindex + 1 === x.anchor.value.x.value &&
+                                        yindex + 1 < x.anchor.value.y.value &&
+                                        yindex + 1 > x.anchor.value.y.value - x.radii.value.u.value
+                                    ) {
+                                        radiiRanges.push(Helper.vscodeRange(c.value.label.token));
+                                    }
 
-                                // if (
-                                //     feature.expandableAt.value.r.value === 0 &&
-                                //     feature.expandableAt.value.l.value === 0 &&
-                                //     feature.expandableAt.value.d.value === 0 &&
-                                //     feature.expandableAt.value.u.value === 0
-                                // ) {
-                                //     fadedRanges.push(x.radii.token.range);
-                                //     fadedRanges.push(x.expanders.token.range);
-                                // }
+                                    // if (
+                                    //     feature.expandableAt.value.r.value === 0 &&
+                                    //     feature.expandableAt.value.l.value === 0 &&
+                                    //     feature.expandableAt.value.d.value === 0 &&
+                                    //     feature.expandableAt.value.u.value === 0
+                                    // ) {
+                                    //     fadedRanges.push(x.radii.token.range);
+                                    //     fadedRanges.push(x.expanders.token.range);
+                                    // }
 
-                                //   vscode.window.activeTextEditor
-                                //       .edit((builder) => {
-                                //           if (feature.expandableAt.value.r.value === 0 && x.radii.value.r.value !== 0) {
-                                //               builder.replace(x.radii.value.r.token.range, '0');
-                                //           }
-                                //           if (feature.expandableAt.value.l.value === 0 && x.radii.value.l.value !== 0) {
-                                //               builder.replace(x.radii.value.l.token.range, '0');
-                                //           }
-                                //           if (feature.expandableAt.value.d.value === 0 && x.radii.value.d.value !== 0) {
-                                //               builder.replace(x.radii.value.d.token.range, '0');
-                                //           }
-                                //           if (feature.expandableAt.value.u.value === 0 && x.radii.value.u.value !== 0) {
-                                //               builder.replace(x.radii.value.u.token.range, '0');
-                                //           }
-                                //           if (feature.expandableAt.value.r.value === 0 && x.expanders.value.r.value !== 0) {
-                                //               builder.replace(Helper.vscodeRange(x.expanders.value.r.token), '0');
-                                //           }
-                                //           if (feature.expandableAt.value.l.value === 0 && x.expanders.value.l.value !== 0) {
-                                //               builder.replace(x.expanders.value.l.token.range, '0');
-                                //           }
-                                //           if (feature.expandableAt.value.d.value === 0 && x.expanders.value.d.value !== 0) {
-                                //               builder.replace(x.expanders.value.d.token.range, '0');
-                                //           }
-                                //           if (feature.expandableAt.value.u.value === 0 && x.expanders.value.u.value !== 0) {
-                                //               builder.replace(x.expanders.value.u.token.range, '0');
-                                //           }
-                                //       })
-                                //       .then();
+                                    //   vscode.window.activeTextEditor
+                                    //       .edit((builder) => {
+                                    //           if (feature.expandableAt.value.r.value === 0 && x.radii.value.r.value !== 0) {
+                                    //               builder.replace(x.radii.value.r.token.range, '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.l.value === 0 && x.radii.value.l.value !== 0) {
+                                    //               builder.replace(x.radii.value.l.token.range, '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.d.value === 0 && x.radii.value.d.value !== 0) {
+                                    //               builder.replace(x.radii.value.d.token.range, '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.u.value === 0 && x.radii.value.u.value !== 0) {
+                                    //               builder.replace(x.radii.value.u.token.range, '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.r.value === 0 && x.expanders.value.r.value !== 0) {
+                                    //               builder.replace(Helper.vscodeRange(x.expanders.value.r.token), '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.l.value === 0 && x.expanders.value.l.value !== 0) {
+                                    //               builder.replace(x.expanders.value.l.token.range, '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.d.value === 0 && x.expanders.value.d.value !== 0) {
+                                    //               builder.replace(x.expanders.value.d.token.range, '0');
+                                    //           }
+                                    //           if (feature.expandableAt.value.u.value === 0 && x.expanders.value.u.value !== 0) {
+                                    //               builder.replace(x.expanders.value.u.token.range, '0');
+                                    //           }
+                                    //       })
+                                    //       .then();
 
-                                if (feature.expandableAt.value.r.value === 0) {
-                                    // fadedRanges.push(x.radii.value.r.token.range);
-                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.r.token));
-                                }
-                                if (feature.expandableAt.value.l.value === 0) {
-                                    // fadedRanges.push(x.radii.value.l.token.range);
-                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.l.token));
-                                }
-                                if (feature.expandableAt.value.d.value === 0) {
-                                    // fadedRanges.push(x.radii.value.d.token));
-                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.d.token));
-                                }
-                                if (feature.expandableAt.value.u.value === 0) {
-                                    // fadedRanges.push(x.radii.value.u.token));
-                                    fadedRanges.push(Helper.vscodeRange(x.expanders.value.u.token));
+                                    if (feature.expandableAt.value.r.value === 0) {
+                                        // fadedRanges.push(x.radii.value.r.token.range);
+                                        fadedRanges.push(Helper.vscodeRange(x.expanders.value.r.token));
+                                    }
+                                    if (feature.expandableAt.value.l.value === 0) {
+                                        // fadedRanges.push(x.radii.value.l.token.range);
+                                        fadedRanges.push(Helper.vscodeRange(x.expanders.value.l.token));
+                                    }
+                                    if (feature.expandableAt.value.d.value === 0) {
+                                        // fadedRanges.push(x.radii.value.d.token));
+                                        fadedRanges.push(Helper.vscodeRange(x.expanders.value.d.token));
+                                    }
+                                    if (feature.expandableAt.value.u.value === 0) {
+                                        // fadedRanges.push(x.radii.value.u.token));
+                                        fadedRanges.push(Helper.vscodeRange(x.expanders.value.u.token));
+                                    }
                                 }
 
                                 if (x.anchor.value.x.value === xindex + 1 && x.anchor.value.y.value === yindex + 1) {
@@ -380,7 +382,7 @@ class Decorator {
                                     colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
                                 }
                             } catch (err) {
-                                Logger.out(err);
+                                console.log('error', err);
                             }
                         });
                     });
@@ -526,7 +528,7 @@ class Decorator {
 
             Helper.editor.setDecorations(fadedDec, fadedRanges);
         } catch (err) {
-            Logger.out({ msg: 'ERROR', err: JSON.stringify(err) });
+            console.log({ msg: 'ERROR', err: JSON.stringify(err) });
         }
     }
 }

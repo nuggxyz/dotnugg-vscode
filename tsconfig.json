@@ -3,16 +3,17 @@
         "module": "commonjs",
         "target": "ES2020",
         "outDir": "out",
-        "lib": ["es2021", "DOM"],
+        "lib": ["ES2021", "DOM"],
         "sourceMap": true,
         // "rootDir": "./",
         "strict": false /* enable all strict type-checking options */,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "esModuleInterop": true
         /* Additional Checks */
         // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
         // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
         // "noUnusedParameters": true,  /* Report errors on unused parameters. */
     },
-    "exclude": ["node_modules", ".vscode-test"],
+    "exclude": [".vscode-test"],
     "include": ["syntaxes/", "src/"]
 }

@@ -14,7 +14,7 @@ export class Formatter3 {
     public document: vscode.TextDocument;
 
     constructor(document: vscode.TextDocument) {
-        this.compiler = new DotNuggCompiler().compileData(document.getText());
+        this.compiler = new DotNuggCompiler().parseData(document.getText());
         this.document = document;
     }
 

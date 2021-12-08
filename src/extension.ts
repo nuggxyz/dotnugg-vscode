@@ -4,6 +4,9 @@
 import * as _ from '../syntaxes/dotnugg.tmLanguage.json';
 
 import Helper from './classes/Helper';
+
+// @eslint-ignore
+// eslint-disable-next-line import/order
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 // export async function activate(context: vscode.ExtensionContext) {
@@ -45,7 +48,6 @@ import Helper from './classes/Helper';
 //         console.log('result', res);
 //     }
 // };
-
 export const tmp = _;
 export const the_dirname = __dirname;
 exports.activate = Helper.onActivate;
