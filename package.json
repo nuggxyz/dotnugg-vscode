@@ -1,13 +1,14 @@
 {
     "name": "dotnugg",
     "displayName": "dotnugg",
-    "description": "",
+    "description": "A vscode extension for working with dotnugg files",
     "version": "0.0.1",
     "license": "MIT",
     "engines": {
         "vscode": "^1.61.0"
     },
-    "publisher": "nugglabs",
+    "repository": "https://github.com/nuggxyz/dotnugg-vscode.git",
+    "publisher": "nuggxyz",
     "categories": [
         "Other",
         "Programming Languages"
