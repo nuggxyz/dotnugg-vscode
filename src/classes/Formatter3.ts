@@ -2,19 +2,19 @@ import * as vscode from 'vscode';
 
 import { REGEX } from '../constants/regex';
 import tokens from '../constants/tokens';
-import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
+import { dotnugg } from '../../../dotnugg-sdk/src';
 
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
 export class Formatter3 {
     public static _instance: vscode.Disposable;
 
-    public compiler: DotNuggCompiler;
+    public compiler: dotnugg.compile.Compiler;
 
     public document: vscode.TextDocument;
 
     constructor(document: vscode.TextDocument) {
-        this.compiler = new DotNuggCompiler().parseData(document.getText());
+        this.compiler = dotnugg.compile.Compiler.parseData(document.getText());
         this.document = document;
     }
 

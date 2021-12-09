@@ -2,8 +2,7 @@
 import * as vscode from 'vscode';
 // eslint-disable-next-line import/namespace
 
-import { Parser } from '../../../dotnugg-sdk/src/classes/Parser';
-import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
+import { dotnugg } from '../../../dotnugg-sdk/src/';
 
 import Helper from './Helper';
 
@@ -139,7 +138,7 @@ let decSpace = vscode.window.createTextEditorDecorationType({
 function findOffsets(
     centerx: number,
     centery: number,
-    data: NL.DotNugg.Data,
+    data: dotnugg.types.compile.Parser.Data,
 ): { top: number; bot: number; side: number; centerx: number; centery: number } {
     let topFound = false;
     let bottomFound = false;
@@ -197,7 +196,7 @@ class Decorator {
     public static decorateActiveFile() {
         // invariant(false, '');
         try {
-            const compiler = new DotNuggCompiler().parseData(Helper.editor.document.getText());
+            const compiler = dotnugg.compile.Compiler.parseData(Helper.editor.document.getText());
 
             Helper.editor.setDecorations(decU, []);
             Helper.editor.setDecorations(decD, []);
@@ -218,7 +217,7 @@ class Decorator {
             });
 
             let allRanges = [];
-            let expanderRanges: NL.DotNugg.Dictionary<vscode.Range[]> = {
+            let expanderRanges: Dictionary<vscode.Range[]> = {
                 D: [],
                 U: [],
                 R: [],
@@ -230,9 +229,9 @@ class Decorator {
             let fadedRanges: vscode.Range[] = [];
 
             const versionsWithColors: ({
-                colors: NL.DotNugg.RangeOf<NL.DotNugg.Colors>;
-                feature: NL.DotNugg.RangeOf<string>;
-            } & NL.DotNugg.Version)[] = [];
+                colors: dotnugg.types.compile.Parser.RangeOf<dotnugg.types.compile.Parser.Colors>;
+                feature: dotnugg.types.compile.Parser.RangeOf<string>;
+            } & dotnugg.types.compile.Parser.Version)[] = [];
 
             for (let i = 0; i < compiler.parser.results.items.length; i++) {
                 const attr = compiler.parser.results.items[i].value;
@@ -254,8 +253,8 @@ class Decorator {
                             try {
                                 allRanges.push(Helper.vscodeRange(c.value.label.token));
 
-                                if (Parser.globalCollection) {
-                                    const feature = Parser.globalCollection.value.features.value[x.feature.value].value;
+                                if (dotnugg.compile.Parser.globalCollection) {
+                                    const feature = dotnugg.compile.Parser.globalCollection.value.features.value[x.feature.value].value;
                                     if (
                                         feature.expandableAt.value.r.value > 0 &&
                                         yindex + 1 === x.anchor.value.y.value &&

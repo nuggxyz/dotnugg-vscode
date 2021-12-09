@@ -1,5 +1,3 @@
-/// <reference types="../../dotnugg-sdk/src/types" />
-
 declare module 'vscode';
 
 declare namespace NL.DotNugg {
