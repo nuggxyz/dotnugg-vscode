@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import * as vscode from 'vscode';
 
-import { DotNuggCompiler } from '../../../dotnugg-sdk/src/DotNuggCompiler';
+import { dotnugg } from '../../../dotnugg-sdk/src';
 
 import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
@@ -20,7 +20,7 @@ class Helper {
         return Helper._active_editor;
     }
 
-    public static vscodeRange(token: NL.DotNugg.ParsedToken) {
+    public static vscodeRange(token: dotnugg.types.compile.Parser.ParsedToken) {
         return new vscode.Range(
             new vscode.Position(token.lineNumber, token.token.startIndex),
             new vscode.Position(token.lineNumber, token.token.endIndex),
@@ -28,7 +28,7 @@ class Helper {
     }
 
     public static get compiledDirecory() {
-        return new DotNuggCompiler().compileDirectory(this.workingdir);
+        return dotnugg.compile.Compiler.compileDirectory(this.workingdir);
     }
 
     public static get workingdir() {
@@ -136,9 +136,9 @@ class Helper {
 
         Helper._active_editor = vscode.window.activeTextEditor;
 
-        await DotNuggCompiler.init();
+        await dotnugg.compile.Compiler.init();
 
-        new DotNuggCompiler().compileDirectory(Helper.workingdir);
+        await dotnugg.compile.Compiler.compileDirectory(Helper.workingdir);
 
         Formatter3.init();
 
