@@ -4,6 +4,8 @@
 
 const path = require('path');
 
+const CopyPlugin = require('copy-webpack-plugin');
+
 // const webpack = require('webpack');
 
 /**@type {import('webpack').Configuration}*/
@@ -56,5 +58,13 @@ const config = {
     node: {
         __dirname: true,
     },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: './src/language-configuration.json', to: 'language-configuration.json' },
+                { from: './node_modules/@nuggxyz/dotnugg-grammar/dotnugg.tmLanguage.json', to: 'grammar.json' },
+            ],
+        }),
+    ],
 };
 module.exports = config;
