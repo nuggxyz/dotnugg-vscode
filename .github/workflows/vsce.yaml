@@ -17,4 +17,4 @@ jobs:
             - run: yarn build
             - run: yarn vsce publish --yarn
               env:
-                  VSCE_PAT: ${{ secrets.VSCODE_DEPLOY_KEY }}
+                  VSCE_PAT: ${{ secrets.VSCE_DEPLOY_KEY }}
