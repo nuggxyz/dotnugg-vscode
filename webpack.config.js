@@ -23,6 +23,7 @@ const config = {
     externals: {
         fs: 'commonjs fs',
         util: 'commonjs util',
+        buffer: 'commonjs buffer',
         vscode: 'commonjs vscode',
     },
 

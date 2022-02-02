@@ -14,7 +14,7 @@ jobs:
                   registry-url: 'https://registry.npmjs.org'
                   scope: '@nuggxyz'
             - run: yarn
-            - run: yarn build
+            - run: yarn package
             - run: yarn vsce publish --yarn
               env:
                   VSCE_PAT: ${{ secrets.VSCE_DEPLOY_KEY }}
