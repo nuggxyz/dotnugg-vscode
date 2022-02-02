@@ -1,13 +1,16 @@
 {
     "name": "dotnugg",
     "displayName": "dotnugg",
-    "description": "A vscode extension for working with dotnugg files",
-    "version": "0.0.1",
+    "description": "A VS Code extension for working with dotnugg files",
+    "version": "0.1.0",
+    "author": "dub6ix <dub6ix@nugg.xyz>",
+    "private": false,
     "license": "MIT",
     "engines": {
         "vscode": "^1.61.0"
     },
     "repository": "https://github.com/nuggxyz/dotnugg-vscode.git",
+    "icon": "icon.png",
     "publisher": "nuggxyz",
     "categories": [
         "Other",
@@ -16,19 +19,13 @@
     "activationEvents": [
         "*"
     ],
-    "main": "./out/dotnugg-vscode/src/extension.js",
+    "main": "./build/extension.js",
     "contributes": {
-        "commands": [
-            {
-                "command": "dotnugg.jsonificationator",
-                "title": "DotNugg Jsontificationator"
-            }
-        ],
+        "commands": [],
         "languages": [
             {
                 "id": "dotnugg",
                 "aliases": [
-                    "DotNugg",
                     "dotnugg"
                 ],
                 "extensions": [
@@ -41,7 +38,7 @@
             {
                 "language": "dotnugg",
                 "scopeName": "source.dotnugg",
-                "path": "./syntaxes/dotnugg.tmLanguage.json"
+                "path": "./node_modules/@nuggxyz/dotnugg-grammar/dotnugg.tmLanguage.json"
             }
         ]
     },
@@ -49,20 +46,18 @@
         "workspace"
     ],
     "scripts": {
-        "vscode:prepublish": "yarn run compile && cp -R ./src/constants/onig.wasm ./out/src/constants",
-        "compile": "tsc -p ./",
+        "vscode:prepublish": "yarn build",
+        "build": "tsc -p ./",
+        "deploy": "vsce publish --yarn",
         "watch": "tsc -watch -p ./",
         "watchts": "yarn ts-node -watch -p ./",
         "pretest": "yarn run compile && yarn run lint",
         "lint": "eslint src --ext ts",
-        "test2": "node ./out/test/runTest.js",
         "test": "yarn run compile && node ./out/test/script.js"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.4",
         "@types/mocha": "^9.0.0",
         "@types/node": "14.x",
-        "@types/plist": "^3.0.2",
         "@types/vscode": "^1.61.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",
@@ -72,17 +67,14 @@
         "eslint-config-universe": "^7.0.1",
         "eslint-plugin-import": "^2.24.2",
         "eslint-plugin-unused-imports": "^1.1.4",
-        "glob": "^7.1.7",
         "mocha": "^9.1.1",
+        "prettier": "2.4.1",
         "typescript": "^4.4.3",
         "vsce": "^1.100.2"
     },
     "dependencies": {
-        "ethers": "^5.5.2",
-        "plist": "^3.0.4",
-        "prettier": "^2.4.1",
+        "@nuggxyz/dotnugg-sdk": "^0.1.6",
         "tiny-invariant": "^1.1.0",
-        "vscode-oniguruma": "^1.5.1",
         "vscode-textmate": "^5.4.0"
     }
 }

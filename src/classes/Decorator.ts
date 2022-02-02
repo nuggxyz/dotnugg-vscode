@@ -1,8 +1,7 @@
 /* eslint-disable prefer-const */
 import * as vscode from 'vscode';
-// eslint-disable-next-line import/namespace
-
-import { dotnugg } from '../../../dotnugg-sdk/src/';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/build/parser/types/ParserTypes';
 
 import Helper from './Helper';
 
@@ -138,7 +137,7 @@ let decSpace = vscode.window.createTextEditorDecorationType({
 function findOffsets(
     centerx: number,
     centery: number,
-    data: dotnugg.types.compile.Parser.Data,
+    data: ParserTypes.Data,
 ): { top: number; bot: number; side: number; centerx: number; centery: number } {
     let topFound = false;
     let bottomFound = false;
@@ -196,7 +195,7 @@ class Decorator {
     public static decorateActiveFile() {
         // invariant(false, '');
         try {
-            const compiler = dotnugg.compile.Compiler.parseData(Helper.editor.document.getText());
+            const parser = dotnugg.parser.parseData(Helper.editor.document.getText());
 
             Helper.editor.setDecorations(decU, []);
             Helper.editor.setDecorations(decD, []);
@@ -217,7 +216,7 @@ class Decorator {
             });
 
             let allRanges = [];
-            let expanderRanges: Dictionary<vscode.Range[]> = {
+            let expanderRanges: ParserTypes.Dictionary<vscode.Range[]> = {
                 D: [],
                 U: [],
                 R: [],
@@ -229,12 +228,12 @@ class Decorator {
             let fadedRanges: vscode.Range[] = [];
 
             const versionsWithColors: ({
-                colors: dotnugg.types.compile.Parser.RangeOf<dotnugg.types.compile.Parser.Colors>;
-                feature: dotnugg.types.compile.Parser.RangeOf<string>;
-            } & dotnugg.types.compile.Parser.Version)[] = [];
+                colors: ParserTypes.RangeOf<ParserTypes.Colors>;
+                feature: ParserTypes.RangeOf<string>;
+            } & ParserTypes.Version)[] = [];
 
-            for (let i = 0; i < compiler.parser.results.items.length; i++) {
-                const attr = compiler.parser.results.items[i].value;
+            for (let i = 0; i < parser.results.items.length; i++) {
+                const attr = parser.results.items[i].value;
                 const colors = attr.colors;
                 const versionKeys = Object.keys(attr.versions.value);
 
@@ -253,8 +252,8 @@ class Decorator {
                             try {
                                 allRanges.push(Helper.vscodeRange(c.value.label.token));
 
-                                if (dotnugg.compile.Parser.globalCollection) {
-                                    const feature = dotnugg.compile.Parser.globalCollection.value.features.value[x.feature.value].value;
+                                if (dotnugg.parser.globalCollection) {
+                                    const feature = dotnugg.parser.globalCollection.value.features.value[x.feature.value].value;
                                     if (
                                         feature.expandableAt.value.r.value > 0 &&
                                         yindex + 1 === x.anchor.value.y.value &&
@@ -380,11 +379,10 @@ class Decorator {
                                     }
                                     colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
                                 }
-                            } catch (err) {
-                                console.log('error', err);
-                            }
+                            } catch (err) {}
                         });
                     });
+
                     Object.keys(colorRanges).forEach((rgba) => {
                         const dec = vscode.window.createTextEditorDecorationType({
                             light: {
@@ -394,6 +392,7 @@ class Decorator {
                                 backgroundColor: rgba,
                             },
                         });
+
                         Decorator.colorDecorators.push(dec);
                         Helper.editor.setDecorations(dec, colorRanges[rgba]);
                     });
@@ -507,12 +506,13 @@ class Decorator {
                             },
                         },
                     });
+
                     Decorator.colorDecorators.push(dec);
                     Helper.editor.setDecorations(dec, [Helper.editor.document.lineAt(Helper.vscodeRange(x.data.token).start.line)]);
                 }
             });
 
-            [...compiler.parser.results.items].forEach((x) => {
+            [...parser.results.items].forEach((x) => {
                 // Helper.editor.setDecorations(decUarrow, [upRange]);
                 // Helper.editor.setDecorations(decDarrow, [downRange]);
             });
@@ -527,7 +527,7 @@ class Decorator {
 
             Helper.editor.setDecorations(fadedDec, fadedRanges);
         } catch (err) {
-            console.log({ msg: 'ERROR', err: JSON.stringify(err) });
+            console.error({ msg: 'ERROR in decorator', err: JSON.stringify(err) });
         }
     }
 }

@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import * as _ from '../syntaxes/dotnugg.tmLanguage.json';
+// import * as _ from '../syntaxes/dotnugg.tmLanguage.json';
 
 import Helper from './classes/Helper';
 
@@ -48,7 +48,7 @@ import Helper from './classes/Helper';
 //         console.log('result', res);
 //     }
 // };
-export const tmp = _;
+// export const tmp = _;
 export const the_dirname = __dirname;
 exports.activate = Helper.onActivate;
 

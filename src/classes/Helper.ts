@@ -1,9 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 import * as vscode from 'vscode';
-
-import { dotnugg } from '../../../dotnugg-sdk/src';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/build/parser/types/ParserTypes';
 
 import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
@@ -20,7 +17,7 @@ class Helper {
         return Helper._active_editor;
     }
 
-    public static vscodeRange(token: dotnugg.types.compile.Parser.ParsedToken) {
+    public static vscodeRange(token: ParserTypes.ParsedToken) {
         return new vscode.Range(
             new vscode.Position(token.lineNumber, token.token.startIndex),
             new vscode.Position(token.lineNumber, token.token.endIndex),
@@ -28,7 +25,7 @@ class Helper {
     }
 
     public static get compiledDirecory() {
-        return dotnugg.compile.Compiler.compileDirectory(this.workingdir);
+        return dotnugg.parser.parseDirectoryCheckCache(this.workingdir);
     }
 
     public static get workingdir() {
@@ -118,27 +115,27 @@ class Helper {
         if (vscode.window.activeTextEditor === undefined) {
             throw new Error('onActivate called with inactivae text editor');
         }
-        const commandHandler = () => {
-            try {
-                const data = this.compiledDirecory.parser.json;
+        // const commandHandler = () => {
+        //     try {
+        //         const data = this.parser.json;
 
-                const filepath = path.join(this.workingdir, 'dotnuggParsedItems.json');
+        //         const filepath = path.join(this.workingdir, 'dotnuggParsedItems.json');
 
-                fs.writeFileSync(filepath, data);
+        //         fs.writeFileSync(filepath, data);
 
-                console.log('JSON data is saved.');
-            } catch (error) {
-                console.log(error);
-            }
-        };
+        //         console.log('JSON data is saved.');
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // };
 
-        context.subscriptions.push(vscode.commands.registerCommand('dotnugg.jsonificationator', commandHandler));
+        // context.subscriptions.push(vscode.commands.registerCommand('dotnugg.jsonificationator', commandHandler));
 
         Helper._active_editor = vscode.window.activeTextEditor;
 
-        await dotnugg.compile.Compiler.init();
+        await dotnugg.parser.init();
 
-        await dotnugg.compile.Compiler.compileDirectory(Helper.workingdir);
+        dotnugg.parser.parseDirectoryCheckCache(Helper.workingdir);
 
         Formatter3.init();
 

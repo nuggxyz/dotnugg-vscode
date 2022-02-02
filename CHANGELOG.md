@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "dotnugg" extension will be documented in this file.
+## [Unreleased - 0.1.0] - 2022-02-02
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Still in development
 
-## [Unreleased]
-
-- Initial release
+-   will be launching soon

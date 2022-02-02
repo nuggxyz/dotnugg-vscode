@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "ES2020",
-        "outDir": "out",
+        "outDir": "build",
         "lib": ["ES2021", "DOM"],
         "sourceMap": true,
         // "rootDir": "./",
@@ -15,5 +15,5 @@
         // "noUnusedParameters": true,  /* Report errors on unused parameters. */
     },
     "exclude": [".vscode-test"],
-    "include": ["syntaxes/", "src/"]
+    "include": ["src/"]
 }
