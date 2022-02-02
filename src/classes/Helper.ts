@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
-import * as ParserTypes from '@nuggxyz/dotnugg-sdk/build/parser/types/ParserTypes';
 
 import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
@@ -17,6 +17,12 @@ class Helper {
         return Helper._active_editor;
     }
 
+    public static async files() {
+        const f = await vscode.workspace.findFiles('**/*.*', '**/node_modules/**');
+
+        return f;
+    }
+
     public static vscodeRange(token: ParserTypes.ParsedToken) {
         return new vscode.Range(
             new vscode.Position(token.lineNumber, token.token.startIndex),
@@ -24,9 +30,9 @@ class Helper {
         );
     }
 
-    public static get compiledDirecory() {
-        return dotnugg.parser.parseDirectoryCheckCache(this.workingdir);
-    }
+    // public static get compiledDirecory() {
+    //     return dotnugg.parser.parseDirectoryCheckCache(this.workingdir);
+    // }
 
     public static get workingdir() {
         return vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -134,8 +140,11 @@ class Helper {
         Helper._active_editor = vscode.window.activeTextEditor;
 
         await dotnugg.parser.init();
+        // const collection = await vscode.workspace.findFiles('**/*.*', '**/node_modules/**');
 
-        dotnugg.parser.parseDirectoryCheckCache(Helper.workingdir);
+        // dotnugg.parser.parseData(Helper.editor.document.getText());
+
+        // dotnugg.parser.parseDirectoryCheckCache(Helper.workingdir);
 
         Formatter3.init();
 

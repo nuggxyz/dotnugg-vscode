@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
-import DotnuggTokens from '@nuggxyz/dotnugg-sdk/build/parser/constants/tokens';
 
 import { REGEX } from '../constants/regex';
-// import tokens from '../constants/tokens';
+
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
 export class Formatter3 {
@@ -69,85 +68,100 @@ export class Formatter3 {
     }
 
     public regexFor(line: number): RegExpData {
-        //   if (Compiler.tokenSelect(lineScope, [DotnuggTokens.ItemOpen, DotnuggTokens.CollectionOpen])) {
+        //   if (Compiler.tokenSelect(lineScope, [dotnugg.parser.semanticTokens.ItemOpen, dotnugg.parser.semanticTokens.CollectionOpen])) {
         //       Logger.out(lineScope);
         //   }
         switch (true) {
             // zero tab footers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemOpen, DotnuggTokens.CollectionOpen]):
+            case this.parser.checkScopesOnLine(line, [
+                dotnugg.parser.semanticTokens.ItemOpen,
+                dotnugg.parser.semanticTokens.CollectionOpen,
+            ]):
                 return { regex: REGEX.HEADER, tablen: 0, groupMember: false };
             // zero tab footers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemClose, DotnuggTokens.CollectionClose]):
+            case this.parser.checkScopesOnLine(line, [
+                dotnugg.parser.semanticTokens.ItemClose,
+                dotnugg.parser.semanticTokens.CollectionClose,
+            ]):
                 return { regex: REGEX.FOOTER, tablen: 0, groupMember: false };
             // one tab headers
             case this.parser.checkScopesOnLine(line, [
-                DotnuggTokens.ItemVersionsOpen,
-                DotnuggTokens.CollectionFeaturesOpen,
-                DotnuggTokens.GeneralColorsOpen,
+                dotnugg.parser.semanticTokens.ItemVersionsOpen,
+                dotnugg.parser.semanticTokens.CollectionFeaturesOpen,
+                dotnugg.parser.semanticTokens.GeneralColorsOpen,
             ]):
                 return { regex: REGEX.HEADER, tablen: 1, groupMember: false };
             // one tab headers
             // one tab footers
             case this.parser.checkScopesOnLine(line, [
-                DotnuggTokens.ItemVersionsClose,
-                DotnuggTokens.CollectionFeaturesClose,
-                DotnuggTokens.GeneralColorsClose,
+                dotnugg.parser.semanticTokens.ItemVersionsClose,
+                dotnugg.parser.semanticTokens.CollectionFeaturesClose,
+                dotnugg.parser.semanticTokens.GeneralColorsClose,
             ]):
                 return { regex: REGEX.FOOTER, tablen: 1, groupMember: false };
             // two tab headers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemVersionOpen, DotnuggTokens.CollectionFeatureLongOpen]):
+            case this.parser.checkScopesOnLine(line, [
+                dotnugg.parser.semanticTokens.ItemVersionOpen,
+                dotnugg.parser.semanticTokens.CollectionFeatureLongOpen,
+            ]):
                 return { regex: REGEX.HEADER, tablen: 2, groupMember: false };
             // two tab footers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemVersionClose, DotnuggTokens.CollectionFeatureLongClose]):
+            case this.parser.checkScopesOnLine(line, [
+                dotnugg.parser.semanticTokens.ItemVersionClose,
+                dotnugg.parser.semanticTokens.CollectionFeatureLongClose,
+            ]):
                 return { regex: REGEX.FOOTER, tablen: 2, groupMember: false };
             // two tab headers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.GeneralDataOpen]) &&
-                this.parser.checkScopesOnLine(line, [DotnuggTokens.Item]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralDataOpen]) &&
+                this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.Item]):
                 return { regex: REGEX.HEADER, tablen: 3, groupMember: false };
             // two tab footers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.GeneralDataClose]) &&
-                this.parser.checkScopesOnLine(line, [DotnuggTokens.Item]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralDataClose]) &&
+                this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.Item]):
                 return { regex: REGEX.FOOTER, tablen: 3, groupMember: false };
             // three tab headers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemVersionDataOpen]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.ItemVersionDataOpen]):
                 return { regex: REGEX.HEADER, tablen: 3, groupMember: false };
             // three tab footers
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemVersionDataClose]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.ItemVersionDataClose]):
                 return { regex: REGEX.FOOTER, tablen: 3, groupMember: false };
             // two tab two arg
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.GeneralColor]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralColor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // two tab three arg
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.CollectionFeature]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.CollectionFeature]):
                 return { regex: REGEX.ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
-            // case this.parser.checkScopesOnLine(line, [DotnuggTokens.CollectionFeatureLong]):
+            // case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.CollectionFeatureLong]):
             //     return { regex: REGEX.ONE_FOUR_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // two tab three arg
-            // case this.parser.checkScopesOnLine(line, [DotnuggTokens.BaseFilter]):
+            // case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.BaseFilter]):
             //     return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // three tab two arg
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.CollectionFeatureLongZIndex]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.CollectionFeatureLongZIndex]):
                 return { regex: REGEX.ONE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemVersionAnchor]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.ItemVersionAnchor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             // three tab 3 arg
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemVersionRadii, DotnuggTokens.GeneralReceiver]):
+            case this.parser.checkScopesOnLine(line, [
+                dotnugg.parser.semanticTokens.ItemVersionRadii,
+                dotnugg.parser.semanticTokens.GeneralReceiver,
+            ]):
                 return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             case this.parser.checkScopesOnLine(line, [
-                DotnuggTokens.ItemVersionRadii,
-                DotnuggTokens.ItemVersionExpanders,
-                DotnuggTokens.CollectionFeatureLongExpandableAt,
+                dotnugg.parser.semanticTokens.ItemVersionRadii,
+                dotnugg.parser.semanticTokens.ItemVersionExpanders,
+                dotnugg.parser.semanticTokens.CollectionFeatureLongExpandableAt,
             ]):
                 return { regex: REGEX.FOUR_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             // three tab data content
-            // case this.parser.checkScopesOnLine(line, [DotnuggTokens.GeneralDataRow]) && this.parser.checkScopesOnLine(line, [DotnuggTokens.Base]):
+            // case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralDataRow]) && this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.Base]):
             //     return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 2, groupMember: false };
             // four tab data content
-            case this.parser.checkScopesOnLine(line, [DotnuggTokens.GeneralDataRow]) &&
-                this.parser.checkScopesOnLine(line, [DotnuggTokens.Item]):
+            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralDataRow]) &&
+                this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.Item]):
                 return { regex: REGEX.ANY_NONSPACE_WITH_TAB, tablen: 4, groupMember: false };
             default:
-                //  if (this.parser.checkScopesOnLine(line, [DotnuggTokens.ItemOpen, DotnuggTokens.CollectionOpen])) {
+                //  if (this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.ItemOpen, dotnugg.parser.semanticTokens.CollectionOpen])) {
                 //  }
 
                 //  Logger.out(lineScope);

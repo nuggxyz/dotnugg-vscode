@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import * as vscode from 'vscode';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
-import * as ParserTypes from '@nuggxyz/dotnugg-sdk/build/parser/types/ParserTypes';
 
 import Helper from './Helper';
 
