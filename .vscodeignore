@@ -11,7 +11,11 @@ tsconfig.json
 
 .vscode
 node_modules
-build/
+
 src/
 tsconfig.json
 webpack.config.js
+.prettierignore
+.editorconfig
+.eslintignore
+.github
