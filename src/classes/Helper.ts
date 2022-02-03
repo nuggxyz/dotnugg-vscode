@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
-import Decorator from './Decorator';
+import Decorator, { DotnuggCodeLensProvider } from './Decorator';
 import { Formatter3 } from './Formatter3';
 
 // import { Config } from './Config';
@@ -78,7 +78,7 @@ class Helper {
         // const comp = Compiler.init(Helper._active_editor.document);
         // comp.compile();
         Decorator.decorateActiveFile();
-        console.log({ compiler: 'yo' });
+        // console.log({ compiler: 'yo' });
 
         Helper.cancelationTokens.onDidSave.dispose();
         Helper.cancelationTokens.onDidSave = new vscode.CancellationTokenSource();
@@ -99,6 +99,8 @@ class Helper {
             console.log('info', 'ondidchange: wrong langid');
             return;
         }
+
+        Decorator.decorateActiveFile();
         // // Config.parse(undefined);
         // const tmp = FileConfig.init(Helper._active_editor.document);
 
@@ -157,6 +159,8 @@ class Helper {
         registerDocType(Helper.languageId);
 
         async function registerDocType(type: string) {
+            context.subscriptions.push(vscode.languages.registerCodeLensProvider('dotnugg', new DotnuggCodeLensProvider()));
+
             vscode.window.onDidChangeActiveTextEditor(
                 (editor) => {
                     if (editor === undefined) {

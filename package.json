@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "private": false,
     "license": "MIT",
@@ -46,7 +46,7 @@
         "workspace"
     ],
     "scripts": {
-        "build": "tsc -p ./",
+        "build": "webpack --mode development --watch",
         "deploy": "vsce publish --yarn",
         "watch": "tsc -watch -p ./",
         "watchts": "yarn ts-node -watch -p ./",
