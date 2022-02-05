@@ -28,8 +28,8 @@ const config = {
         buffer: 'commonjs buffer',
         vscode: 'commonjs vscode',
         // 'vscode-jsonrpc': 'commonjs vscode-jsonrpc',
-        'vscode-languageclient/node': 'commonjs vscode-languageclient/node',
-        'vscode-languageserver/node': 'commonjs vscode-languageserver/node',
+        'vscode-languageclient/node': 'vscode-languageclient/node',
+        'vscode-languageserver/node': 'vscode-languageserver/node',
     },
 
     resolve: {
