@@ -1,18 +1,21 @@
 import {
     createConnection,
-    Diagnostic,
     InitializeResult,
     ProposedFeatures,
     TextDocuments,
     TextDocumentSyncKind,
     WorkspaceFolder,
+    CodeAction,
+    HandlerResult,
+    CodeActionParams,
+    CodeActionKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 
 import { dotnugg } from '../../../../nuggxyz/github/dotnugg-sdk/src';
 
-import { Linter } from './classes/Linter';
+import { CustomDiagnostic, Linter } from './server/Linter';
 
 let validatingDocument = false;
 let validatingAllDocuments = false;
@@ -64,14 +67,11 @@ function validate(document: TextDocument) {
         initWorkspaceRootFolder(document.uri);
         validatingDocument = true;
         const uri = document.uri;
-        const filePath = URI.parse(uri).fsPath;
 
-        const documentText = document.getText();
-        let linterDiagnostics: Diagnostic[] = [];
+        const linter = new Linter(document);
 
-        linterDiagnostics = Linter.validate(filePath, documentText, document);
-
-        connection.sendDiagnostics({ diagnostics: linterDiagnostics, uri });
+        connection.sendDiagnostics({ diagnostics: linter.diagnostics, uri });
+        // connection.client.register
     } finally {
         validatingDocument = false;
     }
@@ -96,11 +96,11 @@ documents.onDidClose((event) =>
     }),
 );
 
-connection.onInitialize((params): InitializeResult => {
+connection.onInitialize(async (params): Promise<InitializeResult> => {
     rootPath = params.rootPath;
     const capabilities = params.capabilities;
 
-    dotnugg.parser.init();
+    await dotnugg.parser.init();
 
     hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
 
@@ -108,15 +108,21 @@ connection.onInitialize((params): InitializeResult => {
         workspaceFolders = params.workspaceFolders;
     }
 
+    console.log(JSON.stringify(params));
+
     const result: InitializeResult = {
         capabilities: {
-            completionProvider: {
-                resolveProvider: false,
-                triggerCharacters: ['.'],
-            },
-            definitionProvider: true,
+            // completionProvider: {
+            //     resolveProvider: false,
+            //     triggerCharacters: ['.'],
+            // },
+            // definitionProvider: true,
+
+            codeActionProvider: { codeActionKinds: [CodeActionKind.QuickFix], resolveProvider: true },
             textDocumentSync: TextDocumentSyncKind.Full,
         },
+
+        // serverInfo: { name: 'dotnugg' },
     };
 
     if (hasWorkspaceFolderCapability) {
@@ -149,11 +155,53 @@ connection.onInitialized(() => {
     }
 });
 
+// connection.onCodeAction()
+
 connection.onDidChangeWatchedFiles((_change) => {
     // if (linter !== null) {
     //     linter.loadFileConfig(rootPath);
     // }
     validateAllDocuments();
+});
+
+export function InterpretFix(uri: string, diagnositc: CustomDiagnostic): CodeAction {
+    console.log(JSON.stringify(diagnositc));
+    const data = diagnositc.data;
+
+    if (data) {
+        delete diagnositc.data;
+
+        const fix: CodeAction = { title: `fix: ${diagnositc.code}` };
+        fix.edit = {};
+        fix.edit.changes = {};
+        fix.edit.changes[uri] = [{ range: data.range, newText: data.text }];
+        fix.diagnostics = [diagnositc];
+        fix.isPreferred = true;
+        fix.kind = CodeActionKind.QuickFix;
+        return fix;
+    }
+    return undefined;
+}
+
+connection.onCodeAction((params: CodeActionParams): HandlerResult<CodeAction[], void> => {
+    const diagnostics: CustomDiagnostic[] = params.context.diagnostics as unknown as any;
+    if (diagnostics.length > 0) {
+        console.log(JSON.stringify(diagnostics[0].data));
+        const fix = InterpretFix(params.textDocument.uri, diagnostics[0]);
+        console.log(JSON.stringify(fix));
+        return fix ? [fix] : [];
+    } else {
+        return [];
+    }
+
+    // const res: CodeAction = {
+    //     title: 'hello',
+    //     diagnostics,
+    // };
+});
+
+connection.onCodeActionResolve((item: CodeAction): CodeAction => {
+    return item;
 });
 
 connection.listen();

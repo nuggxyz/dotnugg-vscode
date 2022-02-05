@@ -18,6 +18,8 @@ class Helper {
         language: 'dotnugg',
     };
 
+    private static client: LanguageClient = undefined;
+
     private static diagnosticCollection: vscode.DiagnosticCollection = null;
 
     public static get editor() {
@@ -187,9 +189,11 @@ class Helper {
 
         function initServer() {
             const ws = vscode.workspace.workspaceFolders;
-            Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection('dotnugg');
+            Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection(Helper.languageId);
 
             context.subscriptions.push(Helper.diagnosticCollection);
+
+            // vscode.languages.registerCodeActionsProvider
 
             // initDiagnosticCollection(this.diagnosticCollection);
 
@@ -198,10 +202,11 @@ class Helper {
                 debug: {
                     module: serverModule,
                     options: {
-                        execArgv: ['--nolazy', '--inspect=6969'],
+                        execArgv: ['--nolazy', '--inspect=6004'],
                     },
                     transport: TransportKind.ipc,
                 },
+
                 run: {
                     module: serverModule,
                     transport: TransportKind.ipc,
@@ -214,19 +219,23 @@ class Helper {
                     { language: 'dotnugg', scheme: 'untitled' },
                 ],
                 revealOutputChannelOn: RevealOutputChannelOn.Never,
+
+                diagnosticCollectionName: Helper.diagnosticCollection.name,
                 synchronize: {
                     // Synchronize the setting section 'dotnugg' to the server
                     configurationSection: 'dotnugg',
+
                     // // Notify the server about file changes to '.sol.js files contain in the workspace (TODO node, linter)
                     // fileEvents: vscode.workspace.createFileSystemWatcher('{**/remappings.txt,**/.solhint.json,**/.soliumrc.json}'),
                 },
-                initializationOptions: context.extensionPath,
+                initializationOptions: { path: context.extensionPath, codeActionLiteralSupport: true },
             };
 
             let clientDisposable: Disposable;
 
             if (ws) {
-                clientDisposable = new LanguageClient('dotnugg', 'dotnugg Language Server', serverOptions, clientOptions).start();
+                Helper.client = new LanguageClient('dotnugg', 'dotnugg Language Server', serverOptions, clientOptions);
+                clientDisposable = Helper.client.start();
             }
             // Push the disposable to the context's subscriptions so that the
             // client can be deactivated on extension deactivation
