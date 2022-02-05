@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { dotnugg } from '../../../../../nuggxyz/github/dotnugg-sdk/src';
-import { REGEX } from '../constants/regex';
+import { REGEX } from '../constants/regex-formatter';
 
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 

@@ -69,7 +69,7 @@ function validate(document: TextDocument) {
         const documentText = document.getText();
         let linterDiagnostics: Diagnostic[] = [];
 
-        linterDiagnostics = Linter.validate(filePath, documentText);
+        linterDiagnostics = Linter.validate(filePath, documentText, document);
 
         connection.sendDiagnostics({ diagnostics: linterDiagnostics, uri });
     } finally {
