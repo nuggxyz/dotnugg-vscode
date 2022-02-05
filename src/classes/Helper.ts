@@ -2,7 +2,7 @@ import path from 'path';
 
 import * as vscode from 'vscode';
 import { Disposable, LanguageClientOptions, RevealOutputChannelOn } from 'vscode-languageclient';
-import { LanguageClient, ServerOptions, TransportKind } from 'vscode-languageclient/node';
+import { LanguageClient, ServerOptions } from 'vscode-languageclient/node';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
@@ -203,12 +203,12 @@ class Helper {
                     options: {
                         execArgv: ['--nolazy', '--inspect=6004'],
                     },
-                    transport: TransportKind.ipc,
+                    transport: 1, //TransportKind.ipc
                 },
 
                 run: {
                     module: serverModule,
-                    transport: TransportKind.ipc,
+                    transport: 1, //TransportKind.ipc
                 },
             };
 
@@ -227,6 +227,7 @@ class Helper {
                     // // Notify the server about file changes to '.sol.js files contain in the workspace (TODO node, linter)
                     // fileEvents: vscode.workspace.createFileSystemWatcher('{**/remappings.txt,**/.solhint.json,**/.soliumrc.json}'),
                 },
+
                 initializationOptions: { path: context.extensionPath, codeActionLiteralSupport: true },
             };
 

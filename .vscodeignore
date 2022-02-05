@@ -10,7 +10,6 @@ tsconfig.json
 **/*.ts
 
 .vscode
-node_modules
 
 src/
 tsconfig.json

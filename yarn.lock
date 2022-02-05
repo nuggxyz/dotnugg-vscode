@@ -3881,7 +3881,7 @@ vsce@^1.100.2:
     yauzl "^2.3.1"
     yazl "^2.2.2"
 
-vscode-jsonrpc@6.0.0:
+vscode-jsonrpc@6.0.0, vscode-jsonrpc@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-6.0.0.tgz#108bdb09b4400705176b957ceca9e0880e9b6d4e"
   integrity sha512-wnJA4BnEjOSyFMvjZdpiOwhSq9uDoK8e/kpRJDTaMYzwlkrhG1fwDIZI94CLsLzlCK5cIbMMtFlJlfR57Lavmg==
