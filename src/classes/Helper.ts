@@ -1,17 +1,24 @@
+import path from 'path';
+
 import * as vscode from 'vscode';
-import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
-import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { Disposable, LanguageClientOptions, RevealOutputChannelOn } from 'vscode-languageclient';
+import { LanguageClient, ServerOptions, TransportKind } from 'vscode-languageclient/node';
+
+import * as ParserTypes from '../../../../../nuggxyz/github/dotnugg-sdk/src/parser/types/ParserTypes';
+import { dotnugg } from '../../../../../nuggxyz/github/dotnugg-sdk/src';
 
 import Decorator, { DotnuggCodeLensProvider } from './Decorator';
 import { Formatter3 } from './Formatter3';
-
 // import { Config } from './Config';
+
 class Helper {
     private static _active_editor: vscode.TextEditor;
     private static languageId = 'dotnugg';
     private static selector = {
         language: 'dotnugg',
     };
+
+    private static diagnosticCollection: vscode.DiagnosticCollection = null;
 
     public static get editor() {
         return Helper._active_editor;
@@ -64,13 +71,6 @@ class Helper {
         if (!document) {
             console.warn('change event on non-document');
         }
-        // Config.reinit().then((finished) => {
-        //     console.log('✓ workspace ready (linearized, resolved deps, ..)');
-        //     console.log('info', JSON.stringify(finished));
-        //     // if (cancellationToken.isCancellationRequested || !finished.some((fp) => fp.value && fp.value.filePath === document.fileName)) {
-        //     //     //abort - new analysis running already OR our finished task is not in the tasklist :/
-        //     // }
-        // });
     }
 
     static async onDidSave() {
@@ -101,20 +101,9 @@ class Helper {
         }
 
         Decorator.decorateActiveFile();
-        // // Config.parse(undefined);
-        // const tmp = FileConfig.init(Helper._active_editor.document);
 
         Helper.cancelationTokens.onDidChange.dispose();
         Helper.cancelationTokens.onDidChange = new vscode.CancellationTokenSource();
-        // console.log('info', '--- on-did-change');
-        // try {
-        //     Helper.analyzeSourceUnit();
-        // } catch (err) {
-        //     if (typeof err !== 'object') {
-        //         //CancellationToken
-        //         throw err;
-        //     }
-        // }
 
         console.log('info', '✓✓✓ on-did-change - resolved');
     }
@@ -123,38 +112,12 @@ class Helper {
         if (vscode.window.activeTextEditor === undefined) {
             throw new Error('onActivate called with inactivae text editor');
         }
-        // const commandHandler = () => {
-        //     try {
-        //         const data = this.parser.json;
-
-        //         const filepath = path.join(this.workingdir, 'dotnuggParsedItems.json');
-
-        //         fs.writeFileSync(filepath, data);
-
-        //         console.log('JSON data is saved.');
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // };
-
-        // context.subscriptions.push(vscode.commands.registerCommand('dotnugg.jsonificationator', commandHandler));
 
         Helper._active_editor = vscode.window.activeTextEditor;
 
         await dotnugg.parser.init();
-        // const collection = await vscode.workspace.findFiles('**/*.*', '**/node_modules/**');
-
-        // dotnugg.parser.parseData(Helper.editor.document.getText());
-
-        // dotnugg.parser.parseDirectoryCheckCache(Helper.workingdir);
 
         Formatter3.init();
-
-        // // const text = fs.readFileSync('./test/Base.nugg', 'utf-8');
-        // const m = new Formatter2(tmp);
-
-        // Logger.log('error', 'onActivate');
-        // Config.init(context.extensionPath);
 
         registerDocType(Helper.languageId);
 
@@ -176,7 +139,6 @@ class Helper {
             );
             vscode.workspace.onDidChangeTextDocument(
                 (event) => {
-                    // console.log('info', JSON.stringify(Helper._active_editor.document), JSON.stringify(event.document));
                     if (Helper._active_editor && event.document.languageId === type) {
                         Helper.onDidChange();
                     }
@@ -219,6 +181,56 @@ class Helper {
             //         },
             //     }),
             // );
+        }
+
+        initServer();
+
+        function initServer() {
+            const ws = vscode.workspace.workspaceFolders;
+            Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection('dotnugg');
+
+            context.subscriptions.push(Helper.diagnosticCollection);
+
+            // initDiagnosticCollection(this.diagnosticCollection);
+
+            const serverModule = path.join(__dirname, 'server.js');
+            const serverOptions: ServerOptions = {
+                debug: {
+                    module: serverModule,
+                    options: {
+                        execArgv: ['--nolazy', '--inspect=6969'],
+                    },
+                    transport: TransportKind.ipc,
+                },
+                run: {
+                    module: serverModule,
+                    transport: TransportKind.ipc,
+                },
+            };
+
+            const clientOptions: LanguageClientOptions = {
+                documentSelector: [
+                    { language: 'dotnugg', scheme: 'file' },
+                    { language: 'dotnugg', scheme: 'untitled' },
+                ],
+                revealOutputChannelOn: RevealOutputChannelOn.Never,
+                synchronize: {
+                    // Synchronize the setting section 'dotnugg' to the server
+                    configurationSection: 'dotnugg',
+                    // // Notify the server about file changes to '.sol.js files contain in the workspace (TODO node, linter)
+                    // fileEvents: vscode.workspace.createFileSystemWatcher('{**/remappings.txt,**/.solhint.json,**/.soliumrc.json}'),
+                },
+                initializationOptions: context.extensionPath,
+            };
+
+            let clientDisposable: Disposable;
+
+            if (ws) {
+                clientDisposable = new LanguageClient('dotnugg', 'dotnugg Language Server', serverOptions, clientOptions).start();
+            }
+            // Push the disposable to the context's subscriptions so that the
+            // client can be deactivated on extension deactivation
+            context.subscriptions.push(clientDisposable);
         }
     }
 }

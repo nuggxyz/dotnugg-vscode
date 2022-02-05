@@ -12,10 +12,10 @@ const CopyPlugin = require('copy-webpack-plugin');
 const config = {
     target: 'webworker',
 
-    entry: './src/extension.ts',
+    entry: { extension: './src/extension.ts', server: './src/server.ts' },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'extension.js',
+        filename: '[name].js',
         libraryTarget: 'commonjs2',
         devtoolModuleFilenameTemplate: '../[resource-path]',
         publicPath: 'dist/',
@@ -27,6 +27,9 @@ const config = {
         util: 'commonjs util',
         buffer: 'commonjs buffer',
         vscode: 'commonjs vscode',
+        // 'vscode-jsonrpc': 'commonjs vscode-jsonrpc',
+        'vscode-languageclient/node': 'commonjs vscode-languageclient/node',
+        'vscode-languageserver/node': 'commonjs vscode-languageserver/node',
     },
 
     resolve: {
@@ -56,7 +59,7 @@ const config = {
         ],
     },
     node: {
-        __dirname: true,
+        __dirname: 'eval-only',
     },
     plugins: [
         new CopyPlugin({

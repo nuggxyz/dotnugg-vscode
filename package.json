@@ -89,8 +89,12 @@
         "webpack-cli": "^4.9.2"
     },
     "dependencies": {
-        "@nuggxyz/dotnugg-sdk": "^0.1.12",
+        "@nuggxyz/dotnugg-sdk": "^0.1.14",
         "tiny-invariant": "^1.1.0",
-        "vscode-textmate": "^5.4.0"
+        "vscode-languageclient": "^7.0.0",
+        "vscode-languageserver": "^7.0.0",
+        "vscode-languageserver-textdocument": "^1.0.4",
+        "vscode-textmate": "^5.4.0",
+        "vscode-uri": "^3.0.3"
     }
 }
