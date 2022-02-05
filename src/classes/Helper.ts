@@ -3,9 +3,8 @@ import path from 'path';
 import * as vscode from 'vscode';
 import { Disposable, LanguageClientOptions, RevealOutputChannelOn } from 'vscode-languageclient';
 import { LanguageClient, ServerOptions, TransportKind } from 'vscode-languageclient/node';
-
-import * as ParserTypes from '../../../../../nuggxyz/github/dotnugg-sdk/src/parser/types/ParserTypes';
-import { dotnugg } from '../../../../../nuggxyz/github/dotnugg-sdk/src';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
 import Decorator, { DotnuggCodeLensProvider } from './Decorator';
 import { Formatter3 } from './Formatter3';

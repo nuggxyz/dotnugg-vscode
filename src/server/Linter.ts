@@ -1,9 +1,8 @@
 import { Diagnostic, DiagnosticSeverity, Range } from 'vscode-languageserver/node';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-
-import { dotnugg } from '../../../../../nuggxyz/github/dotnugg-sdk/src';
-import { ParsedToken } from '../../../../../nuggxyz/github/dotnugg-sdk/src/parser/types/ParserTypes';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { ParsedToken } from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
 type LinterRule = {
     has: string[];
@@ -22,11 +21,23 @@ const rules: LinterRule[] = [];
 // }
 
 export class Linter {
+    private static innerRangeOf(start: ParserTypes.RangeOf<any>): Range {
+        const res = {
+            start: { line: start.token.lineNumber, character: start.token.token.endIndex },
+            end: { line: start.endToken.lineNumber, character: start.endToken.token.endIndex },
+        };
+
+        // console.log(JSON.stringify(res));
+        return res;
+    }
     private static rangeOf(token: ParserTypes.ParsedToken): Range {
-        return {
+        const res = {
             start: { line: token.lineNumber, character: token.token.startIndex },
             end: { line: token.lineNumber, character: token.token.endIndex },
         };
+
+        // console.log(JSON.stringify(res));
+        return res;
     }
     private static rangeOfLine(line: number, length: number): Range {
         return {
@@ -48,7 +59,7 @@ export class Linter {
     }
 
     private validate() {
-        console.log('herhereher');
+        // console.log('herhereher');
 
         for (let i = 0; i < this.doc.lineCount; i++) {
             this.validateLine(i);
@@ -57,28 +68,100 @@ export class Linter {
         for (let i = 0; i < this.parser.tokens.length; i++) {
             this.validateToken(this.parser.tokens[i]);
         }
+
+        this.validateResut();
+    }
+
+    private validateResut() {
+        const matrix = this.parser.results.items[0].value.versions.value[0].value.data.value.matrix;
+
+        let last = undefined;
+        for (let i = 0; i < matrix.length; i++) {
+            if (last !== undefined && last !== matrix[i].value.length) {
+                this.diagnostics.push({
+                    message: 'expected row to be length ' + last + ' - instead it is ' + matrix[i].value.length,
+                    range: Linter.innerRangeOf(matrix[i]),
+                    code: 'INVALID:ROW:LEN:0x66',
+                    severity: DiagnosticSeverity.Error,
+                    source: 'dotnugg',
+                    data: null,
+                });
+            }
+            last = matrix[i].value.length;
+        }
+
+        const anchor = this.parser.results.items[0].value.versions.value[0].value.anchor;
+        const actualYLen = matrix.length;
+        const actualXLen = matrix[0].value.length;
+        if (anchor.value.x.value > actualXLen || anchor.value.x.value < 1) {
+            this.diagnostics.push({
+                message: `invaid x anchor - must be between 1 and ${actualXLen} (inclusive)`,
+                range: Linter.rangeOf(anchor.value.x.token),
+                code: 'INVALID:ANCHOR:X:0x66',
+                severity: DiagnosticSeverity.Error,
+                source: 'dotnugg',
+                data: null,
+            });
+        }
+
+        if (anchor.value.y.value > actualYLen || anchor.value.y.value < 1) {
+            this.diagnostics.push({
+                message: `invaid y anchor - must be between 1 and ${actualYLen} (inclusive)`,
+                range: Linter.rangeOf(anchor.value.y.token),
+                code: 'INVALID:ANCHOR:Y:0x70',
+                severity: DiagnosticSeverity.Error,
+                source: 'dotnugg',
+                data: null,
+            });
+        }
     }
 
     private validateToken(token: ParsedToken) {}
 
     private validateLine(line: number) {
         this.invalidColorRule(line);
+        this.invalidZindexRule(line);
     }
 
+    private invalidZindexRule(line: number) {}
+
     private invalidColorRule(line: number) {
-        if (
-            this.parser.checkTextOnLine(line, ['rgba']) &&
-            this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralColors]) &&
-            !this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralColorDetails])
-        ) {
-            this.diagnostics.push({
-                message: 'invalid color definition',
-                range: Linter.rangeOfLine(line, this.parser.lineAt(line).length),
-                code: 'INVALID COLOR',
-                severity: DiagnosticSeverity.Error,
-                source: 'dotnugg linter',
-                data: { range: Linter.rangeOfLine(line, this.parser.lineAt(line).length), text: 'lol' },
-            });
+        if (this.parser.checkScopesOnLine(line, ['dotnugg.general.colors.content'])) {
+            if (!this.parser.checkTextOnLine(line, [':='])) {
+                const range = {
+                    start: { line, character: this.parser.lineAt(line).indexOf('=') },
+                    end: { line, character: this.parser.lineAt(line).indexOf('=') + 1 },
+                };
+                this.diagnostics.push({
+                    message: 'missing color assignment operator - fix by using ":="',
+                    range,
+                    code: 'INVALID:COLOR:0x67',
+                    severity: DiagnosticSeverity.Error,
+                    source: 'dotnugg linter',
+                    data: {
+                        range,
+                        text: ':=',
+                    },
+                });
+            } else if (!this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralColorName])) {
+                this.diagnostics.push({
+                    message: 'missing color variable - variables have to be only 1 alphabetical character',
+                    range: Linter.rangeOfLine(line, this.parser.lineAt(line).length),
+                    code: 'INVALID:COLOR:0x66',
+                    severity: DiagnosticSeverity.Error,
+                    source: 'dotnugg linter',
+                    data: { range: Linter.rangeOfLine(line, this.parser.lineAt(line).length), text: 'lol' },
+                });
+            } else if (!this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralColorDetails])) {
+                this.diagnostics.push({
+                    message: 'invalid color definition -- missing color details',
+                    range: Linter.rangeOfLine(line, this.parser.lineAt(line).length),
+                    code: 'INVALID:COLOR:0x65',
+                    severity: DiagnosticSeverity.Error,
+                    source: 'dotnugg linter',
+                    data: { range: Linter.rangeOfLine(line, this.parser.lineAt(line).length), text: 'lol' },
+                });
+            }
         }
     }
 }

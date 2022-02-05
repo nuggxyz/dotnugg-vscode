@@ -16,7 +16,7 @@ export function convertRange(input: Range) {
 }
 
 export function InterpretFix(diagnositc: CustomVsCodeDiagnostic): vscode.CodeAction {
-    console.log(JSON.stringify(diagnositc));
+    // console.log(JSON.stringify(diagnositc));
     const data = diagnositc.data;
 
     delete diagnositc.data;
@@ -41,7 +41,7 @@ export class DiagnosticProvider implements vscode.CodeActionProvider {
         token: vscode.CancellationToken,
     ): vscode.CodeAction[] {
         // for each diagnostic entry that has the matching `code`, create a code action command
-        console.log('hello');
+        // console.log('hello');
         return (
             context.diagnostics
                 // .filter((diagnostic) => diagnostic.code === 'INVALID COLOR')

@@ -12,8 +12,7 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-
-import { dotnugg } from '../../../../nuggxyz/github/dotnugg-sdk/src';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
 import { CustomDiagnostic, Linter } from './server/Linter';
 
@@ -26,7 +25,7 @@ let hasWorkspaceFolderCapability = false;
 
 const connection = createConnection(ProposedFeatures.all);
 
-console.log = connection.console.log.bind(connection.console);
+// console.log = connection.console.log.bind(connection.console);
 console.error = connection.console.error.bind(connection.console);
 const documents = new TextDocuments(TextDocument);
 
@@ -61,8 +60,8 @@ function initWorkspaceRootFolder(uri: string) {
 
 function validate(document: TextDocument) {
     try {
-        console.log(document.uri);
-        console.log(document.getText());
+        // console.log(document.uri);
+        // console.log(document.getText());
 
         initWorkspaceRootFolder(document.uri);
         validatingDocument = true;
@@ -108,7 +107,7 @@ connection.onInitialize(async (params): Promise<InitializeResult> => {
         workspaceFolders = params.workspaceFolders;
     }
 
-    console.log(JSON.stringify(params));
+    // console.log(JSON.stringify(params));
 
     const result: InitializeResult = {
         capabilities: {
@@ -165,7 +164,7 @@ connection.onDidChangeWatchedFiles((_change) => {
 });
 
 export function InterpretFix(uri: string, diagnositc: CustomDiagnostic): CodeAction {
-    console.log(JSON.stringify(diagnositc));
+    // console.log(JSON.stringify(diagnositc));
     const data = diagnositc.data;
 
     if (data) {
@@ -186,9 +185,9 @@ export function InterpretFix(uri: string, diagnositc: CustomDiagnostic): CodeAct
 connection.onCodeAction((params: CodeActionParams): HandlerResult<CodeAction[], void> => {
     const diagnostics: CustomDiagnostic[] = params.context.diagnostics as unknown as any;
     if (diagnostics.length > 0) {
-        console.log(JSON.stringify(diagnostics[0].data));
+        // console.log(JSON.stringify(diagnostics[0].data));
         const fix = InterpretFix(params.textDocument.uri, diagnostics[0]);
-        console.log(JSON.stringify(fix));
+        // console.log(JSON.stringify(fix));
         return fix ? [fix] : [];
     } else {
         return [];
