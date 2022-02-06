@@ -149,6 +149,12 @@ class Helper {
             context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(Helper.selector, Formatter3));
             context.subscriptions.push(vscode.languages.registerCodeLensProvider(Helper.selector, new DotnuggCodeLensProvider()));
 
+            context.subscriptions.push(
+                vscode.commands.registerCommand('dotnugg.showLayerColorsInActiveDoc', () => {
+                    Decorator.switchActiveDocToLayerColors();
+                }),
+            );
+
             vscode.window.onDidChangeActiveTextEditor(
                 (editor) => {
                     if (editor === undefined) {

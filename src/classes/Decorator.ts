@@ -190,8 +190,22 @@ class Decorator {
 
     public ttl: Date;
 
+    public layerColorsVisible = false;
+
     constructor(uri: string) {
         Decorator.uris[uri] = this;
+    }
+
+    public static switchActiveDocToLayerColors() {
+        let me = Decorator.uris[Helper.editor.document.uri.fsPath];
+
+        if (!me) {
+            me = new Decorator(Helper.editor.document.uri.fsPath);
+        }
+
+        me.layerColorsVisible = !me.layerColorsVisible;
+
+        Decorator.decorateActiveFile(Helper.editor.document);
     }
 
     public static decorateActiveFile(doc: vscode.TextDocument) {
@@ -212,14 +226,17 @@ class Decorator {
         // }
         try {
             let prevColorDecorators = Decorator.colorDecorators;
-
+            let prevLayDecorators = Decorator.lay;
             Decorator.colorDecorators = {};
+            Decorator.lay = {};
 
             me.ttl = new Date();
 
             let allRanges = [];
 
             let anchorRanges: vscode.Range[] = [];
+
+            let prevCodeLens = me.codeLens;
 
             me.codeLens = [];
 
@@ -229,6 +246,8 @@ class Decorator {
             } & ParserTypes.Version)[] = [];
 
             let colorRanges: { [_: string]: vscode.Range[] } = {};
+
+            let featureLayerColorMap = {};
 
             for (let i = 0; i < parser.results.items.length; i++) {
                 const attr = parser.results.items[i].value;
@@ -273,24 +292,58 @@ class Decorator {
                 ]);
 
                 for (let j = 0; j < Object.keys(colors.value).length; j++) {
+                    const colorid = colors.value[Object.keys(colors.value)[j]].value.name.value;
+
                     let layer = colors.value[Object.keys(colors.value)[j]].value.zindex;
 
                     let layerval =
                         layer.value.direction +
                         (layer.value.offset === 100 ? Helper.collection.features[attrname].zindex.offset : layer.value.offset);
 
-                    if (!layerColors[layerval]) {
-                        return;
-                    }
+                    Decorator.lay[colorid] = vscode.window.createTextEditorDecorationType({
+                        light: {
+                            after: {
+                                color: 'rgba(0,0,0,.5)',
+                                contentText: `: ${layerval}`,
+                            },
+                        },
+                        dark: {
+                            after: {
+                                color: 'rgba(255,255,255,.5)',
+                                contentText: `: ${layerval}`,
+                            },
+                        },
+                    });
 
-                    let color: string = layerColors[layerval];
-                    if (!colorRanges[color]) {
-                        colorRanges[color] = [];
+                    [...Object.values(prevLayDecorators)].forEach((x) => {
+                        if (x) {
+                            // Helper.editor.setDecorations(x, []);
+                            x.dispose();
+                        }
+                    });
+
+                    Helper.editor.setDecorations(Decorator.lay[colorid], [
+                        {
+                            range: Helper.vscodeRange(layer.token),
+                        },
+                    ]);
+
+                    if (me.layerColorsVisible) {
+                        if (!layerColors[layerval]) {
+                            return;
+                        }
+
+                        let color: string = layerColors[layerval];
+                        if (!colorRanges[color]) {
+                            colorRanges[color] = [];
+                        }
+                        colorRanges[color].push(Helper.vscodeRangeOffset(layer.token, 1, 1));
+
+                        featureLayerColorMap[colors.value[Object.keys(colors.value)[j]].value.name.value] = color;
                     }
-                    colorRanges[color].push(Helper.vscodeRangeOffset(layer.token, 1, 1));
 
                     let col = colors.value[Object.keys(colors.value)[j]].value.rgba;
-                    color = col.value;
+                    let color = col.value;
 
                     if (!colorRanges[color]) {
                         colorRanges[color] = [];
@@ -310,7 +363,12 @@ class Decorator {
                     if (yindex === 0) {
                         const token = Helper.vscodeRange(r.token);
 
-                        me.codeLens.push(new vscode.CodeLens(token, { title: 'show layers as colors', command: '' }));
+                        me.codeLens.push(
+                            new vscode.CodeLens(token, {
+                                title: 'toggle colors',
+                                command: 'dotnugg.showLayerColorsInActiveDoc',
+                            }),
+                        );
                     }
                     r.value.forEach((c, xindex) => {
                         try {
@@ -323,11 +381,17 @@ class Decorator {
                             }
 
                             if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
-                                const color = x.colors.value[c.value.label.value].value.rgba;
-                                if (!colorRanges[color.value]) {
-                                    colorRanges[color.value] = [];
+                                let color: string; // if layer colors is active
+                                if (me.layerColorsVisible) {
+                                    color = featureLayerColorMap[x.colors.value[c.value.label.value].value.name.value];
+                                } else {
+                                    color = x.colors.value[c.value.label.value].value.rgba.value;
                                 }
-                                colorRanges[color.value].push(Helper.vscodeRange(c.value.type.token));
+
+                                if (!colorRanges[color]) {
+                                    colorRanges[color] = [];
+                                }
+                                colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
                             }
                         } catch (err) {}
                     });
@@ -419,7 +483,7 @@ class Decorator {
 
             Helper.editor.setDecorations(Decorator.anchor, anchorRanges);
 
-            Object.values(prevColorDecorators).forEach((x) => {
+            [...Object.values(prevColorDecorators)].forEach((x) => {
                 if (x) {
                     // Helper.editor.setDecorations(x, []);
                     x.dispose();
