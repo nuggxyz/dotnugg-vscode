@@ -40,6 +40,24 @@ let decSpace = vscode.window.createTextEditorDecorationType({
     },
 });
 
+let decBg = vscode.window.createTextEditorDecorationType({
+    light: {
+        backgroundColor: '#111111',
+    },
+    dark: {
+        backgroundColor: '#eeeeee',
+    },
+    // letterSpacing: '5px',
+    // before: {
+    //     width: '5px',
+    //     contentText: '',
+    // },
+    // after: {
+    //     width: '5px',
+    //     contentText: '',
+    // },
+});
+
 // let layerColors = {
 //     '-4': decorationFromColor('#123545'),
 //     '-3': decorationFromColor('#123545'),
@@ -182,6 +200,7 @@ class Decorator {
 
     public static lay: { [_: string]: vscode.TextEditorDecorationType } = {};
     public static anchor: vscode.TextEditorDecorationType;
+    public static background: vscode.TextEditorDecorationType;
 
     public static axis: { [_: string]: vscode.TextEditorDecorationType } = {};
     public static uris: { [_: string]: Decorator } = {};
@@ -191,6 +210,7 @@ class Decorator {
     public ttl: Date;
 
     public layerColorsVisible = false;
+    public backgroundVisible = false;
 
     constructor(uri: string) {
         Decorator.uris[uri] = this;
@@ -204,6 +224,18 @@ class Decorator {
         }
 
         me.layerColorsVisible = !me.layerColorsVisible;
+
+        Decorator.decorateActiveFile(Helper.editor.document);
+    }
+
+    public static switchBackgroundVisible() {
+        let me = Decorator.uris[Helper.editor.document.uri.fsPath];
+
+        if (!me) {
+            me = new Decorator(Helper.editor.document.uri.fsPath);
+        }
+
+        me.backgroundVisible = !me.backgroundVisible;
 
         Decorator.decorateActiveFile(Helper.editor.document);
     }
@@ -230,9 +262,15 @@ class Decorator {
             Decorator.colorDecorators = {};
             Decorator.lay = {};
 
+            let prevBackground = Decorator.background;
+
+            Decorator.background = undefined;
+
             me.ttl = new Date();
 
             let allRanges = [];
+
+            let backgroundRanges = [];
 
             let anchorRanges: vscode.Range[] = [];
 
@@ -267,29 +305,29 @@ class Decorator {
                 console.log(Helper.collection);
                 console.log(attr);
 
-                const contentText =
-                    ' default.layer: ' +
-                    Helper.collection.features[attrname].zindex.direction +
-                    Helper.collection.features[attrname].zindex.offset;
+                // const contentText =
+                //     ' default.layer: ' +
+                //     Helper.collection.features[attrname].zindex.direction +
+                //     Helper.collection.features[attrname].zindex.offset;
 
-                Decorator.lay[attrname] = vscode.window.createTextEditorDecorationType({
-                    light: {
-                        after: {
-                            color: 'rgba(0,0,0,.5)',
-                            contentText,
-                        },
-                    },
-                    dark: {
-                        after: {
-                            color: 'rgba(255,255,255,.5)',
-                            contentText,
-                        },
-                    },
-                });
+                // Decorator.lay[attrname] = vscode.window.createTextEditorDecorationType({
+                //     light: {
+                //         after: {
+                //             color: 'rgba(0,0,0,.5)',
+                //             contentText,
+                //         },
+                //     },
+                //     dark: {
+                //         after: {
+                //             color: 'rgba(255,255,255,.5)',
+                //             contentText,
+                //         },
+                //     },
+                // });
 
-                Helper.editor.setDecorations(Decorator.lay[attrname], [
-                    { range: doc.lineAt(attr.colors.token.lineNumber).range, hoverMessage: 'this is defined in your collection.nugg file' },
-                ]);
+                // Helper.editor.setDecorations(Decorator.lay[attrname], [
+                //     { range: doc.lineAt(attr.colors.token.lineNumber).range, hoverMessage: 'this is defined in your collection.nugg file' },
+                // ]);
 
                 for (let j = 0; j < Object.keys(colors.value).length; j++) {
                     const colorid = colors.value[Object.keys(colors.value)[j]].value.name.value;
@@ -297,7 +335,7 @@ class Decorator {
                     let layer = colors.value[Object.keys(colors.value)[j]].value.zindex;
 
                     let layerval =
-                        layer.value.direction +
+                        (layer.value.offset === 100 ? Helper.collection.features[attrname].zindex.direction : layer.value.direction) +
                         (layer.value.offset === 100 ? Helper.collection.features[attrname].zindex.offset : layer.value.offset);
 
                     Decorator.lay[colorid] = vscode.window.createTextEditorDecorationType({
@@ -337,7 +375,7 @@ class Decorator {
                         if (!colorRanges[color]) {
                             colorRanges[color] = [];
                         }
-                        colorRanges[color].push(Helper.vscodeRangeOffset(layer.token, 1, 1));
+                        colorRanges[color].push(Helper.vscodeRangeOffset(layer.token, 1, 0));
 
                         featureLayerColorMap[colors.value[Object.keys(colors.value)[j]].value.name.value] = color;
                     }
@@ -369,6 +407,13 @@ class Decorator {
                                 command: 'dotnugg.showLayerColorsInActiveDoc',
                             }),
                         );
+
+                        me.codeLens.push(
+                            new vscode.CodeLens(token, {
+                                title: 'toggle background',
+                                command: 'dotnugg.showBackground',
+                            }),
+                        );
                     }
                     r.value.forEach((c, xindex) => {
                         try {
@@ -392,6 +437,8 @@ class Decorator {
                                     colorRanges[color] = [];
                                 }
                                 colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
+                            } else {
+                                backgroundRanges.push(token);
                             }
                         } catch (err) {}
                     });
@@ -451,6 +498,23 @@ class Decorator {
 
                 Helper.editor.setDecorations(Decorator.colorDecorators[key], colorRanges[key]);
             });
+
+            if (me.backgroundVisible) {
+                Decorator.background = vscode.window.createTextEditorDecorationType({
+                    light: {
+                        backgroundColor: '#333333',
+                    },
+                    dark: {
+                        backgroundColor: '#bbbbbb',
+                    },
+                });
+
+                Helper.editor.setDecorations(Decorator.background, backgroundRanges);
+            }
+
+            if (prevBackground) {
+                prevBackground.dispose();
+            }
 
             Helper.editor.setDecorations(decSpace, allRanges);
 

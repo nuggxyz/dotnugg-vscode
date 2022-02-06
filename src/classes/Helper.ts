@@ -153,6 +153,9 @@ class Helper {
                 vscode.commands.registerCommand('dotnugg.showLayerColorsInActiveDoc', () => {
                     Decorator.switchActiveDocToLayerColors();
                 }),
+                vscode.commands.registerCommand('dotnugg.showBackground', () => {
+                    Decorator.switchBackgroundVisible();
+                }),
             );
 
             vscode.window.onDidChangeActiveTextEditor(
