@@ -69,15 +69,16 @@ class Helper {
     }
 
     public static get workingdir(): vscode.WorkspaceFolder {
-        const folders = vscode.workspace.workspaceFolders;
+        console.log('SHOULD BE HER');
 
-        for (let i = 0; i < folders.length; i++) {
-            const p = folders[i].uri;
-            if (path.join(p.fsPath, './collection.nugg')) {
-                return folders[i];
+        for (let i = 0; i < vscode.workspace.workspaceFolders.length; i++) {
+            const p = vscode.workspace.workspaceFolders[i].uri;
+            if (fs.existsSync(path.join(p.fsPath, './collection.nugg'))) {
+                return vscode.workspace.workspaceFolders[i];
             }
         }
-        return folders[0];
+        console.log('SHOULD NOT BE HERE');
+        return vscode.workspace.workspaceFolders[0];
     }
 
     public static get workingDirPath() {
