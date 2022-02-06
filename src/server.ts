@@ -60,11 +60,12 @@ function initWorkspaceRootFolder(uri: string) {
 }
 function validate(document: TextDocument) {
     try {
+        initWorkspaceRootFolder(document.uri);
+        validatingDocument = true;
         if (!document.getText().includes('@collection')) {
             // console.log(document.uri);
             // console.log(document.getText());
-            initWorkspaceRootFolder(document.uri);
-            validatingDocument = true;
+
             const uri = document.uri;
 
             const linter = new Linter(document);
@@ -160,9 +161,8 @@ connection.onInitialized(() => {
 // connection.onCodeAction()
 
 connection.onDidChangeWatchedFiles((_change) => {
-    // if (linter !== null) {
-    //     linter.loadFileConfig(rootPath);
-    // }
+    Config.init(rootPath, {});
+
     validateAllDocuments();
 });
 

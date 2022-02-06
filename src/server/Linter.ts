@@ -63,16 +63,27 @@ export class Linter {
     private validate() {
         // console.log('herhereher');
 
-        for (let i = 0; i < this.doc.lineCount; i++) {
-            this.validateLine(i);
-        }
+        if (Config.collection) {
+            for (let i = 0; i < this.doc.lineCount; i++) {
+                this.validateLine(i);
+            }
 
-        for (let i = 0; i < this.parser.tokens.length; i++) {
-            this.validateToken(this.parser.tokens[i]);
-        }
+            for (let i = 0; i < this.parser.tokens.length; i++) {
+                this.validateToken(this.parser.tokens[i]);
+            }
 
-        this.validateResultRule();
-        this.validateItemName();
+            this.validateResultRule();
+            this.validateItemName();
+        } else {
+            this.diagnostics.push({
+                message: 'no collection file found',
+                range: Linter.innerRangeOf(this.parser.results.items[0]),
+                code: 'UNDEFINED:ITEM:0x72',
+                severity: DiagnosticSeverity.Error,
+                source: 'dotnugg',
+                data: null,
+            });
+        }
     }
 
     private validateItemName() {

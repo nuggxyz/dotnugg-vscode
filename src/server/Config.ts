@@ -26,10 +26,11 @@ export class Config {
     }
 
     private static readFileConfig(filePath: string) {
-        console.log(fs.existsSync(filePath));
         if (fs.existsSync(filePath)) {
             const parser = dotnugg.parser.parsePath(filePath);
             this.collection = dotnugg.builder.transform.fromParser(parser).input.collection;
+        } else {
+            this.collection = undefined;
         }
     }
 
@@ -39,7 +40,7 @@ export class Config {
 
     public static loadFileConfig(rootPath: string) {
         if (this.isRootPathSet(rootPath)) {
-            const filePath = `${rootPath}/items/main.collection.nugg`;
+            const filePath = `${rootPath}/collection.nugg`;
             const readConfig = this.readFileConfig.bind(this, filePath);
 
             readConfig();

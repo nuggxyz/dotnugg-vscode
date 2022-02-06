@@ -217,7 +217,7 @@ class Helper {
                     configurationSection: 'dotnugg',
 
                     // // Notify the server about file changes to '.sol.js files contain in the workspace (TODO node, linter)
-                    fileEvents: vscode.workspace.createFileSystemWatcher('{**/main.collection.nugg}'),
+                    fileEvents: vscode.workspace.createFileSystemWatcher('{**/collection.nugg}'),
                 },
 
                 initializationOptions: context.extensionPath,
