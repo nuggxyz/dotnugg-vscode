@@ -4,6 +4,8 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import { ParsedToken } from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
+import { Config } from './Config';
+
 type LinterRule = {
     has: string[];
     not: string[];
@@ -69,10 +71,26 @@ export class Linter {
             this.validateToken(this.parser.tokens[i]);
         }
 
-        this.validateResut();
+        this.validateResultRule();
+        this.validateItemName();
     }
 
-    private validateResut() {
+    private validateItemName() {
+        // if collection does not contain feature name
+        const found = this.parser.results.items[0].value.feature;
+        if (Config.collectionFeatureKeys.indexOf(found.value) === -1) {
+            this.diagnostics.push({
+                message: `undefined item type "${found.value}" - collection only has ` + JSON.stringify(Config.collectionFeatureKeys),
+                range: Linter.rangeOf(found.token),
+                code: 'UNDEFINED:ITEM:0x72',
+                severity: DiagnosticSeverity.Error,
+                source: 'dotnugg',
+                data: null,
+            });
+        }
+    }
+
+    private validateResultRule() {
         const matrix = this.parser.results.items[0].value.versions.value[0].value.data.value.matrix;
 
         let last = undefined;

@@ -15,6 +15,7 @@ class Helper {
     private static languageId = 'dotnugg';
     private static selector = {
         language: 'dotnugg',
+        scheme: 'file',
     };
 
     private static client: LanguageClient = undefined;
@@ -37,10 +38,6 @@ class Helper {
             new vscode.Position(token.lineNumber, token.token.endIndex),
         );
     }
-
-    // public static get compiledDirecory() {
-    //     return dotnugg.parser.parseDirectoryCheckCache(this.workingdir);
-    // }
 
     public static get workingdir() {
         return vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -74,34 +71,30 @@ class Helper {
         }
     }
 
-    static async onDidSave() {
-        console.log('info', 'SAVEs');
-        // const comp = Compiler.init(Helper._active_editor.document);
-        // comp.compile();
-        Decorator.decorateActiveFile();
-        // console.log({ compiler: 'yo' });
+    static async onDidSave(doc: vscode.TextDocument) {
+        Decorator.decorateActiveFile(doc);
 
         Helper.cancelationTokens.onDidSave.dispose();
         Helper.cancelationTokens.onDidSave = new vscode.CancellationTokenSource();
     }
 
-    static onDidChange() {
-        const document =
-            Helper._active_editor && Helper._active_editor.document
-                ? Helper._active_editor.document
-                : vscode.window.activeTextEditor
-                ? vscode.window.activeTextEditor.document
-                : undefined;
-        if (!document) {
+    static onDidChange(doc: vscode.TextDocument) {
+        // const document =
+        //     Helper._active_editor && Helper._active_editor.document
+        //         ? Helper._active_editor.document
+        //         : vscode.window.activeTextEditor
+        //         ? vscode.window.activeTextEditor.document
+        //         : undefined;
+        if (!doc) {
             console.log('warn', 'change event on non-document');
             return;
         }
-        if (document.languageId !== Helper.languageId) {
+        if (doc.languageId !== Helper.languageId) {
             console.log('info', 'ondidchange: wrong langid');
             return;
         }
 
-        Decorator.decorateActiveFile();
+        Decorator.decorateActiveFile(doc);
 
         Helper.cancelationTokens.onDidChange.dispose();
         Helper.cancelationTokens.onDidChange = new vscode.CancellationTokenSource();
@@ -110,20 +103,19 @@ class Helper {
     }
 
     static async onActivate(context: vscode.ExtensionContext) {
-        if (vscode.window.activeTextEditor === undefined) {
-            throw new Error('onActivate called with inactivae text editor');
+        if (vscode.window.activeTextEditor !== undefined) {
+            Helper._active_editor = vscode.window.activeTextEditor;
+
+            // throw new Error('onActivate called with inactivae text editor');
         }
 
-        Helper._active_editor = vscode.window.activeTextEditor;
-
         await dotnugg.parser.init();
-
-        Formatter3.init();
 
         registerDocType(Helper.languageId);
 
         async function registerDocType(type: string) {
-            context.subscriptions.push(vscode.languages.registerCodeLensProvider('dotnugg', new DotnuggCodeLensProvider()));
+            context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(Helper.selector, Formatter3));
+            context.subscriptions.push(vscode.languages.registerCodeLensProvider(Helper.selector, new DotnuggCodeLensProvider()));
 
             vscode.window.onDidChangeActiveTextEditor(
                 (editor) => {
@@ -132,7 +124,7 @@ class Helper {
                     }
                     Helper._active_editor = editor;
                     if (editor && editor.document && editor.document.languageId === type) {
-                        Helper.onDidChange();
+                        Helper.onDidChange(editor.document);
                     }
                 },
                 null,
@@ -141,7 +133,7 @@ class Helper {
             vscode.workspace.onDidChangeTextDocument(
                 (event) => {
                     if (Helper._active_editor && event.document.languageId === type) {
-                        Helper.onDidChange();
+                        Helper.onDidChange(event.document);
                     }
                 },
                 null,
@@ -151,7 +143,7 @@ class Helper {
             /***** OnSave */
             vscode.workspace.onDidSaveTextDocument(
                 (document) => {
-                    Helper.onDidSave();
+                    Helper.onDidSave(document);
                 },
                 null,
                 context.subscriptions,
@@ -160,7 +152,7 @@ class Helper {
             /****** OnOpen */
             vscode.workspace.onDidOpenTextDocument(
                 (document) => {
-                    Helper.onDidSave();
+                    Helper.onDidSave(document);
                 },
                 null,
                 context.subscriptions,
@@ -188,9 +180,9 @@ class Helper {
 
         function initServer() {
             const ws = vscode.workspace.workspaceFolders;
-            Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection(Helper.languageId);
+            // Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection(Helper.languageId);
 
-            context.subscriptions.push(Helper.diagnosticCollection);
+            // context.subscriptions.push(Helper.diagnosticCollection);
 
             // vscode.languages.registerCodeActionsProvider
 
@@ -219,16 +211,16 @@ class Helper {
                 ],
                 revealOutputChannelOn: RevealOutputChannelOn.Never,
 
-                diagnosticCollectionName: Helper.diagnosticCollection.name,
+                diagnosticCollectionName: Helper.languageId,
                 synchronize: {
                     // Synchronize the setting section 'dotnugg' to the server
                     configurationSection: 'dotnugg',
 
                     // // Notify the server about file changes to '.sol.js files contain in the workspace (TODO node, linter)
-                    // fileEvents: vscode.workspace.createFileSystemWatcher('{**/remappings.txt,**/.solhint.json,**/.soliumrc.json}'),
+                    fileEvents: vscode.workspace.createFileSystemWatcher('{**/main.collection.nugg}'),
                 },
 
-                initializationOptions: { path: context.extensionPath, codeActionLiteralSupport: true },
+                initializationOptions: context.extensionPath,
             };
 
             let clientDisposable: Disposable;

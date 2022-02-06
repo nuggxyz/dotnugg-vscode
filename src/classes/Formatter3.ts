@@ -6,7 +6,7 @@ import { REGEX } from '../constants/regex-formatter';
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
 export class Formatter3 {
-    public static _instance: vscode.Disposable;
+    // public static _instance: vscode.Disposable;
 
     public parser: dotnugg.parser;
 
@@ -23,14 +23,12 @@ export class Formatter3 {
         n: '',
     };
 
-    public static init() {
-        Formatter3._instance = vscode.languages.registerDocumentFormattingEditProvider('dotnugg', {
-            provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
-                const formatter = new Formatter3(document);
+    // public static init(disp: vscode.Disposable) {}
 
-                return [...formatter.format()];
-            },
-        });
+    public static provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
+        const formatter = new Formatter3(document);
+
+        return [...formatter.format()];
     }
 
     private format(): vscode.TextEdit[] {

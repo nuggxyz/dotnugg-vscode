@@ -11,10 +11,11 @@ import {
     CodeActionKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { URI } from 'vscode-uri';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { URI } from 'vscode-uri';
 
 import { CustomDiagnostic, Linter } from './server/Linter';
+import { Config } from './server/Config';
 
 let validatingDocument = false;
 let validatingAllDocuments = false;
@@ -50,27 +51,27 @@ function initWorkspaceRootFolder(uri: string) {
                     rootPath = URI.parse(newRootFolder.uri).fsPath;
                     // solcCompiler.rootPath = rootPath;
                     // if (linter !== null) {
-                    //     linter.loadFileConfig(rootPath);
+                    Config.loadFileConfig(rootPath);
                     // }
                 }
             }
         }
     }
 }
-
 function validate(document: TextDocument) {
     try {
-        // console.log(document.uri);
-        // console.log(document.getText());
+        if (!document.getText().includes('@collection')) {
+            // console.log(document.uri);
+            // console.log(document.getText());
+            initWorkspaceRootFolder(document.uri);
+            validatingDocument = true;
+            const uri = document.uri;
 
-        initWorkspaceRootFolder(document.uri);
-        validatingDocument = true;
-        const uri = document.uri;
+            const linter = new Linter(document);
 
-        const linter = new Linter(document);
-
-        connection.sendDiagnostics({ diagnostics: linter.diagnostics, uri });
-        // connection.client.register
+            connection.sendDiagnostics({ diagnostics: linter.diagnostics, uri });
+        }
+        // connection.client.register}
     } finally {
         validatingDocument = false;
     }
@@ -101,6 +102,8 @@ connection.onInitialize(async (params): Promise<InitializeResult> => {
 
     await dotnugg.parser.init();
 
+    Config.init(rootPath, {});
+
     hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
 
     if (params.workspaceFolders) {
@@ -121,7 +124,7 @@ connection.onInitialize(async (params): Promise<InitializeResult> => {
             textDocumentSync: TextDocumentSyncKind.Full,
         },
 
-        // serverInfo: { name: 'dotnugg' },
+        serverInfo: { name: 'dotnugg' },
     };
 
     if (hasWorkspaceFolderCapability) {

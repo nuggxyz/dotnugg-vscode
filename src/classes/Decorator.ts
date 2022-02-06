@@ -243,7 +243,7 @@ class Decorator {
     public static codeLens: vscode.CodeLens[] = [];
     public static colorDecorators: { [_: Rgba]: vscode.TextEditorDecorationType } = {};
 
-    public static decorateActiveFile() {
+    public static decorateActiveFile(doc: vscode.TextDocument) {
         // invariant(false, '');
         try {
             const parser = dotnugg.parser.parseData(Helper.editor.document.getText());
