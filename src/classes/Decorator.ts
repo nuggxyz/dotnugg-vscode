@@ -4,29 +4,7 @@ import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
 import Helper from './Helper';
-
-let anchorDec = vscode.window.createTextEditorDecorationType({
-    light: {
-        // this color will be used in light color themes
-        borderStyle: 'solid',
-        borderColor: 'rgba(139,0,0,1)',
-        borderWidth: '2px',
-        borderRadius: '3px',
-        backgroundColor: 'rgba(255,204,203,.5)',
-        fontWeight: 'bold',
-        textDecoration: 'wavy',
-    },
-    dark: {
-        // this color will be used in dark color themes
-        borderRadius: '3px',
-        borderWidth: '2px',
-        borderStyle: 'solid',
-        borderColor: 'rgba(139,0,0,1)',
-        backgroundColor: 'rgba(255,204,203,.5)',
-        fontWeight: 'bold',
-        textDecoration: 'wavy',
-    },
-});
+import { CodeLens } from './CodeLens';
 
 let decSpace = vscode.window.createTextEditorDecorationType({
     // letterSpacing: '5px',
@@ -39,43 +17,6 @@ let decSpace = vscode.window.createTextEditorDecorationType({
         contentText: '',
     },
 });
-
-let decBg = vscode.window.createTextEditorDecorationType({
-    light: {
-        backgroundColor: '#111111',
-    },
-    dark: {
-        backgroundColor: '#eeeeee',
-    },
-    // letterSpacing: '5px',
-    // before: {
-    //     width: '5px',
-    //     contentText: '',
-    // },
-    // after: {
-    //     width: '5px',
-    //     contentText: '',
-    // },
-});
-
-// let layerColors = {
-//     '-4': decorationFromColor('#123545'),
-//     '-3': decorationFromColor('#123545'),
-//     '-2': decorationFromColor('#123545'),
-//     '-1': decorationFromColor('#123545'),
-//     '0': decorationFromColor('#123545'),
-//     '1': decorationFromColor('#123545'),
-//     '2': decorationFromColor('#123545'),
-//     '3': decorationFromColor('#123545'),
-//     '4': decorationFromColor('#123545'),
-//     '5': decorationFromColor('#123545'),
-//     '6': decorationFromColor('#123545'),
-//     '7': decorationFromColor('#123545'),
-//     '8': decorationFromColor('#123545'),
-//     '9': decorationFromColor('#123545'),
-//     '10': decorationFromColor('#123545'),
-//     '11': decorationFromColor('#123545'),
-// };
 
 let layerColors = {
     '-4': 'rgba(0,180,255,1)',
@@ -94,21 +35,6 @@ let layerColors = {
     '+8': 'rgba(255,90,0,1)',
     '+9': 'rgba(255,60,0,1)',
 };
-
-function decorationFromColor(color: string) {
-    return vscode.window.createTextEditorDecorationType({
-        light: {
-            backgroundColor: color,
-            color: luma(color) > 0.5 ? 'rgba(0,0,0,1)' : 'rgba(255,255,255,1)',
-            // cursor: 'crosshair',
-        },
-        dark: {
-            backgroundColor: color,
-            color: luma(color) > 0.5 ? 'rgba(0,0,0,1)' : 'rgba(255,255,255,1)',
-            // cursor: 'crosshair',
-        },
-    });
-}
 
 type Rgba = `rgba(${number},${number},${number},${number})`;
 
@@ -184,17 +110,7 @@ function findOffsets(
     return { top, bot, side, centerx, centery };
 }
 
-export class DotnuggCodeLensProvider {
-    provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken) {
-        if (!Decorator.uris[document.uri.fsPath]) {
-            Decorator.uris[document.uri.fsPath] = new Decorator(document.uri.fsPath);
-        }
-        return Decorator.uris[document.uri.fsPath].codeLens;
-    }
-}
-
 class Decorator {
-    public codeLens: vscode.CodeLens[] = [];
     public static colorDecorators: { [_: Rgba]: vscode.TextEditorDecorationType } = {};
     public static textDecorators: { [_: string]: vscode.TextEditorDecorationType } = {};
 
@@ -209,35 +125,8 @@ class Decorator {
 
     public ttl: Date;
 
-    public layerColorsVisible = false;
-    public backgroundVisible = false;
-
     constructor(uri: string) {
         Decorator.uris[uri] = this;
-    }
-
-    public static switchActiveDocToLayerColors() {
-        let me = Decorator.uris[Helper.editor.document.uri.fsPath];
-
-        if (!me) {
-            me = new Decorator(Helper.editor.document.uri.fsPath);
-        }
-
-        me.layerColorsVisible = !me.layerColorsVisible;
-
-        Decorator.decorateActiveFile(Helper.editor.document);
-    }
-
-    public static switchBackgroundVisible() {
-        let me = Decorator.uris[Helper.editor.document.uri.fsPath];
-
-        if (!me) {
-            me = new Decorator(Helper.editor.document.uri.fsPath);
-        }
-
-        me.backgroundVisible = !me.backgroundVisible;
-
-        Decorator.decorateActiveFile(Helper.editor.document);
     }
 
     public static decorateActiveFile(doc: vscode.TextDocument) {
@@ -274,9 +163,9 @@ class Decorator {
 
             let anchorRanges: vscode.Range[] = [];
 
-            let prevCodeLens = me.codeLens;
+            // let prevCodeLens = me.codeLens;
 
-            me.codeLens = [];
+            // me.codeLens = [];
 
             const versionsWithColors: ({
                 colors: ParserTypes.RangeOf<ParserTypes.Colors>;
@@ -286,6 +175,13 @@ class Decorator {
             let colorRanges: { [_: string]: vscode.Range[] } = {};
 
             let featureLayerColorMap = {};
+
+            [...Object.values(prevLayDecorators)].forEach((x) => {
+                if (x) {
+                    // Helper.editor.setDecorations(x, []);
+                    x.dispose();
+                }
+            });
 
             for (let i = 0; i < parser.results.items.length; i++) {
                 const attr = parser.results.items[i].value;
@@ -353,20 +249,13 @@ class Decorator {
                         },
                     });
 
-                    [...Object.values(prevLayDecorators)].forEach((x) => {
-                        if (x) {
-                            // Helper.editor.setDecorations(x, []);
-                            x.dispose();
-                        }
-                    });
-
                     Helper.editor.setDecorations(Decorator.lay[colorid], [
                         {
                             range: Helper.vscodeRange(layer.token),
                         },
                     ]);
 
-                    if (me.layerColorsVisible) {
+                    if (CodeLens.checkLayerColorsVisible(Helper.editor.document)) {
                         if (!layerColors[layerval]) {
                             return;
                         }
@@ -399,21 +288,19 @@ class Decorator {
                 // let upRange, downRange, rightRange, leftRange;
                 x.data.value.matrix.forEach((r, yindex) => {
                     if (yindex === 0) {
-                        const token = Helper.vscodeRange(r.token);
-
-                        me.codeLens.push(
-                            new vscode.CodeLens(token, {
-                                title: 'toggle colors',
-                                command: 'dotnugg.showLayerColorsInActiveDoc',
-                            }),
-                        );
-
-                        me.codeLens.push(
-                            new vscode.CodeLens(token, {
-                                title: 'toggle background',
-                                command: 'dotnugg.showBackground',
-                            }),
-                        );
+                        // const token = Helper.vscodeRange(r.token);
+                        // me.codeLens.push(
+                        //     new vscode.CodeLens(token, {
+                        //         title: 'toggle colors',
+                        //         command: 'dotnugg.showLayerColorsInActiveDoc',
+                        //     }),
+                        // );
+                        // me.codeLens.push(
+                        //     new vscode.CodeLens(token, {
+                        //         title: 'toggle background',
+                        //         command: 'dotnugg.showBackground',
+                        //     }),
+                        // );
                     }
                     r.value.forEach((c, xindex) => {
                         try {
@@ -427,7 +314,7 @@ class Decorator {
 
                             if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
                                 let color: string; // if layer colors is active
-                                if (me.layerColorsVisible) {
+                                if (CodeLens.checkLayerColorsVisible(Helper.editor.document)) {
                                     color = featureLayerColorMap[x.colors.value[c.value.label.value].value.name.value];
                                 } else {
                                     color = x.colors.value[c.value.label.value].value.rgba.value;
@@ -499,7 +386,7 @@ class Decorator {
                 Helper.editor.setDecorations(Decorator.colorDecorators[key], colorRanges[key]);
             });
 
-            if (me.backgroundVisible) {
+            if (CodeLens.checkBackgroundVisible(Helper.editor.document)) {
                 Decorator.background = vscode.window.createTextEditorDecorationType({
                     light: {
                         backgroundColor: '#333333',

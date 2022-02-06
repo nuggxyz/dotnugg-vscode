@@ -8,8 +8,9 @@ import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import { Collection } from '@nuggxyz/dotnugg-sdk/dist/builder/types/TransformTypes';
 
-import Decorator, { DotnuggCodeLensProvider } from './Decorator';
+import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
+import { CodeLens } from './CodeLens';
 // import { Config } from './Config';
 
 class Helper {
@@ -147,14 +148,21 @@ class Helper {
 
         async function registerDocType(type: string) {
             context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(Helper.selector, Formatter3));
-            context.subscriptions.push(vscode.languages.registerCodeLensProvider(Helper.selector, new DotnuggCodeLensProvider()));
+            context.subscriptions.push(vscode.languages.registerCodeLensProvider(Helper.selector, CodeLens));
 
             context.subscriptions.push(
                 vscode.commands.registerCommand('dotnugg.showLayerColorsInActiveDoc', () => {
-                    Decorator.switchActiveDocToLayerColors();
+                    CodeLens.switchActiveDocToLayerColors();
                 }),
                 vscode.commands.registerCommand('dotnugg.showBackground', () => {
-                    Decorator.switchBackgroundVisible();
+                    CodeLens.switchBackgroundVisible();
+                }),
+
+                vscode.commands.registerCommand('dotnugg.cropMatrixRows', () => {
+                    CodeLens.cropMatrixRows();
+                }),
+                vscode.commands.registerCommand('dotnugg.cropMatrixColumns', () => {
+                    CodeLens.cropMatrixColumns();
                 }),
             );
 

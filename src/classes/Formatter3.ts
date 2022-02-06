@@ -5,6 +5,13 @@ import { REGEX } from '../constants/regex-formatter';
 
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
+export class autoCroper implements vscode.TextEditorEdit {
+    public delete(location: vscode.Range | vscode.Selection): void {}
+    public replace(location: vscode.Position | vscode.Range | vscode.Selection, value: string): void {}
+    public insert(location: vscode.Position, value: string): void {}
+    public setEndOfLine() {}
+}
+
 export class Formatter3 {
     // public static _instance: vscode.Disposable;
 
@@ -23,6 +30,12 @@ export class Formatter3 {
         n: '',
     };
 
+    // public static autoCrop(document: vscode.TextDocument): vscode.TextEditorEdit {
+    //     const formatter = new Formatter3(document);
+
+    //     const res = new vscode.TextEditorEdit();
+    // }
+
     // public static init(disp: vscode.Disposable) {}
 
     public static provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
@@ -39,8 +52,6 @@ export class Formatter3 {
 
             for (let i = 0; i < this.document.lineCount; i++) {
                 const data = this.regexFor(i);
-
-                this.document;
 
                 if (!data.groupMember && groupWorker.length > 0) {
                     res.push(

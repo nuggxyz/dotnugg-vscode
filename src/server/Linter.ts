@@ -62,33 +62,69 @@ export class Linter {
 
     private validate() {
         console.log('herhereher');
+        try {
+            if (Config.collection) {
+                for (let i = 0; i < this.doc.lineCount; i++) {
+                    this.validateLine(i);
+                }
 
-        if (Config.collection) {
-            for (let i = 0; i < this.doc.lineCount; i++) {
-                this.validateLine(i);
+                for (let i = 0; i < this.parser.tokens.length; i++) {
+                    this.validateToken(this.parser.tokens[i]);
+                }
+
+                this.validateResultRule();
+                this.validateItemName();
+                this.validateZindex();
+            } else {
+                const diag = {
+                    message: 'no collection file found',
+                    range: Linter.innerRangeOf(this.parser.results.items[0]),
+                    code: 'UNDEFINED:ITEM:0x72',
+                    severity: DiagnosticSeverity.Error,
+                    source: 'dotnugg',
+                    data: null,
+                };
+                console.log(diag);
+                console.log(this.parser.results.items);
+                console.log(diag.range);
+
+                this.diagnostics.push(diag);
             }
-
-            for (let i = 0; i < this.parser.tokens.length; i++) {
-                this.validateToken(this.parser.tokens[i]);
-            }
-
-            this.validateResultRule();
-            this.validateItemName();
-        } else {
-            const diag = {
-                message: 'no collection file found',
-                range: Linter.innerRangeOf(this.parser.results.items[0]),
-                code: 'UNDEFINED:ITEM:0x72',
-                severity: DiagnosticSeverity.Error,
-                source: 'dotnugg',
-                data: null,
-            };
-            console.log(diag);
-            console.log(this.parser.results.items);
-            console.log(diag.range);
-
-            this.diagnostics.push(diag);
+        } catch (err) {
+            console.log({ message: 'language server crashed, skipping validtion', err });
         }
+    }
+
+    private validateZindex() {
+        this.parser.results.items.forEach((x) => {
+            Object.values(x.value.colors.value).forEach((x) => {
+                if (x.value.zindex.value.offset > 10 && x.value.zindex.value.offset !== 100) {
+                    this.diagnostics.push({
+                        message:
+                            'invalid zindex\n - must be between -4 and +9 (inclusive)\n - for default value from collection.nugg, use "+D"\n - sign is required',
+                        range: Linter.rangeOf(x.value.zindex.token),
+                        code: 'UNDEFINED:ZINDEX:0x75',
+                        severity: DiagnosticSeverity.Error,
+                        source: 'dotnugg',
+                        data: null,
+                    });
+                } else {
+                    if (x.value.zindex.value.direction === '-') {
+                        if (x.value.zindex.value.offset > 4) {
+                            this.diagnostics.push({
+                                message:
+                                    'invalid zindex\n - must be between -4 and +9 (inclusive)\n - for default value from collection.nugg, use "+D"\n - sign is required',
+                                range: Linter.rangeOf(x.value.zindex.token),
+                                code: 'UNDEFINED:ZINDEX:0x75',
+                                severity: DiagnosticSeverity.Error,
+                                source: 'dotnugg',
+                                data: null,
+                            });
+                        }
+                    }
+                }
+            });
+        });
     }
 
     private validateItemName() {

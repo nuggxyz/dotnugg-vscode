@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "private": false,
     "license": "MIT",
@@ -10,7 +10,7 @@
         "vscode": "^1.61.0"
     },
     "repository": "https://github.com/nuggxyz/dotnugg-vscode.git",
-    "icon": "icons/dotnugg-file.png",
+    "icon": "icons/icon2.png",
     "publisher": "nuggxyz",
     "categories": [
         "Other",
