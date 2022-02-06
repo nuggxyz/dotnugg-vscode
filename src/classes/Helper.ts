@@ -36,7 +36,7 @@ class Helper {
     }
 
     private static updateCollection() {
-        const filePath = path.join(Helper.workingdir, '/collection.nugg');
+        const filePath = path.join(Helper.workingDirPath, '/collection.nugg');
         console.log({ filePath });
         console.log(fs.existsSync(filePath));
         if (fs.existsSync(filePath)) {
@@ -68,8 +68,20 @@ class Helper {
         );
     }
 
-    public static get workingdir() {
-        return vscode.workspace.workspaceFolders[0].uri.fsPath;
+    public static get workingdir(): vscode.WorkspaceFolder {
+        const folders = vscode.workspace.workspaceFolders;
+
+        for (let i = 0; i < folders.length; i++) {
+            const p = folders[i].uri;
+            if (path.join(p.fsPath, './collection.nugg')) {
+                return folders[i];
+            }
+        }
+        return folders[0];
+    }
+
+    public static get workingDirPath() {
+        return Helper.workingdir.uri.fsPath;
     }
 
     private static cancelationTokens = {
