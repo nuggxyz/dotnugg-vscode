@@ -1,10 +1,12 @@
 import path from 'path';
+import * as fs from 'fs';
 
 import * as vscode from 'vscode';
 import { Disposable, LanguageClientOptions, RevealOutputChannelOn } from 'vscode-languageclient';
 import { LanguageClient, ServerOptions } from 'vscode-languageclient/node';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { Collection } from '@nuggxyz/dotnugg-sdk/dist/builder/types/TransformTypes';
 
 import Decorator, { DotnuggCodeLensProvider } from './Decorator';
 import { Formatter3 } from './Formatter3';
@@ -20,10 +22,29 @@ class Helper {
 
     private static client: LanguageClient = undefined;
 
+    private static _collection: Collection;
+
     private static diagnosticCollection: vscode.DiagnosticCollection = null;
 
     public static get editor() {
         return Helper._active_editor;
+    }
+
+    public static get collection(): Collection {
+        return Helper._collection;
+    }
+
+    private static updateCollection() {
+        const filePath = path.join(Helper.workingdir, '/collection.nugg');
+        console.log({ filePath });
+        console.log(fs.existsSync(filePath));
+        if (fs.existsSync(filePath)) {
+            const parser = dotnugg.parser.parsePath(filePath);
+            Helper._collection = dotnugg.builder.transform.fromParser(parser).input.collection;
+            console.log(Helper._collection);
+        } else {
+            Helper._collection = undefined;
+        }
     }
 
     public static async files() {
@@ -36,6 +57,13 @@ class Helper {
         return new vscode.Range(
             new vscode.Position(token.lineNumber, token.token.startIndex),
             new vscode.Position(token.lineNumber, token.token.endIndex),
+        );
+    }
+
+    public static vscodeRangeOffset(token: ParserTypes.ParsedToken, prefix: number, suffix: number) {
+        return new vscode.Range(
+            new vscode.Position(token.lineNumber, token.token.startIndex - prefix),
+            new vscode.Position(token.lineNumber, token.token.endIndex + suffix),
         );
     }
 
@@ -94,6 +122,8 @@ class Helper {
             return;
         }
 
+        Helper.updateCollection();
+
         Decorator.decorateActiveFile(doc);
 
         Helper.cancelationTokens.onDidChange.dispose();
@@ -110,6 +140,8 @@ class Helper {
         }
 
         await dotnugg.parser.init();
+
+        Helper.updateCollection();
 
         registerDocType(Helper.languageId);
 
@@ -180,9 +212,9 @@ class Helper {
 
         function initServer() {
             const ws = vscode.workspace.workspaceFolders;
-            // Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection(Helper.languageId);
+            Helper.diagnosticCollection = vscode.languages.createDiagnosticCollection(Helper.languageId);
 
-            // context.subscriptions.push(Helper.diagnosticCollection);
+            context.subscriptions.push(Helper.diagnosticCollection);
 
             // vscode.languages.registerCodeActionsProvider
 

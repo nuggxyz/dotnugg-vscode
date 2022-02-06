@@ -29,7 +29,7 @@ export class Linter {
             end: { line: start.endToken.lineNumber, character: start.endToken.token.endIndex },
         };
 
-        // console.log(JSON.stringify(res));
+        console.log(JSON.stringify(res));
         return res;
     }
     private static rangeOf(token: ParserTypes.ParsedToken): Range {
@@ -38,7 +38,7 @@ export class Linter {
             end: { line: token.lineNumber, character: token.token.endIndex },
         };
 
-        // console.log(JSON.stringify(res));
+        console.log(JSON.stringify(res));
         return res;
     }
     private static rangeOfLine(line: number, length: number): Range {
@@ -61,7 +61,7 @@ export class Linter {
     }
 
     private validate() {
-        // console.log('herhereher');
+        console.log('herhereher');
 
         if (Config.collection) {
             for (let i = 0; i < this.doc.lineCount; i++) {
@@ -75,29 +75,41 @@ export class Linter {
             this.validateResultRule();
             this.validateItemName();
         } else {
-            this.diagnostics.push({
+            const diag = {
                 message: 'no collection file found',
                 range: Linter.innerRangeOf(this.parser.results.items[0]),
                 code: 'UNDEFINED:ITEM:0x72',
                 severity: DiagnosticSeverity.Error,
                 source: 'dotnugg',
                 data: null,
-            });
+            };
+            console.log(diag);
+            console.log(this.parser.results.items);
+            console.log(diag.range);
+
+            this.diagnostics.push(diag);
         }
     }
 
     private validateItemName() {
         // if collection does not contain feature name
+
         const found = this.parser.results.items[0].value.feature;
+        console.log({ found });
+
         if (Config.collectionFeatureKeys.indexOf(found.value) === -1) {
-            this.diagnostics.push({
+            const diag = {
                 message: `undefined item type "${found.value}" - collection only has ` + JSON.stringify(Config.collectionFeatureKeys),
                 range: Linter.rangeOf(found.token),
                 code: 'UNDEFINED:ITEM:0x72',
                 severity: DiagnosticSeverity.Error,
                 source: 'dotnugg',
                 data: null,
-            });
+            };
+            console.log(diag);
+            console.log(this.parser.results.items);
+            console.log(diag.range);
+            this.diagnostics.push(diag);
         }
     }
 
@@ -158,19 +170,17 @@ export class Linter {
         if (this.parser.checkScopesOnLine(line, ['dotnugg.general.colors.content'])) {
             if (!this.parser.checkTextOnLine(line, [':='])) {
                 const range = {
-                    start: { line, character: this.parser.lineAt(line).indexOf('=') },
-                    end: { line, character: this.parser.lineAt(line).indexOf('=') + 1 },
+                    start: { line, character: 0 },
+                    end: { line, character: this.parser.lineAt(line).length },
                 };
+                console.log(range);
                 this.diagnostics.push({
                     message: 'missing color assignment operator - fix by using ":="',
                     range,
                     code: 'INVALID:COLOR:0x67',
                     severity: DiagnosticSeverity.Error,
                     source: 'dotnugg linter',
-                    data: {
-                        range,
-                        text: ':=',
-                    },
+                    data: null,
                 });
             } else if (!this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.GeneralColorName])) {
                 this.diagnostics.push({

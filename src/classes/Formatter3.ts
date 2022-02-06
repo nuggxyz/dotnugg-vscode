@@ -40,6 +40,8 @@ export class Formatter3 {
             for (let i = 0; i < this.document.lineCount; i++) {
                 const data = this.regexFor(i);
 
+                this.document;
+
                 if (!data.groupMember && groupWorker.length > 0) {
                     res.push(
                         ...Formatter3.updateAssignmentGroup(
@@ -170,7 +172,18 @@ export class Formatter3 {
 
     public static update(r: RegExp, line: vscode.TextLine, options?: { spaceNum?: number; tablength?: number }): vscode.TextEdit[] {
         //   try {
+
         const update = [];
+
+        if (
+            line.isEmptyOrWhitespace ||
+            line.text.includes('radii := { r: 0, l: 0, u: 0, d: 0 }') ||
+            line.text.includes('expanders := { r: 0, l: 0, u: 0, d: 0 }')
+        ) {
+            update.push(vscode.TextEdit.delete(line.rangeIncludingLineBreak));
+            return update;
+        }
+
         const regex = new RegExp(r);
 
         let reg: RegExpExecArray;

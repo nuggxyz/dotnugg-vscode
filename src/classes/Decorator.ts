@@ -40,6 +40,58 @@ let decSpace = vscode.window.createTextEditorDecorationType({
     },
 });
 
+// let layerColors = {
+//     '-4': decorationFromColor('#123545'),
+//     '-3': decorationFromColor('#123545'),
+//     '-2': decorationFromColor('#123545'),
+//     '-1': decorationFromColor('#123545'),
+//     '0': decorationFromColor('#123545'),
+//     '1': decorationFromColor('#123545'),
+//     '2': decorationFromColor('#123545'),
+//     '3': decorationFromColor('#123545'),
+//     '4': decorationFromColor('#123545'),
+//     '5': decorationFromColor('#123545'),
+//     '6': decorationFromColor('#123545'),
+//     '7': decorationFromColor('#123545'),
+//     '8': decorationFromColor('#123545'),
+//     '9': decorationFromColor('#123545'),
+//     '10': decorationFromColor('#123545'),
+//     '11': decorationFromColor('#123545'),
+// };
+
+let layerColors = {
+    '-4': 'rgba(0,180,255,1)',
+    '-3': 'rgba(0,212,255,1)',
+    '-2': 'rgba(0,255,244,1)',
+    '-1': 'rgba(0,255,168,1)',
+    '+D': 'rgba(0,255,92,1)',
+    '+0': 'rgba(23,255,0,1)',
+    '+1': 'rgba(176,255,0,1)',
+    '+2': 'rgba(253,255,0,1)',
+    '+3': 'rgba(255,240,0,1)',
+    '+4': 'rgba(255,210,0,1)',
+    '+5': 'rgba(255,180,0,1)',
+    '+6': 'rgba(255,150,0,1)',
+    '+7': 'rgba(255,120,0,1)',
+    '+8': 'rgba(255,90,0,1)',
+    '+9': 'rgba(255,60,0,1)',
+};
+
+function decorationFromColor(color: string) {
+    return vscode.window.createTextEditorDecorationType({
+        light: {
+            backgroundColor: color,
+            color: luma(color) > 0.5 ? 'rgba(0,0,0,1)' : 'rgba(255,255,255,1)',
+            // cursor: 'crosshair',
+        },
+        dark: {
+            backgroundColor: color,
+            color: luma(color) > 0.5 ? 'rgba(0,0,0,1)' : 'rgba(255,255,255,1)',
+            // cursor: 'crosshair',
+        },
+    });
+}
+
 type Rgba = `rgba(${number},${number},${number},${number})`;
 
 let getRGBA = function (a: string) {
@@ -116,6 +168,9 @@ function findOffsets(
 
 export class DotnuggCodeLensProvider {
     provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken) {
+        if (!Decorator.uris[document.uri.fsPath]) {
+            Decorator.uris[document.uri.fsPath] = new Decorator(document.uri.fsPath);
+        }
         return Decorator.uris[document.uri.fsPath].codeLens;
     }
 }
@@ -123,17 +178,27 @@ export class DotnuggCodeLensProvider {
 class Decorator {
     public codeLens: vscode.CodeLens[] = [];
     public static colorDecorators: { [_: Rgba]: vscode.TextEditorDecorationType } = {};
+    public static textDecorators: { [_: string]: vscode.TextEditorDecorationType } = {};
+
+    public static lay: { [_: string]: vscode.TextEditorDecorationType } = {};
+    public static anchor: vscode.TextEditorDecorationType;
+
     public static axis: { [_: string]: vscode.TextEditorDecorationType } = {};
     public static uris: { [_: string]: Decorator } = {};
 
+    public lastEditor: vscode.TextEditor;
+
     public ttl: Date;
+
+    constructor(uri: string) {
+        Decorator.uris[uri] = this;
+    }
 
     public static decorateActiveFile(doc: vscode.TextDocument) {
         let me = this.uris[Helper.editor.document.uri.fsPath];
 
         if (!me) {
-            me = new Decorator();
-            this.uris[Helper.editor.document.uri.fsPath] = me;
+            me = new Decorator(Helper.editor.document.uri.fsPath);
         }
         let parser: dotnugg.parser;
         // if (me.ttl) {
@@ -143,9 +208,10 @@ class Decorator {
             console.log('error in parser');
             return;
         }
+
         // }
         try {
-            let prev = Decorator.colorDecorators;
+            let prevColorDecorators = Decorator.colorDecorators;
 
             Decorator.colorDecorators = {};
 
@@ -168,6 +234,70 @@ class Decorator {
                 const attr = parser.results.items[i].value;
                 const colors = attr.colors;
                 const versionKeys = Object.keys(attr.versions.value);
+
+                console.log(attr);
+
+                const attrname = attr.feature.value;
+                console.log(attrname);
+                console.log(Decorator.lay);
+
+                if (Decorator.lay[attrname] !== undefined) {
+                    Decorator.lay[attrname].dispose();
+                }
+
+                console.log(Helper.collection);
+                console.log(attr);
+
+                const contentText =
+                    ' default.layer: ' +
+                    Helper.collection.features[attrname].zindex.direction +
+                    Helper.collection.features[attrname].zindex.offset;
+
+                Decorator.lay[attrname] = vscode.window.createTextEditorDecorationType({
+                    light: {
+                        after: {
+                            color: 'rgba(0,0,0,.5)',
+                            contentText,
+                        },
+                    },
+                    dark: {
+                        after: {
+                            color: 'rgba(255,255,255,.5)',
+                            contentText,
+                        },
+                    },
+                });
+
+                Helper.editor.setDecorations(Decorator.lay[attrname], [
+                    { range: doc.lineAt(attr.colors.token.lineNumber).range, hoverMessage: 'this is defined in your collection.nugg file' },
+                ]);
+
+                for (let j = 0; j < Object.keys(colors.value).length; j++) {
+                    let layer = colors.value[Object.keys(colors.value)[j]].value.zindex;
+
+                    let layerval =
+                        layer.value.direction +
+                        (layer.value.offset === 100 ? Helper.collection.features[attrname].zindex.offset : layer.value.offset);
+
+                    if (!layerColors[layerval]) {
+                        return;
+                    }
+
+                    let color: string = layerColors[layerval];
+                    if (!colorRanges[color]) {
+                        colorRanges[color] = [];
+                    }
+                    colorRanges[color].push(Helper.vscodeRangeOffset(layer.token, 1, 1));
+
+                    let col = colors.value[Object.keys(colors.value)[j]].value.rgba;
+                    color = col.value;
+
+                    if (!colorRanges[color]) {
+                        colorRanges[color] = [];
+                    }
+
+                    colorRanges[color].push(Helper.vscodeRange(col.token));
+                }
 
                 for (let j = 0; j < versionKeys.length; j++) {
                     versionsWithColors.push({ ...attr.versions.value[versionKeys[j]].value, colors, feature: attr.feature });
@@ -195,15 +325,13 @@ class Decorator {
                             if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
                                 const color = x.colors.value[c.value.label.value].value.rgba;
                                 if (!colorRanges[color.value]) {
-                                    colorRanges[color.value] = [Helper.vscodeRange(color.token)];
+                                    colorRanges[color.value] = [];
                                 }
                                 colorRanges[color.value].push(Helper.vscodeRange(c.value.type.token));
                             }
                         } catch (err) {}
                     });
                 });
-                console.log('a');
-                console.log(prev);
 
                 // if (prev[id]) {
                 //     Helper.editor.setDecorations(prev[id], []);
@@ -237,13 +365,11 @@ class Decorator {
                     console.log('error decorating ledgend');
                 }
             });
-            console.log('b');
-            console.log(prev);
 
             Object.keys(colorRanges).forEach((key) => {
-                if (prev[key]) {
-                    Decorator.colorDecorators[key] = prev[key];
-                    delete prev[key];
+                if (prevColorDecorators[key]) {
+                    Decorator.colorDecorators[key] = prevColorDecorators[key];
+                    delete prevColorDecorators[key];
                 } else {
                     Decorator.colorDecorators[key] = vscode.window.createTextEditorDecorationType({
                         light: {
@@ -261,15 +387,41 @@ class Decorator {
 
                 Helper.editor.setDecorations(Decorator.colorDecorators[key], colorRanges[key]);
             });
-            console.log('c');
-            console.log(prev);
-            Helper.editor.setDecorations(decSpace, allRanges);
-            Helper.editor.setDecorations(anchorDec, anchorRanges);
 
-            Object.values(prev).forEach((x) => {
+            Helper.editor.setDecorations(decSpace, allRanges);
+
+            if (Decorator.anchor) {
+                Decorator.anchor.dispose();
+            }
+
+            Decorator.anchor = vscode.window.createTextEditorDecorationType({
+                light: {
+                    // this color will be used in light color themes
+                    borderStyle: 'solid',
+                    borderColor: 'rgba(139,0,0,1)',
+                    borderWidth: '2px',
+                    borderRadius: '3px',
+                    backgroundColor: 'rgba(255,204,203,.5)',
+                    fontWeight: 'bold',
+                    textDecoration: 'wavy',
+                },
+                dark: {
+                    // this color will be used in dark color themes
+                    borderRadius: '3px',
+                    borderWidth: '2px',
+                    borderStyle: 'solid',
+                    borderColor: 'rgba(139,0,0,1)',
+                    backgroundColor: 'rgba(255,204,203,.5)',
+                    fontWeight: 'bold',
+                    textDecoration: 'wavy',
+                },
+            });
+
+            Helper.editor.setDecorations(Decorator.anchor, anchorRanges);
+
+            Object.values(prevColorDecorators).forEach((x) => {
                 if (x) {
-                    console.log(prev);
-                    Helper.editor.setDecorations(x, []);
+                    // Helper.editor.setDecorations(x, []);
                     x.dispose();
                 }
             });

@@ -70,7 +70,9 @@ function validate(document: TextDocument) {
 
             const linter = new Linter(document);
 
-            connection.sendDiagnostics({ diagnostics: linter.diagnostics, uri });
+            const diag = linter.diagnostics;
+            console.log(diag);
+            connection.sendDiagnostics({ diagnostics: diag, uri });
         }
         // connection.client.register}
     } finally {
