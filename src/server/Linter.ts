@@ -1,6 +1,6 @@
 import { Diagnostic, DiagnosticSeverity, Range } from 'vscode-languageserver/node';
-import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import { ParsedToken } from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
@@ -57,141 +57,176 @@ export class Linter {
     constructor(doc: TextDocument) {
         this.parser = dotnugg.parser.parseData(doc.getText());
         this.doc = doc;
-        this.validate();
-    }
+        // this.validate();
 
-    private validate() {
-        console.log('herhereher');
-        try {
-            if (Config.collection) {
-                for (let i = 0; i < this.doc.lineCount; i++) {
-                    this.validateLine(i);
-                }
+        const lintres = dotnugg.linter.lintItemWithCollection(this.parser.results.items[0], doc.getText(), Config.collection);
 
-                for (let i = 0; i < this.parser.tokens.length; i++) {
-                    this.validateToken(this.parser.tokens[i]);
-                }
-
-                this.validateResultRule();
-                this.validateItemName();
-                this.validateZindex();
-            } else {
-                const diag = {
-                    message: 'no collection file found',
-                    range: Linter.innerRangeOf(this.parser.results.items[0]),
-                    code: 'UNDEFINED:ITEM:0x72',
-                    severity: DiagnosticSeverity.Error,
-                    source: 'dotnugg',
-                    data: null,
-                };
-                console.log(diag);
-                console.log(this.parser.results.items);
-                console.log(diag.range);
-
-                this.diagnostics.push(diag);
-            }
-        } catch (err) {
-            console.log({ message: 'language server crashed, skipping validtion', err });
-        }
-    }
-
-    private validateZindex() {
-        this.parser.results.items.forEach((x) => {
-            Object.values(x.value.colors.value).forEach((x) => {
-                if (x.value.zindex.value.offset > 10 && x.value.zindex.value.offset !== 100) {
-                    this.diagnostics.push({
-                        message:
-                            'invalid zindex\n - must be between -4 and +9 (inclusive)\n - for default value from collection.nugg, use "+D"\n - sign is required',
-                        range: Linter.rangeOf(x.value.zindex.token),
-                        code: 'UNDEFINED:ZINDEX:0x75',
-                        severity: DiagnosticSeverity.Error,
-                        source: 'dotnugg',
-                        data: null,
-                    });
-                } else {
-                    if (x.value.zindex.value.direction === '-') {
-                        if (x.value.zindex.value.offset > 4) {
-                            this.diagnostics.push({
-                                message:
-                                    'invalid zindex\n - must be between -4 and +9 (inclusive)\n - for default value from collection.nugg, use "+D"\n - sign is required',
-                                range: Linter.rangeOf(x.value.zindex.token),
-                                code: 'UNDEFINED:ZINDEX:0x75',
-                                severity: DiagnosticSeverity.Error,
-                                source: 'dotnugg',
-                                data: null,
-                            });
-                        }
-                    }
-                }
+        lintres.forEach((x) => {
+            this.diagnostics.push({
+                message: x.sim + '\n' + x.fix.map((x) => '- ' + x + '\n').join(''),
+                range: x.rng,
+                code: x.cod,
+                severity: x.lev,
+                source: 'dotnugg',
+                data: null,
             });
         });
     }
 
-    private validateItemName() {
-        // if collection does not contain feature name
+    // private validate() {
+    //     console.log('herhereher');
+    //     try {
+    //         if (Config.collection) {
+    //             for (let i = 0; i < this.doc.lineCount; i++) {
+    //                 this.validateLine(i);
+    //             }
 
-        const found = this.parser.results.items[0].value.feature;
-        console.log({ found });
+    //             for (let i = 0; i < this.parser.tokens.length; i++) {
+    //                 this.validateToken(this.parser.tokens[i]);
+    //             }
 
-        if (Config.collectionFeatureKeys.indexOf(found.value) === -1) {
-            const diag = {
-                message: `undefined item type "${found.value}" - collection only has ` + JSON.stringify(Config.collectionFeatureKeys),
-                range: Linter.rangeOf(found.token),
-                code: 'UNDEFINED:ITEM:0x72',
-                severity: DiagnosticSeverity.Error,
-                source: 'dotnugg',
-                data: null,
-            };
-            console.log(diag);
-            console.log(this.parser.results.items);
-            console.log(diag.range);
-            this.diagnostics.push(diag);
-        }
-    }
+    //             // this.validateResultRule();
+    //             // this.validateItemName();
+    //             // this.validateZindex();
+    //         } else {
+    //             const diag = {
+    //                 message: 'no collection file found',
+    //                 range: Linter.innerRangeOf(this.parser.results.items[0]),
+    //                 code: 'UNDEFINED:ITEM:0x72',
+    //                 severity: DiagnosticSeverity.Error,
+    //                 source: 'dotnugg',
+    //                 data: null,
+    //             };
+    //             console.log(diag);
+    //             console.log(this.parser.results.items);
+    //             console.log(diag.range);
 
-    private validateResultRule() {
-        const matrix = this.parser.results.items[0].value.versions.value[0].value.data.value.matrix;
+    //             this.diagnostics.push(diag);
+    //         }
+    //     } catch (err) {
+    //         console.log({ message: 'language server crashed, skipping validtion', err });
+    //     }
+    // }
 
-        let last = undefined;
-        for (let i = 0; i < matrix.length; i++) {
-            if (last !== undefined && last !== matrix[i].value.length) {
-                this.diagnostics.push({
-                    message: 'expected row to be length ' + last + ' - instead it is ' + matrix[i].value.length,
-                    range: Linter.innerRangeOf(matrix[i]),
-                    code: 'INVALID:ROW:LEN:0x66',
-                    severity: DiagnosticSeverity.Error,
-                    source: 'dotnugg',
-                    data: null,
-                });
-            }
-            last = matrix[i].value.length;
-        }
+    // private main() {
+    //     this.parser.results.items.forEach((item) => {
+    //         Object.values(item.value.versions.value).forEach((version) => {
+    //             this.lintVersion(version);
+    //         });
+    //     });
+    // }
 
-        const anchor = this.parser.results.items[0].value.versions.value[0].value.anchor;
-        const actualYLen = matrix.length;
-        const actualXLen = matrix[0].value.length;
-        if (anchor.value.x.value > actualXLen || anchor.value.x.value < 1) {
-            this.diagnostics.push({
-                message: `invaid x anchor - must be between 1 and ${actualXLen} (inclusive)`,
-                range: Linter.rangeOf(anchor.value.x.token),
-                code: 'INVALID:ANCHOR:X:0x66',
-                severity: DiagnosticSeverity.Error,
-                source: 'dotnugg',
-                data: null,
-            });
-        }
+    // private lintItemFeature();
 
-        if (anchor.value.y.value > actualYLen || anchor.value.y.value < 1) {
-            this.diagnostics.push({
-                message: `invaid y anchor - must be between 1 and ${actualYLen} (inclusive)`,
-                range: Linter.rangeOf(anchor.value.y.token),
-                code: 'INVALID:ANCHOR:Y:0x70',
-                severity: DiagnosticSeverity.Error,
-                source: 'dotnugg',
-                data: null,
-            });
-        }
-    }
+    // private lintVersion(version: ParserTypes.RangeOf<ParserTypes.Version>) {
+    //     this.lintVersionData(version.value.data);
+    //     this.lintVersionAnchor(version.value.anchor);
+    //     this.lintVersionName(version.value.name);
+    //     this.lintVersionReceivers(version.value.receivers);
+    // }
+
+    private lintVersionData(data: ParserTypes.RangeOf<ParserTypes.Data>) {}
+    private lintVersionName(name: ParserTypes.RangeOf<string>) {}
+    private lintVersionReceivers(recs: ParserTypes.RangeOf<ParserTypes.Receiver>[]) {}
+    private lintVersionAnchor(anchor: ParserTypes.RangeOf<ParserTypes.Coordinate>) {}
+
+    // private validateZindex() {
+    //     this.parser.results.items.forEach((x) => {
+    //         Object.values(x.value.colors.value).forEach((x) => {
+    //             if (x.value.zindex.value.offset > 10 && x.value.zindex.value.offset !== 100) {
+    //                 this.diagnostics.push({
+    //                     message:
+    //                         'invalid zindex\n - must be between -4 and +9 (inclusive)\n - for default value from collection.nugg, use "+D"\n - sign is required',
+    //                     range: Linter.rangeOf(x.value.zindex.token),
+    //                     code: 'UNDEFINED:ZINDEX:0x75',
+    //                     severity: DiagnosticSeverity.Error,
+    //                     source: 'dotnugg',
+    //                     data: null,
+    //                 });
+    //             } else {
+    //                 if (x.value.zindex.value.direction === '-') {
+    //                     if (x.value.zindex.value.offset > 4) {
+    //                         this.diagnostics.push({
+    //                             message:
+    //                                 'invalid zindex\n - must be between -4 and +9 (inclusive)\n - for default value from collection.nugg, use "+D"\n - sign is required',
+    //                             range: Linter.rangeOf(x.value.zindex.token),
+    //                             code: 'UNDEFINED:ZINDEX:0x75',
+    //                             severity: DiagnosticSeverity.Error,
+    //                             source: 'dotnugg',
+    //                             data: null,
+    //                         });
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     });
+    // }
+
+    // private validateItemName() {
+    //     // if collection does not contain feature name
+
+    //     const found = this.parser.results.items[0].value.feature;
+    //     console.log({ found });
+
+    //     if (Config.collectionFeatureKeys.indexOf(found.value) === -1) {
+    //         const diag = {
+    //             message: `undefined item type "${found.value}" - collection only has ` + JSON.stringify(Config.collectionFeatureKeys),
+    //             range: Linter.rangeOf(found.token),
+    //             code: 'UNDEFINED:ITEM:0x72',
+    //             severity: DiagnosticSeverity.Error,
+    //             source: 'dotnugg',
+    //             data: null,
+    //         };
+    //         console.log(diag);
+    //         console.log(this.parser.results.items);
+    //         console.log(diag.range);
+    //         this.diagnostics.push(diag);
+    //     }
+    // }
+
+    // private validateResultRule() {
+    //     const matrix = this.parser.results.items[0].value.versions.value[0].value.data.value.matrix;
+
+    //     let last = undefined;
+    //     for (let i = 0; i < matrix.length; i++) {
+    //         if (last !== undefined && last !== matrix[i].value.length) {
+    //             this.diagnostics.push({
+    //                 message: 'expected row to be length ' + last + ' - instead it is ' + matrix[i].value.length,
+    //                 range: Linter.innerRangeOf(matrix[i]),
+    //                 code: 'INVALID:ROW:LEN:0x66',
+    //                 severity: DiagnosticSeverity.Error,
+    //                 source: 'dotnugg',
+    //                 data: null,
+    //             });
+    //         }
+    //         last = matrix[i].value.length;
+    //     }
+
+    //     const anchor = this.parser.results.items[0].value.versions.value[0].value.anchor;
+    //     const actualYLen = matrix.length;
+    //     const actualXLen = matrix[0].value.length;
+    //     if (anchor.value.x.value > actualXLen || anchor.value.x.value < 1) {
+    //         this.diagnostics.push({
+    //             message: `invaid x anchor - must be between 1 and ${actualXLen} (inclusive)`,
+    //             range: Linter.rangeOf(anchor.value.x.token),
+    //             code: 'INVALID:ANCHOR:X:0x66',
+    //             severity: DiagnosticSeverity.Error,
+    //             source: 'dotnugg',
+    //             data: null,
+    //         });
+    //     }
+
+    //     if (anchor.value.y.value > actualYLen || anchor.value.y.value < 1) {
+    //         this.diagnostics.push({
+    //             message: `invaid y anchor - must be between 1 and ${actualYLen} (inclusive)`,
+    //             range: Linter.rangeOf(anchor.value.y.token),
+    //             code: 'INVALID:ANCHOR:Y:0x70',
+    //             severity: DiagnosticSeverity.Error,
+    //             source: 'dotnugg',
+    //             data: null,
+    //         });
+    //     }
+    // }
 
     private validateToken(token: ParsedToken) {}
 

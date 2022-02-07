@@ -338,12 +338,6 @@ class Decorator {
                                           clean up
                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-            // [...Object.values(prevLayDecorators)].forEach((x) => {
-            //     if (x && x.dec) {
-            //         x.dec.dispose();
-            //     }
-            // });
-
             /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                                           colors
                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -440,11 +434,14 @@ class Decorator {
                         }),
                     };
                 }
-
-                // always update anchor
-                Helper.editor.setDecorations(Decorator.anchor.dec, [Decorator.anchor.ref]);
             } catch (err) {
                 errorTrack.push('error in ANCHOR');
+            }
+
+            // always update anchor
+
+            if (Decorator.anchor) {
+                Helper.editor.setDecorations(Decorator.anchor.dec, [Decorator.anchor.ref]);
             }
 
             /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -479,14 +476,6 @@ class Decorator {
                     prevLayDecorators[check] = undefined;
                 }
 
-                // if (!prev || !key.rng.range.isEqual(prev.ref.range) || key.val !== prev.val) {
-                //     if (prev) {
-                //         prev.dec.dispose();
-                //         prevLayDecorators = prevLayDecorators.filter((x) => x.val !== prev.val);
-                //     }
-                // } else {
-                //     dec = prev.dec;
-                // }
                 Decorator.lay.push({ dec, val: key.val, ref: key.rng });
 
                 Helper.editor.setDecorations(dec, [key.rng]);

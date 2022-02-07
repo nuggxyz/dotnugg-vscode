@@ -11,8 +11,8 @@ import {
     CodeActionKind,
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import { URI } from 'vscode-uri';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
 import { CustomDiagnostic, Linter } from './server/Linter';
 import { Config } from './server/Config';
