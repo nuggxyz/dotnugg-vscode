@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 import * as vscode from 'vscode';
-import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import { Pixel, RangeOf } from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
 import Helper from './Helper';
@@ -16,7 +15,11 @@ export class CodeLens {
     }
 
     constructor(doc: vscode.TextDocument) {
-        const parser = dotnugg.parser.parseData(doc.getText());
+        this.init(doc);
+    }
+
+    private init(doc: vscode.TextDocument) {
+        const parser = Helper.recentParser(doc);
 
         let token: vscode.Range;
 
@@ -24,6 +27,8 @@ export class CodeLens {
             const matrix = parser.results.items[0].value.versions.value[0].value.data.value.matrix;
             token = Helper.vscodeRange(matrix[0].token);
         }
+
+        this.stor = [];
 
         this.stor.push(
             new vscode.CodeLens(token, {
@@ -52,6 +57,16 @@ export class CodeLens {
                 command: 'dotnugg.cropMatrixColumns',
             }),
         );
+    }
+
+    public static update(document: vscode.TextDocument) {
+        let me = CodeLens.map[document.uri.fsPath];
+
+        if (!me) {
+            me = new CodeLens(Helper.editor.document);
+        }
+
+        me.init(document);
     }
 
     public backgroundVisible = false;
@@ -103,29 +118,40 @@ export class CodeLens {
 
     private static _cropMatrixRows(edit: vscode.TextEditorEdit): void {
         const doc = Helper.editor.document;
-        const parser = dotnugg.parser.parseData(doc.getText());
+        const parser = Helper.recentParser(doc);
 
         const matrix = parser.results.items[0].value.versions.value[0].value.data.value.matrix;
+        let anchor = parser.results.items[0].value.versions.value[0].value.anchor.value.y;
+        // anchor.value++;
 
         const rows: vscode.Range[] = [];
 
-        for (let i = 0; i < matrix.length; i++) {
+        let removedLeft = 0;
+        // let removedRight = 0;
+
+        for (let i = matrix.length - 1; i >= 0 && i + 1 !== anchor.value; i--) {
             if (matrix[i].value.every((x) => x.value.type.value === 'transparent')) {
                 rows.push(doc.lineAt(matrix[i].token.lineNumber).rangeIncludingLineBreak);
+                // removedRight++;
             } else {
                 break;
             }
         }
 
-        for (let i = matrix.length - 1; i >= 0; i--) {
+        for (let i = 0; i < matrix.length && i + 1 !== anchor.value; i++) {
             if (matrix[i].value.every((x) => x.value.type.value === 'transparent')) {
                 rows.push(doc.lineAt(matrix[i].token.lineNumber).rangeIncludingLineBreak);
+                removedLeft++;
             } else {
                 break;
             }
         }
 
         rows.forEach((x) => edit.delete(x));
+
+        // anchor.value--;
+
+        edit.replace(Helper.vscodeRange(anchor.token), String(anchor.value - removedLeft));
     }
 
     public static cropMatrixRows() {
@@ -137,16 +163,22 @@ export class CodeLens {
 
         Helper.editor.edit(CodeLens._cropMatrixRows);
 
-        CodeLens.map[Helper.editor.document.uri.fsPath] = new CodeLens(Helper.editor.document);
+        me.init(Helper.editor.document);
     }
 
     private static _cropMatrixColumns(edit: vscode.TextEditorEdit): void {
         const doc = Helper.editor.document;
-        const parser = dotnugg.parser.parseData(doc.getText());
+        const parser = Helper.recentParser(doc);
 
         const matrixCorrect = parser.results.items[0].value.versions.value[0].value.data.value.matrix;
 
+        let anchor = parser.results.items[0].value.versions.value[0].value.anchor.value.x;
+
+        // anchor.value++;
+
         let matrix: RangeOf<Pixel>[][] = [];
+
+        let removedTop = 0;
 
         for (let i = 0; i < matrixCorrect.length; i++) {
             for (let j = 0; j < matrixCorrect[i].value.length; j++) {
@@ -160,17 +192,18 @@ export class CodeLens {
 
         const rows: vscode.Range[] = [];
 
-        for (let i = 0; i < matrix.length; i++) {
+        for (let i = 0; i < matrix.length && i + 1 !== anchor.value; i++) {
             if (matrix[i].every((x) => x.value.type.value === 'transparent')) {
                 matrix[i].forEach((x) => {
                     rows.push(Helper.vscodeRange(x.token));
                 });
+                removedTop++;
             } else {
                 break;
             }
         }
 
-        for (let i = matrix.length - 1; i >= 0; i--) {
+        for (let i = matrix.length - 1; i >= 0 && i + 1 !== anchor.value; i--) {
             if (matrix[i].every((x) => x.value.type.value === 'transparent')) {
                 matrix[i].forEach((x) => {
                     rows.push(Helper.vscodeRange(x.token));
@@ -181,6 +214,10 @@ export class CodeLens {
         }
 
         rows.forEach((x) => edit.delete(x));
+
+        // anchor.value--;
+
+        edit.replace(Helper.vscodeRange(anchor.token), String(anchor.value - removedTop));
     }
 
     public static cropMatrixColumns() {
@@ -192,7 +229,7 @@ export class CodeLens {
 
         Helper.editor.edit(CodeLens._cropMatrixColumns);
 
-        CodeLens.map[Helper.editor.document.uri.fsPath] = new CodeLens(Helper.editor.document);
+        me.init(Helper.editor.document);
     }
 
     static provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken) {

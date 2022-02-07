@@ -3,6 +3,8 @@ import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
 import { REGEX } from '../constants/regex-formatter';
 
+import Helper from './Helper';
+
 type RegExpData = { regex: RegExp; tablen: number; groupMember: boolean };
 
 export class autoCroper implements vscode.TextEditorEdit {
@@ -19,10 +21,12 @@ export class Formatter3 {
 
     public document: vscode.TextDocument;
 
-    constructor(document: vscode.TextDocument) {
-        this.parser = dotnugg.parser.parseData(document.getText());
-        this.document = document;
+    constructor(doc: vscode.TextDocument) {
+        this.parser = Helper.recentParser(doc);
+        this.document = doc;
     }
+
+    private lineChange = false;
 
     public static defaults = {
         t: '    ',
@@ -39,9 +43,9 @@ export class Formatter3 {
     // public static init(disp: vscode.Disposable) {}
 
     public static provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
-        const formatter = new Formatter3(document);
+        const me = new Formatter3(document);
 
-        return [...formatter.format()];
+        return [...me.format()];
     }
 
     private format(): vscode.TextEdit[] {
