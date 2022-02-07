@@ -11,6 +11,10 @@ export class CodeLens {
 
     public stor: vscode.CodeLens[] = [];
 
+    public static exists(doc: vscode.TextDocument) {
+        return CodeLens.map[doc.uri.fsPath] !== undefined;
+    }
+
     constructor(doc: vscode.TextDocument) {
         const parser = dotnugg.parser.parseData(doc.getText());
 

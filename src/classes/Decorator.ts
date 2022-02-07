@@ -144,6 +144,17 @@ class Decorator {
             return;
         }
 
+        let backgroundVisible = false;
+        let layerColorsVisible = false;
+
+        let loadCodeLens = false;
+
+        if (CodeLens.exists(Helper.editor.document)) {
+            backgroundVisible = CodeLens.checkBackgroundVisible(Helper.editor.document);
+            layerColorsVisible = CodeLens.checkLayerColorsVisible(Helper.editor.document);
+        } else {
+            loadCodeLens = true;
+        }
         // }
         try {
             let prevColorDecorators = Decorator.colorDecorators;
@@ -255,7 +266,7 @@ class Decorator {
                         },
                     ]);
 
-                    if (CodeLens.checkLayerColorsVisible(Helper.editor.document)) {
+                    if (layerColorsVisible) {
                         if (!layerColors[layerval]) {
                             return;
                         }
@@ -314,7 +325,7 @@ class Decorator {
 
                             if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
                                 let color: string; // if layer colors is active
-                                if (CodeLens.checkLayerColorsVisible(Helper.editor.document)) {
+                                if (layerColorsVisible) {
                                     color = featureLayerColorMap[x.colors.value[c.value.label.value].value.name.value];
                                 } else {
                                     color = x.colors.value[c.value.label.value].value.rgba.value;
@@ -386,7 +397,7 @@ class Decorator {
                 Helper.editor.setDecorations(Decorator.colorDecorators[key], colorRanges[key]);
             });
 
-            if (CodeLens.checkBackgroundVisible(Helper.editor.document)) {
+            if (backgroundVisible) {
                 Decorator.background = vscode.window.createTextEditorDecorationType({
                     light: {
                         backgroundColor: '#333333',
@@ -442,6 +453,10 @@ class Decorator {
             });
         } catch (err) {
             console.error({ msg: 'ERROR in decorator', err: doc });
+        }
+
+        if (loadCodeLens) {
+            CodeLens.checkBackgroundVisible(Helper.editor.document);
         }
     }
 }
