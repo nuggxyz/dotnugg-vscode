@@ -116,6 +116,58 @@ export class CodeLens {
         Decorator.decorateActiveFile(Helper.editor.document);
     }
 
+    public static _moveAnchorUp(edit: vscode.TextEditorEdit) {
+        const doc = Helper.editor.document;
+
+        const parser = Helper.recentParser(doc);
+
+        let anchor = parser.results.items[0].value.versions.value[0].value.anchor.value.y;
+        edit.replace(Helper.vscodeRange(anchor.token), String(anchor.value - 1));
+    }
+
+    public static moveAnchorUp() {
+        Helper.editor.edit(CodeLens._moveAnchorUp);
+    }
+
+    public static _moveAnchorDown(edit: vscode.TextEditorEdit) {
+        const doc = Helper.editor.document;
+
+        const parser = Helper.recentParser(doc);
+
+        let anchor = parser.results.items[0].value.versions.value[0].value.anchor.value.y;
+        edit.replace(Helper.vscodeRange(anchor.token), String(anchor.value + 1));
+    }
+
+    public static moveAnchorDown() {
+        Helper.editor.edit(CodeLens._moveAnchorDown);
+    }
+
+    public static _moveAnchorRight(edit: vscode.TextEditorEdit) {
+        const doc = Helper.editor.document;
+
+        const parser = Helper.recentParser(doc);
+
+        let anchor = parser.results.items[0].value.versions.value[0].value.anchor.value.x;
+        edit.replace(Helper.vscodeRange(anchor.token), String(anchor.value + 1));
+    }
+
+    public static moveAnchorRight() {
+        Helper.editor.edit(CodeLens._moveAnchorRight);
+    }
+
+    public static _moveAnchorLeft(edit: vscode.TextEditorEdit) {
+        const doc = Helper.editor.document;
+
+        const parser = Helper.recentParser(doc);
+
+        let anchor = parser.results.items[0].value.versions.value[0].value.anchor.value.x;
+        edit.replace(Helper.vscodeRange(anchor.token), String(anchor.value - 1));
+    }
+
+    public static moveAnchorLeft() {
+        Helper.editor.edit(CodeLens._moveAnchorLeft);
+    }
+
     private static _cropMatrixRows(edit: vscode.TextEditorEdit): void {
         const doc = Helper.editor.document;
         const parser = Helper.recentParser(doc);

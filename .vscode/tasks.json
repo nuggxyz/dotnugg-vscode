@@ -5,14 +5,10 @@
     "tasks": [
         {
             "type": "npm",
-
-            "script": "package",
-            "problemMatcher": "$tsc-watch",
-            "isBackground": true,
-
-            "presentation": {
-                "reveal": "always"
-            },
+            "script": "webpack",
+            "problemMatcher": [],
+            "label": "npm: webpack",
+            "detail": "webpack --mode development",
             "group": {
                 "kind": "build",
                 "isDefault": true

@@ -139,6 +139,11 @@ class Decorator {
         let errorTrack = [];
 
         errorTrack.push('A');
+
+        if (Helper.editor.document.uri.fsPath !== doc.uri.fsPath) {
+            return;
+        }
+
         let me = this.uris[Helper.editor.document.uri.fsPath];
 
         if (!me) {
@@ -152,6 +157,7 @@ class Decorator {
             console.log('error in parser');
             return;
         }
+        errorTrack.push('B');
 
         let backgroundVisible = false;
         let layerColorsVisible = false;
@@ -164,6 +170,8 @@ class Decorator {
         } else {
             loadCodeLens = true;
         }
+
+        errorTrack.push('C');
 
         let prevColorDecorators = Decorator.colorDecorators;
         let prevLayDecorators = Decorator.lay;
@@ -199,7 +207,11 @@ class Decorator {
 
             let featureLayerColorMap = {};
 
+            errorTrack.push('D');
+
             for (let i = 0; i < parser.results.items.length; i++) {
+                // errorTrack.push('parser.results.items.length:i: ' + i + ' of ' + parser.results.items.length);
+
                 const attr = parser.results.items[i].value;
                 const colors = attr.colors;
                 const versionKeys = Object.keys(attr.versions.value);
@@ -207,6 +219,8 @@ class Decorator {
                 const attrname = attr.feature.value;
 
                 for (let j = 0; j < Object.keys(colors.value).length; j++) {
+                    // errorTrack.push('-  Object.keys(colors.value).length:j: ' + j + ' of ' + Object.keys(colors.value).length);
+
                     // errorTrack.push('for:Object.keys(colors.value):j: ' + j + ' of ' + (Object.keys(colors.value).length - 1));
 
                     // const colorid = colors.value[Object.keys(colors.value)[j]].value.name.value + i + doc.uri.fsPath;
@@ -249,7 +263,7 @@ class Decorator {
             }
 
             [...versionsWithColors].forEach((x, index) => {
-                errorTrack.push('versoinWithColors.forEach:index: ' + index);
+                // errorTrack.push('versoinWithColors.forEach:index: ' + index);
                 // let upRange, downRange, rightRange, leftRange;
                 let anchorfound = false;
                 x.data.value.matrix.forEach((r, yindex) => {
@@ -459,13 +473,13 @@ class Decorator {
                     light: {
                         after: {
                             color: 'rgba(0,0,0,.5)',
-                            contentText: `: ${key.val}`,
+                            contentText: ` [${key.val}]`,
                         },
                     },
                     dark: {
                         after: {
                             color: 'rgba(255,255,255,.5)',
-                            contentText: `: ${key.val}`,
+                            contentText: ` [${key.val}]`,
                         },
                     },
                 });

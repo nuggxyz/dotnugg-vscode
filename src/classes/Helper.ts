@@ -5,8 +5,8 @@ import * as vscode from 'vscode';
 import { Disposable, LanguageClientOptions, RevealOutputChannelOn } from 'vscode-languageclient';
 import { LanguageClient, ServerOptions } from 'vscode-languageclient/node';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
-import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import { Collection } from '@nuggxyz/dotnugg-sdk/dist/builder/types/TransformTypes';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 
 import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
@@ -184,6 +184,18 @@ class Helper {
             }),
             vscode.commands.registerCommand('dotnugg.cropMatrixColumns', () => {
                 CodeLens.cropMatrixColumns();
+            }),
+            vscode.commands.registerCommand('dotnugg.moveAnchorLeft', () => {
+                CodeLens.moveAnchorLeft();
+            }),
+            vscode.commands.registerCommand('dotnugg.moveAnchorRight', () => {
+                CodeLens.moveAnchorRight();
+            }),
+            vscode.commands.registerCommand('dotnugg.moveAnchorUp', () => {
+                CodeLens.moveAnchorUp();
+            }),
+            vscode.commands.registerCommand('dotnugg.moveAnchorDown', () => {
+                CodeLens.moveAnchorDown();
             }),
         );
 

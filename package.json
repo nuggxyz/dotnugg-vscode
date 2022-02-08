@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.1.16",
+    "version": "0.1.17",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "private": false,
     "license": "MIT",
@@ -10,7 +10,7 @@
         "vscode": "^1.61.0"
     },
     "repository": "https://github.com/nuggxyz/dotnugg-vscode.git",
-    "icon": "icons/icon2.png",
+    "icon": "icons/icon3.png",
     "publisher": "nuggxyz",
     "categories": [
         "Other",
@@ -22,6 +22,28 @@
     "main": "./dist/extension.js",
     "contributes": {
         "commands": [],
+        "keybindings": [
+            {
+                "command": "dotnugg.moveAnchorLeft",
+                "key": "ctrl+shift+left",
+                "mac": "ctrl+shift+left"
+            },
+            {
+                "command": "dotnugg.moveAnchorRight",
+                "key": "ctrl+shift+right",
+                "mac": "ctrl+shift+right"
+            },
+            {
+                "command": "dotnugg.moveAnchorUp",
+                "key": "ctrl+shift+up",
+                "mac": "ctrl+shift+up"
+            },
+            {
+                "command": "dotnugg.moveAnchorDown",
+                "key": "ctrl+shift+down",
+                "mac": "ctrl+shift+down"
+            }
+        ],
         "languages": [
             {
                 "id": "dotnugg",
@@ -89,7 +111,7 @@
         "webpack-cli": "^4.9.2"
     },
     "dependencies": {
-        "@nuggxyz/dotnugg-sdk": "^0.1.17",
+        "@nuggxyz/dotnugg-sdk": "^0.1.18",
         "tiny-invariant": "^1.1.0",
         "vscode-jsonrpc": "^6.0.0",
         "vscode-languageclient": "^7.0.0",
