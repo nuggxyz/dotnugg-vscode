@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.1.18",
+    "version": "0.1.19",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "private": false,
     "license": "MIT",
@@ -111,7 +111,7 @@
         "webpack-cli": "^4.9.2"
     },
     "dependencies": {
-        "@nuggxyz/dotnugg-sdk": "^0.1.19",
+        "@nuggxyz/dotnugg-sdk": "^0.1.22",
         "tiny-invariant": "^1.1.0",
         "vscode-jsonrpc": "^6.0.0",
         "vscode-languageclient": "^7.0.0",
