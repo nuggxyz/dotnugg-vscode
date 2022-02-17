@@ -1,7 +1,7 @@
 import fs from 'fs';
 
-import { dotnugg } from '../../../dotnugg-sdk/src';
-import { Collection } from '../../../dotnugg-sdk/src/builder/types/TransformTypes';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { Collection } from '@nuggxyz/dotnugg-sdk/dist/builder/types/TransformTypes';
 
 export class Config {
     public static readonly EMPTY_CONFIG = { rules: {} };

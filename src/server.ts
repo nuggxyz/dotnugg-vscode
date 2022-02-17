@@ -12,9 +12,8 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-
-import { dotnugg } from '../../dotnugg-sdk/src';
-import { AppName } from '../../dotnugg-sdk/src/types';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { AppName } from '@nuggxyz/dotnugg-sdk/dist/types';
 
 import { CustomDiagnostic, Linter } from './server/Linter';
 import { Config } from './server/Config';

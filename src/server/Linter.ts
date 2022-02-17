@@ -1,9 +1,8 @@
 import { Diagnostic, DiagnosticSeverity, Range } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-
-import * as ParserTypes from '../../../dotnugg-sdk/src/parser/types/ParserTypes';
-import { dotnugg } from '../../../dotnugg-sdk/src';
-import { ParsedToken } from '../../../dotnugg-sdk/src/parser/types/ParserTypes';
+import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
+import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { ParsedToken } from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
 import { Config } from './Config';
 
