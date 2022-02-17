@@ -12,10 +12,13 @@ import {
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+
+import { dotnugg } from '../../dotnugg-sdk/src';
+import { AppName } from '../../dotnugg-sdk/src/types';
 
 import { CustomDiagnostic, Linter } from './server/Linter';
 import { Config } from './server/Config';
+let updatingCompilerCache = false;
 
 let validatingDocument = false;
 let validatingAllDocuments = false;
@@ -77,6 +80,9 @@ function validate(document: TextDocument) {
         // connection.client.register}
     } finally {
         validatingDocument = false;
+        if (!validatingAllDocuments) {
+            updateCompilerCache();
+        }
     }
 }
 
@@ -87,6 +93,18 @@ function validateAllDocuments() {
             documents.all().forEach((document) => validate(document));
         } finally {
             validatingAllDocuments = false;
+            updateCompilerCache();
+        }
+    }
+}
+
+function updateCompilerCache() {
+    if (!updatingCompilerCache) {
+        try {
+            updatingCompilerCache = true;
+            // dotnugg.compiler.compileDirectoryCheckCache(rootPath).saveToCache(rootPath);
+        } finally {
+            updatingCompilerCache = false;
         }
     }
 }
@@ -99,13 +117,17 @@ documents.onDidClose((event) =>
     }),
 );
 
+export const appname: AppName = 'vscode/server';
+
 connection.onInitialize(async (params): Promise<InitializeResult> => {
     rootPath = params.rootPath;
     const capabilities = params.capabilities;
 
-    await dotnugg.parser.init();
+    await dotnugg.parser.init(appname);
 
     Config.init(rootPath, {});
+
+    updateCompilerCache();
 
     hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
 
@@ -166,6 +188,8 @@ connection.onDidChangeWatchedFiles((_change) => {
     Config.init(rootPath, {});
 
     validateAllDocuments();
+
+    updateCompilerCache();
 });
 
 export function InterpretFix(uri: string, diagnositc: CustomDiagnostic): CodeAction {

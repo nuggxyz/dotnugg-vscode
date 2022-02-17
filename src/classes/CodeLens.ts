@@ -2,6 +2,8 @@
 import * as vscode from 'vscode';
 import { Pixel, RangeOf } from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
+import { PixelType } from '../utils/enums';
+
 import Helper from './Helper';
 import Decorator from './Decorator';
 
@@ -182,7 +184,7 @@ export class CodeLens {
         // let removedRight = 0;
 
         for (let i = matrix.length - 1; i >= 0 && i + 1 !== anchor.value; i--) {
-            if (matrix[i].value.every((x) => x.value.type.value === 'transparent')) {
+            if (matrix[i].value.every((x) => x.value.t.value === PixelType.TRANSPARENT)) {
                 rows.push(doc.lineAt(matrix[i].token.lineNumber).rangeIncludingLineBreak);
                 // removedRight++;
             } else {
@@ -191,7 +193,7 @@ export class CodeLens {
         }
 
         for (let i = 0; i < matrix.length && i + 1 !== anchor.value; i++) {
-            if (matrix[i].value.every((x) => x.value.type.value === 'transparent')) {
+            if (matrix[i].value.every((x) => x.value.t.value === PixelType.TRANSPARENT)) {
                 rows.push(doc.lineAt(matrix[i].token.lineNumber).rangeIncludingLineBreak);
                 removedLeft++;
             } else {
@@ -245,7 +247,7 @@ export class CodeLens {
         const rows: vscode.Range[] = [];
 
         for (let i = 0; i < matrix.length && i + 1 !== anchor.value; i++) {
-            if (matrix[i].every((x) => x.value.type.value === 'transparent')) {
+            if (matrix[i].every((x) => x.value.t.value === PixelType.TRANSPARENT)) {
                 matrix[i].forEach((x) => {
                     rows.push(Helper.vscodeRange(x.token));
                 });
@@ -256,7 +258,7 @@ export class CodeLens {
         }
 
         for (let i = matrix.length - 1; i >= 0 && i + 1 !== anchor.value; i--) {
-            if (matrix[i].every((x) => x.value.type.value === 'transparent')) {
+            if (matrix[i].every((x) => x.value.t.value === PixelType.TRANSPARENT)) {
                 matrix[i].forEach((x) => {
                     rows.push(Helper.vscodeRange(x.token));
                 });

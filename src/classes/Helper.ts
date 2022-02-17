@@ -7,6 +7,7 @@ import { LanguageClient, ServerOptions } from 'vscode-languageclient/node';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 import { Collection } from '@nuggxyz/dotnugg-sdk/dist/builder/types/TransformTypes';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
+import { AppName } from '@nuggxyz/dotnugg-sdk/dist/types';
 
 import Decorator from './Decorator';
 import { Formatter3 } from './Formatter3';
@@ -56,6 +57,15 @@ class Helper {
         };
 
         return Helper.precent.parser;
+    }
+
+    public static recentBuilder(): dotnugg.builder | undefined {
+        try {
+            return dotnugg.compiler.compileDirectoryCheckCache(Helper.workingDirPath);
+        } catch (error) {
+            console.log('error', error);
+            return undefined;
+        }
     }
 
     private static updateCollection() {
@@ -157,8 +167,11 @@ class Helper {
         return document && document.languageId === Helper.languageId && !document.uri.fsPath.endsWith('.git');
     }
 
+    public static appname: AppName = 'vscode/client';
+
     static async onActivate(context: vscode.ExtensionContext) {
-        await dotnugg.parser.init();
+        console.log('APPNAME:', 'vscode/client');
+        await dotnugg.parser.init('vscode/client');
 
         Helper.updateCollection();
         if (vscode.window.activeTextEditor !== undefined) {

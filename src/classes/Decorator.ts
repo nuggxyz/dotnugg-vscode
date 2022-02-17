@@ -3,6 +3,8 @@ import * as vscode from 'vscode';
 import { dotnugg } from '@nuggxyz/dotnugg-sdk';
 import * as ParserTypes from '@nuggxyz/dotnugg-sdk/dist/parser/types/ParserTypes';
 
+import { PixelType } from '../utils/enums';
+
 import Helper from './Helper';
 import { CodeLens } from './CodeLens';
 
@@ -76,8 +78,8 @@ function findOffsets(
 
         if (!topFound) {
             if (
-                data.matrix[centery - side].value[centerx + top].value.type.value !== 'transparent' &&
-                data.matrix[centery + side].value[centerx + top].value.type.value !== 'transparent'
+                data.matrix[centery - side].value[centerx + top].value.t.value !== PixelType.TRANSPARENT &&
+                data.matrix[centery + side].value[centerx + top].value.t.value !== PixelType.TRANSPARENT
             ) {
                 top++;
             } else {
@@ -87,8 +89,8 @@ function findOffsets(
 
         if (!bottomFound) {
             if (
-                data.matrix[centery - side].value[centerx - bot].value.type.value !== 'transparent' &&
-                data.matrix[centery + side].value[centerx - bot].value.type.value !== 'transparent'
+                data.matrix[centery - side].value[centerx - bot].value.t.value !== PixelType.TRANSPARENT &&
+                data.matrix[centery + side].value[centerx - bot].value.t.value !== PixelType.TRANSPARENT
             ) {
                 bot++;
             } else {
@@ -119,6 +121,7 @@ class Decorator {
 
     public static lay: ValueDecoration[] = [];
     public static anchor: ValueDecoration;
+    public static percent: vscode.TextEditorDecorationType;
 
     public static receivers: ValueDecoration[] = [];
 
@@ -273,7 +276,7 @@ class Decorator {
                         // errorTrack.push('- - r.value.forEach:xindex: ' + xindex + ' of ' + (r.value.length - 1));
 
                         try {
-                            const token = Helper.vscodeRange(c.value.label.token);
+                            const token = Helper.vscodeRange(c.value.l.token);
 
                             allRanges.push(token);
 
@@ -286,7 +289,7 @@ class Decorator {
                                     receiverRanges.push({
                                         val: dumbGrammarName,
                                         rng: {
-                                            range: Helper.vscodeRange(c.value.label.token),
+                                            range: Helper.vscodeRange(c.value.l.token),
                                             hoverMessage: dumbGrammarName + ' receiver',
                                         },
                                     });
@@ -296,22 +299,22 @@ class Decorator {
                             }
 
                             if (!anchorfound && x.anchor.value.x.value === xindex + 1 && x.anchor.value.y.value === yindex + 1) {
-                                anchorRange = { rng: Helper.vscodeRange(c.value.label.token), val: '' };
+                                anchorRange = { rng: Helper.vscodeRange(c.value.l.token), val: '' };
                                 anchorfound = true;
                             }
 
-                            if (c.value.type.value === 'color' || c.value.type.value === 'filter') {
+                            if (c.value.t.value === PixelType.COLOR) {
                                 let color: string; // if layer colors is active
                                 if (layerColorsVisible) {
-                                    color = featureLayerColorMap[x.colors.value[c.value.label.value].value.name.value];
+                                    color = featureLayerColorMap[x.colors.value[c.value.l.value].value.name.value];
                                 } else {
-                                    color = x.colors.value[c.value.label.value].value.rgba.value;
+                                    color = x.colors.value[c.value.l.value].value.rgba.value;
                                 }
 
                                 if (!colorRanges[color]) {
                                     colorRanges[color] = [];
                                 }
-                                colorRanges[color].push(Helper.vscodeRange(c.value.type.token));
+                                colorRanges[color].push(Helper.vscodeRange(c.value.t.token));
                             } else {
                                 backgroundRanges.push(token);
                             }
@@ -326,16 +329,14 @@ class Decorator {
                     Decorator.axis[x.name.value] = vscode.window.createTextEditorDecorationType({
                         dark: {
                             after: {
-                                contentText: ` (${x.data.value.matrix[0].value.length}, ${x.data.value.matrix.length})`,
-                                fontWeight: 'bold',
-                                color: 'rgba(200,200,200,1)',
+                                contentText: ` [ width = ${x.data.value.matrix[0].value.length}, height = ${x.data.value.matrix.length} ]`,
+                                color: 'rgba(255,255,255,1)',
                             },
                         },
                         light: {
                             after: {
-                                contentText: ` (${x.data.value.matrix[0].value.length}, ${x.data.value.matrix.length})`,
-                                fontWeight: 'bold',
-                                color: 'rgba(50,50,50,1)',
+                                contentText: ` [ width = ${x.data.value.matrix[0].value.length}, height = ${x.data.value.matrix.length} ]`,
+                                color: 'rgba(0,0,0,.5)',
                             },
                         },
                     });
@@ -558,6 +559,36 @@ class Decorator {
         if (loadCodeLens) {
             CodeLens.checkBackgroundVisible(Helper.editor.document);
         }
+
+        // try {
+        //     const builder = Helper.recentBuilder();
+        //     console.log(builder.hexFromId(0, 1));
+
+        //     const output = builder.outputByFileUri(doc.uri.fsPath);
+
+        //     if (Decorator.percent) {
+        //         Decorator.percent.dispose();
+        //     }
+
+        //     Decorator.percent = vscode.window.createTextEditorDecorationType({
+        //         light: {
+        //             after: {
+        //                 color: 'rgba(0,0,0,.5)',
+        //                 contentText: ` [~ ${output.percentWeight.toFixed(4)}%]`,
+        //             },
+        //         },
+        //         dark: {
+        //             after: {
+        //                 color: 'rgba(255,255,255,.5)',
+        //                 contentText: ` [~ ${output.percentWeight.toFixed(4)}%]`,
+        //             },
+        //         },
+        //     });
+
+        //     Helper.editor.setDecorations(Decorator.percent, [Helper.vscodeRange(parser.results.items[0].value.weight.token)]);
+        // } catch {
+        //     console.log('error in parser');
+        // }
     }
 }
 export default Decorator;
