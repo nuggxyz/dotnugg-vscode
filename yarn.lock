@@ -632,20 +632,20 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nuggxyz/dotnugg-grammar@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@nuggxyz/dotnugg-grammar/-/dotnugg-grammar-0.2.2.tgz#bf7319b451fdfe14a7a0b2217b7ad5337a1378c1"
-  integrity sha512-eyoOJ0V/Xd0CDZFLw6l8DIGF1OjqC88WYmkZryFfFR3hmT8hV1Jc1lLU1OpD8uWXlNSUf8QrVjNTWGPdSC3Cuw==
+"@nuggxyz/dotnugg-grammar@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@nuggxyz/dotnugg-grammar/-/dotnugg-grammar-0.2.4.tgz#7bad06a426c13a1ec306159c0c491bfbaabde6e6"
+  integrity sha512-6zf4olYNSeYUTfu7+cTavUQIY9Yn8n2hVgXrXI/Lnxgyxof4n2e4BGc9bvi8/hFz3Lee/3o2SGqEKYt+RPWpjA==
 
-"@nuggxyz/dotnugg-sdk@^0.1.34":
-  version "0.1.34"
-  resolved "https://registry.yarnpkg.com/@nuggxyz/dotnugg-sdk/-/dotnugg-sdk-0.1.34.tgz#3abf95a6b5c0cee2c1ca6cc901915bbb395e336d"
-  integrity sha512-qzXv9zfWbQRA2pYNZPRV6JFUh1eT+TYiimb+FcO81Zhu4bz077qHIxlHZ//RKPo3FOIedCbr1xVXc6x/4/lkVA==
+"@nuggxyz/dotnugg-sdk@^0.1.36":
+  version "0.1.36"
+  resolved "https://registry.yarnpkg.com/@nuggxyz/dotnugg-sdk/-/dotnugg-sdk-0.1.36.tgz#72488a57dacf061e0d4e89288a69faad843f4805"
+  integrity sha512-burEEsDURXDRotC0HfM1v+mGknbtxGRNS9Js8Is25UmHe20konaYK7uQVPsXV5a63ZTKg/E/OH4TLY99VJ4whQ==
   dependencies:
     "@ethersproject/abi" "^5.0.0"
     "@ethersproject/bytes" "^5.0.0"
     "@ethersproject/providers" "^5.0.0"
-    "@nuggxyz/dotnugg-grammar" "^0.2.2"
+    "@nuggxyz/dotnugg-grammar" "^0.2.4"
     chokidar "^3.5.3"
     color-parse "^1.4.2"
     ethers "^5.5.4"
