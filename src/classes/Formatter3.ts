@@ -152,7 +152,10 @@ export class Formatter3 {
             // case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.BaseFilter]):
             //     return { regex: REGEX.THREE_ARG_ASSIGNMENT, tablen: 2, groupMember: true };
             // three tab two arg
-            case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.CollectionFeatureLongZIndex]):
+            case this.parser.checkScopesOnLine(line, [
+                dotnugg.parser.semanticTokens.CollectionFeatureLongZIndex,
+                dotnugg.parser.semanticTokens.CollectionFeatureLongGraft,
+            ]):
                 return { regex: REGEX.ONE_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
             case this.parser.checkScopesOnLine(line, [dotnugg.parser.semanticTokens.ItemVersionAnchor]):
                 return { regex: REGEX.TWO_ARG_ASSIGNMENT, tablen: 3, groupMember: false };
@@ -263,10 +266,24 @@ export class Formatter3 {
                                         new vscode.Position(line.lineNumber, indices.groups[x][1]),
                                     ),
                                     options && options.spaceNum
-                                        ? Formatter3.spacer(options.spaceNum - reg.groups.assignment.length)
+                                        ? reg.groups.assignment2
+                                            ? Formatter3.spacer(options.spaceNum - reg.groups.assignment2.length)
+                                            : Formatter3.spacer(options.spaceNum - reg.groups.assignment.length)
                                         : Formatter3.defaults.s,
                                 ),
                             );
+                        } else if (x.startsWith('assignment2')) {
+                            // update.push(
+                            //     vscode.TextEdit.replace(
+                            //         new vscode.Range(
+                            //             new vscode.Position(line.lineNumber, indices.groups[x][0]),
+                            //             new vscode.Position(line.lineNumber, indices.groups[x][1]),
+                            //         ),
+                            //         options && options.spaceNum
+                            //             ? Formatter3.spacer(options.spaceNum - reg.groups.assignment.length)
+                            //             : Formatter3.defaults.s,
+                            //     ),
+                            // );
                         } else {
                             //  Logger.out({ x });
                         }

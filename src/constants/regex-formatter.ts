@@ -1,5 +1,5 @@
 const TWO_ARG_ASSIGNMENT = new RegExp(
-    /(?<t1>\s*)(?<assignment>\S+)(?<assignment_spacer>\s*)(?<c9>:=)(?<s6>\s*)(?<c6>{)(?<s3>\s*)(?<c10>\S+)(?<n1>\s*)(?<c19>:)(?<s4>\s*)(?<c2>\S+)(?<n2>\s*)(?<c15>,)(?<s5>\s*)(?<c12>\S+)(?<n6>\s*)(?<c20>:)(?<s7>\s*)(?<c11>\S+)(?<s22>\s*)(?<c14>})(?<n20>\s*)/,
+    /(?<t1>\s*)(?<assignment>\S+)(?<s19>\s*)(?<assignment2>\S*)(?<assignment_spacer>\s*)(?<c9>:=)(?<s6>\s*)(?<c6>{)(?<s3>\s*)(?<c10>\S+)(?<n1>\s*)(?<c19>:)(?<s4>\s*)(?<c2>\S+)(?<n2>\s*)(?<c15>,)(?<s5>\s*)(?<c12>\S+)(?<n6>\s*)(?<c20>:)(?<s7>\s*)(?<c11>\S+)(?<s22>\s*)(?<c14>})(?<n20>\s*)/,
     'gd',
 );
 const THREE_ARG_ASSIGNMENT = new RegExp(
