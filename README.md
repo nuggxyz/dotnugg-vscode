@@ -1,1 +1,1 @@
-# dotnugg VS Code Plug In
+# VS Code Extension for working with Dotnugg files
