@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.8
+
+### Patch Changes
+
+-   lock file ugh
+
 ## 0.2.7
 
 ### Patch Changes
