@@ -19,7 +19,7 @@ jobs:
                   node-version: '${{ steps.nvm.outputs.NVMRC }}'
                   registry-url: 'https://registry.npmjs.org'
                   scope: '@nuggxyz'
-            - run: yarn config set enableImmutableInstalls false
+            - run: yarn config set enableImmutableInstalls true
             - run: yarn --immutable
             - run: yarn package
             - run: yarn vsce publish --yarn
