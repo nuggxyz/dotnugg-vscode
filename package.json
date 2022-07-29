@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "license": "AGPL-3.0-or-later",
     "engines": {
@@ -126,5 +126,6 @@
         "vscode-languageserver-textdocument": "^1.0.4",
         "vscode-textmate": "^5.4.0",
         "vscode-uri": "^3.0.3"
-    }
+    },
+    "packageManager": "yarn@3.2.2"
 }
