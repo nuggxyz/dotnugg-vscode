@@ -18,7 +18,7 @@ jobs:
                   node-version: '${{ steps.nvm.outputs.NVMRC }}'
                   registry-url: 'https://registry.npmjs.org'
                   scope: '@nuggxyz'
-            - run: yarn
+            - run: yarn --immutable
             - run: yarn package
             - run: yarn vsce publish --yarn
               env:
