@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.1.23",
+    "version": "0.2.0",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "license": "AGPL-3.0-or-later",
     "engines": {
@@ -82,13 +82,12 @@
         "webpack-dev": "webpack --mode development --watch",
         "package": "webpack --mode production --devtool hidden-source-map",
         "test-compile": "tsc -p ./",
-		"version:tag": "yarn changeset tag",
-		"version:get": "grep '\"version\"' package.json | sed 's/.*\"version\": \"\\(.*\\)\".*/\\1/'",
-		"version:commit": "git add . && git commit -m \"v$(yarn version:get)\"",
-		"version:changeset": "yarn changeset add && yarn changeset version",
-		"version:platform": "echo \"v$(yarn version:get)\"",
-		"release": "yarn version:changeset && yarn version:platform  && yarn version:commit && yarn version:tag"
-
+        "version:tag": "yarn changeset tag",
+        "version:get": "grep '\"version\"' package.json | sed 's/.*\"version\": \"\\(.*\\)\".*/\\1/'",
+        "version:commit": "git add . && git commit -m \"v$(yarn version:get)\"",
+        "version:changeset": "yarn changeset add && yarn changeset version",
+        "version:platform": "echo \"v$(yarn version:get)\"",
+        "release": "yarn version:changeset && yarn version:platform  && yarn version:commit && yarn version:tag"
     },
     "devDependencies": {
         "@changesets/cli": "^2.24.1",
