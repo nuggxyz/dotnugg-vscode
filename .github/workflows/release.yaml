@@ -6,7 +6,7 @@ on:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         steps:
             - uses: actions/checkout@v2
             # Setup .npmrc file to publish to npm
@@ -19,8 +19,8 @@ jobs:
                   node-version: '${{ steps.nvm.outputs.NVMRC }}'
                   registry-url: 'https://registry.npmjs.org'
                   scope: '@nuggxyz'
-            - run: yarn config set enableImmutableInstalls true
-            - run: yarn --immutable
+            # - run: yarn config set enableImmutableInstalls true
+            - run: yarn
             - run: yarn package
             - run: yarn vsce publish --yarn
               env:

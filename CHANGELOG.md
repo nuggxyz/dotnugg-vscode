@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.10
+
+### Patch Changes
+
+-   hailmary
+
 ## 0.2.9
 
 ### Patch Changes
