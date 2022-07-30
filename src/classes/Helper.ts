@@ -300,6 +300,7 @@ class Helper {
 
 		if (ws) {
 			Helper.client = new LanguageClient('dotnugg', 'dotnugg Language Server', serverOptions, clientOptions);
+			/// @ts-ignore
 			clientDisposable = Helper.client.start();
 		}
 		// Push the disposable to the context's subscriptions so that the
