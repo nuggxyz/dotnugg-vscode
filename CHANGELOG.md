@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.32
+
+### Patch Changes
+
+-   IT WORKS
+
 ## 0.2.31
 
 ### Patch Changes

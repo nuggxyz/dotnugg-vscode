@@ -217,6 +217,7 @@ class Decorator {
 
 				const attr = parser.results.items[i].value;
 				const colors = attr.colors;
+				console.log({ colors });
 				const versionKeys = Object.keys(attr.versions.value);
 
 				const attrname = attr.feature.value;
@@ -248,6 +249,8 @@ class Decorator {
 						colorRanges[color].push(Helper.vscodeRangeOffset(layer.token, 1, 0));
 
 						featureLayerColorMap[colors.value[Object.keys(colors.value)[j]].value.name.value] = color;
+
+						console.log({ color });
 					}
 
 					let col = colors.value[Object.keys(colors.value)[j]].value.rgba;
@@ -302,6 +305,8 @@ class Decorator {
 								anchorRange = { rng: Helper.vscodeRange(c.value.l.token), val: '' };
 								anchorfound = true;
 							}
+
+							console.log('AYOOOOO', c.value.t.value);
 
 							if (c.value.t.value === PixelType.COLOR) {
 								let color: string; // if layer colors is active
@@ -362,9 +367,11 @@ class Decorator {
 					Decorator.colorDecorators[key] = prevColorDecorators[key];
 					delete prevColorDecorators[key];
 				} else {
+					console.log(key, colorRanges[key]);
 					Decorator.colorDecorators[key] = vscode.window.createTextEditorDecorationType({
 						light: {
 							backgroundColor: key,
+
 							color: luma(key) > 0.5 ? 'rgba(0,0,0,1)' : 'rgba(255,255,255,1)',
 							// cursor: 'crosshair',
 						},

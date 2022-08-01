@@ -1068,14 +1068,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuggxyz/dotnugg-sdk@npm:^0.4.10":
-  version: 0.4.10
-  resolution: "@nuggxyz/dotnugg-sdk@npm:0.4.10"
+"@nuggxyz/dotnugg-grammar@npm:^0.3.4":
+  version: 0.3.4
+  resolution: "@nuggxyz/dotnugg-grammar@npm:0.3.4"
+  checksum: 1d5afc8f9bfede9bee48022114ac90912159879771e9eacc37e69b2d785006f0916b2f52eaabc53369c837999daf4e67ad02683660c1df6dbf23ba261f8c0a0e
+  languageName: node
+  linkType: hard
+
+"@nuggxyz/dotnugg-sdk@npm:^0.4.13":
+  version: 0.4.13
+  resolution: "@nuggxyz/dotnugg-sdk@npm:0.4.13"
   dependencies:
     "@ethersproject/abi": ^5.6.4
     "@ethersproject/bytes": ^5.6.1
     "@ethersproject/providers": ^5.6.8
-    "@nuggxyz/dotnugg-grammar": ^0.3.1
+    "@nuggxyz/dotnugg-grammar": ^0.3.4
     chokidar: ^3.5.3
     color-parse: ^1.4.2
     ethers: ^5.6.9
@@ -1087,7 +1094,7 @@ __metadata:
     tiny-invariant: ^1.2.0
     vscode-oniguruma: ^1.6.2
     vscode-textmate: ^7.0.1
-  checksum: a5c99cd27da60b1e12432e89d9fc780bffc668126ac1ddb1b04a90a5a0399df1b8e24b0597dec61480befa35dadef667964fba788a732ebe79c99205a568d9fe
+  checksum: 5f487ca43f7c497a0d5387b487c09e21a867f11b879278f3fbf194bd8ce52de5c015de2fda4b2c0f60974dd32a8357e71efc32537a2aefd2bcc30f5275929113
   languageName: node
   linkType: hard
 
@@ -2681,7 +2688,7 @@ __metadata:
   dependencies:
     "@changesets/cli": ^2.24.1
     "@nuggxyz/dotnugg-grammar": ^0.3.1
-    "@nuggxyz/dotnugg-sdk": ^0.4.10
+    "@nuggxyz/dotnugg-sdk": ^0.4.13
     "@types/mocha": ^9.1.1
     "@types/node": ^18.6.2
     "@types/vscode": ^1.69.0
