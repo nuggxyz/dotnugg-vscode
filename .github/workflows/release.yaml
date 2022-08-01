@@ -22,8 +22,8 @@ jobs:
             # - run: yarn config set enableImmutableInstalls true
             - run: yarn
             - run: yarn package
-            - run: yarn vsce package --no-yarn
-            - run: yarn vsce publish --yarn --no-dependencies --no-update-package-json --packagePath ./dotnugg-$(yarn version:get).visx $(yarn version:get)
+            # - run: yarn vsce package --no-yarn
+            - run: yarn vsce publish --yarn --no-dependencies --no-update-package-json $(yarn version:get)
             # - run: yarn vsce publish --yarn --no-dependencies --no-update-package-json $(yarn version:get)
               env:
                   VSCE_PAT: ${{ secrets.VSCE_DEPLOY_KEY }}
