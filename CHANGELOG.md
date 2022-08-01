@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.17
+
+### Patch Changes
+
+-   deploy
+
 ## 0.2.16
 
 ### Patch Changes
