@@ -23,7 +23,7 @@ jobs:
             - run: yarn
             - run: yarn package
             - run: yarn set version classic
-            - run: yarn deploy
+            - run: yarn vsce publish --yarn
               env:
                   VSCE_PAT: ${{ secrets.VSCE_DEPLOY_KEY }}
 
