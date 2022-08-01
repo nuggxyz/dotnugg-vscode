@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.21
+
+### Patch Changes
+
+-   --no-yarn
+
 ## 0.2.20
 
 ### Patch Changes
