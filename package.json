@@ -2,7 +2,7 @@
     "name": "dotnugg",
     "displayName": "dotnugg",
     "description": "A VS Code extension for working with dotnugg files",
-    "version": "0.2.14",
+    "version": "0.2.15",
     "author": "dub6ix <dub6ix@nugg.xyz>",
     "license": "AGPL-3.0-or-later",
     "engines": {
@@ -72,7 +72,7 @@
     ],
     "scripts": {
         "build": "webpack --mode development --watch",
-        "deploy": "vsce publish --yarn",
+        "deploy": "vsce publish --no-yarn",
         "watch": "tsc -watch -p ./",
         "watchts": "yarn ts-node -watch -p ./",
         "pretest": "yarn run compile && yarn run lint",
