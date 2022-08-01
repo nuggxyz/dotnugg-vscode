@@ -23,13 +23,9 @@ const config = {
 	},
 	devtool: 'source-map',
 	externals: {
-		// fs: 'commonjs fs',
-		// util: 'commonjs util',
-		// buffer: 'commonjs buffer',
 		vscode: 'commonjs2 vscode',
-		// 'vscode-jsonrpc': 'commonjs vscode-jsonrpc',
-		// 'vscode-languageclient/node': 'commonjs vscode-languageclient/node',
-		// 'vscode-languageserver/node': 'commonjs vscode-languageserver/node',
+		'vscode-languageclient/node': 'commonjs vscode-languageclient/node',
+		'vscode-languageserver/node': 'commonjs vscode-languageserver/node',
 	},
 
 	externalsPresets: {
