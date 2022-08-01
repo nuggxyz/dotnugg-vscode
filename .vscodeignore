@@ -1,6 +1,7 @@
 
 .gitignore
-.yarnrc
+.yarnrc.yml
+yarn.lock
 
 tsconfig.json
 .eslintrc.js
