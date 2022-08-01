@@ -22,7 +22,7 @@ jobs:
             # - run: yarn config set enableImmutableInstalls true
             - run: yarn
             - run: yarn package
-            - run: yarn version set classic
+            - run: yarn set version classic
             - run: yarn vsce publish --yarn
               env:
                   VSCE_PAT: ${{ secrets.VSCE_DEPLOY_KEY }}
