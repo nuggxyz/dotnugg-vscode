@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.25
+
+### Patch Changes
+
+-   no dep
+
 ## 0.2.24
 
 ### Patch Changes
